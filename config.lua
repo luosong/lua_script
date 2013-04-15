@@ -1,0 +1,5 @@
+DEBUG = 0
+
+-- design resolution
+CONFIG_SCREEN_WIDTH  = 960
+CONFIG_SCREEN_HEIGHT = 640

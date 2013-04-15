@@ -29,7 +29,7 @@ levels = {
         }
     },
     [2] = {
-        id = 3,
+        id = 2,
         name = "决战黑木崖",
         map  = "ui/map_wds.png";
         [1] = {

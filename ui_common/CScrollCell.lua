@@ -11,10 +11,20 @@ local CScrollCell = class("CScrollCell", function()
 end)
 
 function CScrollCell:onTouch(obj)
-
-     if (type(self.touchListener) == "function") then
-         self:touchListener(obj)
+     if (self.bIsEnable) then
+         if (type(self.touchListener) == "function") then
+             self:touchListener(obj)
+         end
      end
+end
+
+function CScrollCell:setEnable(b)
+    if b then
+        self.sprite:setColor(ccc3(255, 255, 255))
+    else
+        self.sprite:setColor(ccc3(100, 100, 100))
+    end
+    self.bIsEnable = b
 end
 
 function CScrollCell:getData()
@@ -34,7 +44,9 @@ function CScrollCell:boundingBox()
 end
 
 function CScrollCell:setColor(color)
-    self.sprite:setColor(color)
+    if (self.bIsEnable) then
+        self.sprite:setColor(color)
+    end
 end
 
 
@@ -42,6 +54,8 @@ function CScrollCell:ctor(sprite)
     self.sprite = sprite
     sprite:setPosition(0, 0)
     self:addChild(self.sprite)
+
+    self.bIsEnable = true
 end
 
 return CScrollCell

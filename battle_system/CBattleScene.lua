@@ -225,8 +225,7 @@ function CBattleScene:init()
 		local dlg = nil
 		function onOKButton()
 			dlg:removeFromParentAndCleanup(true)
-
-            display.replaceScene(require("adventure.CAdventureScene").new())
+            display.replaceScene(require("adventure.CAdventureScene").new(self.map[1]))
 
 --			printf("---- #levels[self.map[1]] = %d    self.map[2] = %d", #levels[self.map[1]], self.map[2])
 --			if (#levels[self.map[1]] > self.map[2]) then
@@ -321,12 +320,12 @@ function CBattleScene:init()
 		end
     end
 
-    self.layer:registerScriptHandler(function(action)
-        if action == "exit" then
-            self.layer:removeAllChildrenWithCleanup(true)
-            self:removeAllChildrenWithCleanup(true)
-        end
-    end)
+--    self.layer:registerScriptHandler(function(action)
+--        if action == "exit" then
+--            --self.layer:removeAllChildrenWithCleanup(true)
+--            self:removeAllChildrenWithCleanup(true)
+--        end
+--    end)
 
 	initPos()
 	loadArmy()

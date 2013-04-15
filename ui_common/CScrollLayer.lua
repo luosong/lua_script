@@ -10,6 +10,8 @@ local CScrollLayer = class("CScrollLayer", function(param)
     return display.newClippingRegionNode(CCRectMake(param.x, param.y, param.width, param.height))
 end)
 
+
+
 function CScrollLayer:init(param)
     local x  = param.x
     local y  = param.y
@@ -68,14 +70,14 @@ function CScrollLayer:init(param)
                     tmpX = tmpX + cellWidth
                 end
             end
-
-
             v:setPosition(tmpX + x , tmpY + y)
             view:addChild(v);
             allNodesWidth = allNodesWidth + v:getContentSize().width + 2
         end
         allNodesWidth = allNodesWidth - 2
     end
+
+
 
     local function onVerticalDisplay()
         local tmpX = cellCX
@@ -109,6 +111,19 @@ function CScrollLayer:init(param)
     local currentPage = 1
     local localPosition = {x = 0, y = 0 }
     local bIsMove = true
+
+    self.setCurrentNode = function(sender, index)
+        local nodeWidth = nodes[1]:getContentSize().width  + 2
+        local currentPage = math.ceil(index / pageSize)
+        if currentPage >= totalPage then
+            localPosition.x =  -allNodesWidth + wx
+        else
+            local x = (currentPage - 1) * rowSize * nodeWidth
+            localPosition.x = -x
+        end
+
+        view:setPosition(localPosition.x, 0)
+    end
 
     local function onHorizontalScroll(tx, ty)
         local dis = tx - ptBeginPos.x
@@ -247,6 +262,8 @@ function CScrollLayer:init(param)
         end
     end
 
+
+
     ------------------------------------------------------------------
     view:setTouchEnabled(true)
     view:registerScriptTouchHandler(onTouch, false, -128, true)
@@ -258,6 +275,7 @@ function CScrollLayer:init(param)
         onHorizontalDisplay()
     end
 end
+
 
 function CScrollLayer:ctor(param)
     printf("------------------type" .. type(param))

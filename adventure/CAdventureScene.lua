@@ -14,8 +14,7 @@ end)
 
 function CAdventureScene:init()
 
-    local currentMap =  levels[1]
-    self.mapID = 1
+    local currentMap =  levels[self.mapID]
 
 --    local bg = display.newSprite("ui/bg01.png")
 --    bg:setAnchorPoint(CCPointMake(0, 0))
@@ -51,10 +50,19 @@ function CAdventureScene:init()
     function initLevelsButton()
 
         local nodes = {}
-        local onTouchHeros = function(data)
+        local preClickedButton = nil
+        local onMapButton = function(data, index)
             self.mapID =  data.id
             resetMap()
+
+            if (preClickedButton) then
+                preClickedButton:setEnable(true)
+            end
+            preClickedButton = nodes[index]
+            nodes[index]:setEnable(false)
         end
+
+
 
         local function c_func(f, ...)
             local args = {... }
@@ -65,7 +73,11 @@ function CAdventureScene:init()
 
         for k, v in ipairs(levels) do
             nodes[k] = require("ui_common.CScrollCell").new(ResourceMgr:getUISprite("board26"))
-            nodes[k]:setTouchListener(c_func(onTouchHeros, v))
+            nodes[k]:setTouchListener(c_func(onMapButton, v,  k))
+            if v.id == self.mapID then
+                nodes[k]:setEnable(false)
+                preClickedButton = nodes[k]
+            end
             local label = ui.newTTFLabel({
                 text = v.name,
                 align = ui.TEXT_ALIGN_CENTER
@@ -85,6 +97,7 @@ function CAdventureScene:init()
             vertical = false,
             bFreeScroll = true
         })
+        scrollLayer:setCurrentNode(20)
         scrollLayer:setPosition(0, 0)
         self.layer:addChild(scrollLayer)
     end
@@ -137,7 +150,6 @@ function CAdventureScene:init()
     local function initSubMap()
         flagIconNodes:removeAllChildrenWithCleanup(true)
         for k, v in ipairs(currentMap) do
-
             local icon = require("adventure.CCoordinateSprite").new(k, onInfoButton,
                 onChallenge, game.Player:getStarsById(self.mapID, v.id), game.Player:isLevelUnlock(self.mapID, v.id))
             icon:setPosition(display.width * (v.pos.x / 40), display.height * (v.pos.y / 40))
@@ -150,6 +162,8 @@ function CAdventureScene:init()
         self.map:setDisplayFrame(CCSpriteFrame:createWithTexture(display.newSprite(currentMap.map):getTexture(),
             self.map:getTextureRect()))
         initSubMap()
+
+
     end
 
     local function initCtlButton()
@@ -206,12 +220,14 @@ function CAdventureScene:init()
     initSubMap()
 end
 
-function CAdventureScene:ctor()
+function CAdventureScene:ctor(mapId)
 
     self.layer = display.newLayer()
     self.layer:setPosition(0, 0)
     self:addChild(self.layer)
-    self.mapID = 1
+    self.mapID = mapId or 1
+
+    printf("---------------------- mapId   ..  " .. self.mapID)
     self:init()
 
 --    local gridLine = CGridLineLayer:create()

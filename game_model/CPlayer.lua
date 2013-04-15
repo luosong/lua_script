@@ -8,7 +8,11 @@ function CPlayer:addSoul(id, num)
         self.m_heroSouls[id].num = 0
     end
 
-    self.m_heroSouls[id].num = self.m_heroSouls[id].num + 1
+    self.m_heroSouls[id].num = self.m_heroSouls[id].num + num
+end
+
+function CPlayer:getSouls()
+    return self.m_heroSouls
 end
 
 function CPlayer:setLevelStar(level, subLevel, star)
@@ -16,7 +20,16 @@ function CPlayer:setLevelStar(level, subLevel, star)
 
     if star > 0 then
         if (self.m_unlock_levels[level][subLevel + 1]) == nil then
-            self:addUnLockLevel(level, subLevel + 1)
+
+            if (#levels[level] >= subLevel + 1) then
+                self:addUnLockLevel(level, subLevel + 1)
+            else
+                if (#levels >= level + 1) then
+                    self:addUnLockLevel(level + 1, 1)
+                else
+                    CCMessageBox("游戏尽头", "ERROR")
+                end
+            end
         end
     end
 end
@@ -26,6 +39,7 @@ function CPlayer:addUnLockLevel(level, subLevel)
     if (self.m_unlock_levels[level] == nil) then
         self.m_unlock_levels[level] = {}
     end
+
     self.m_unlock_levels[level][subLevel] = 0
 
 end
@@ -41,10 +55,9 @@ function CPlayer:getStarsById(level, subLevel)
 end
 
 function CPlayer:isLevelUnlock(level, subLevel)
-    if self.m_unlock_levels[level] and self.m_unlock_levels[level][subLevel] then
+    if self.m_unlock_levels[level] and self.m_unlock_levels[level][subLevel] ~= nil then
         return true
     end
-
     return false
 end
 

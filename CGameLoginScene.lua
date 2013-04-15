@@ -78,7 +78,7 @@ function CGameLoginScene:ctor()
 													size = 48,
 													color = ccc3(100, 100, 255),
 													tag = 1,
-													listener = EnterGame	
+													listener = EnterGame
 	    											})
 
 		end
@@ -180,7 +180,9 @@ function CGameLoginScene:ctor()
 													size = 48,
 													color = ccc3(200,200,200),
 													tag = 1,
-													listener = EnterGame})
+													listener = function()
+                                                        display.replaceScene(require("CGameMenuScene").new())
+                                                    end})
 		local menu = ui.newMenu({serverButton})
 
 		menu:setPosition(display.width / 2, display.height / 4)

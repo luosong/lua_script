@@ -32,32 +32,26 @@ function CChooseLayer:init(data, index, itemType)
     local function initItem()
 
         local items = nil
-
         if itemType == ItemType_KungFu then
             items = game.Player:getSkills()
         elseif itemType == ItemType_Equip then
             items = game.Player:getEquipments()
         end
-        if items and #items >= 1 then
 
+        if items and #items >= 1 then
             local function onTouchItem(itemData)
                 printf("----------------详细信息----------------" .. itemData:getName())
             end
 
-
             local function onEquipButton(itemData, sender)
-
                 if (preButton ~= nil) then
-                    --preButton.data:setOwner(nil)
                     preButton:setEnabled(true)
                     preButton:unselected()
                 end
-
                 preButton = sender
                 preButton.data = itemData
                 sender:setEnabled(false)
                 sender:selected()
-
             end
 
             local function c_func(f, ...)
@@ -66,7 +60,6 @@ function CChooseLayer:init(data, index, itemType)
             end
 
             for k, v in ipairs(items) do
-
                 nodes[k] = require("possessions.CChooseItemSprite").new(v, itemType)
                 nodes[k]:setTouchListener(c_func(onTouchItem, v))
 
@@ -97,7 +90,7 @@ function CChooseLayer:init(data, index, itemType)
 
             local scrollLayer = require("ui_common.CScrollLayer").new({
                 x = CFuncHelper:getRelativeX(9),
-                y =CFuncHelper:getRelativeY(9),
+                y = CFuncHelper:getRelativeY(9),
                 width = CFuncHelper:getRelativeX(23),
                 height = CFuncHelper:getRelativeY(27),
                 pageSize = 4,
@@ -130,8 +123,7 @@ function CChooseLayer:init(data, index, itemType)
                 if itemType == ItemType_KungFu then
                     data:addKungFu(preButton.data:getId(), index)
                 elseif itemType == ItemType_Equip then
-                    data:addEquipment(preButton.data, index)
-                    preButton.data:setOwner(data)
+                    data:addEquipment(preButton.data:getId(), index)
                 end
             end
             self:removeFromParentAndCleanup(true)
@@ -179,7 +171,7 @@ end
 
 function CChooseLayer:ctor(data, index, itemType)
 
-    self:init(data,index, itemType)
+    self:init(data, index, itemType)
 end
 
 return CChooseLayer

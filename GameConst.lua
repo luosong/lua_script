@@ -12,17 +12,24 @@ ItemShowType.BASE_HEROS_INFO   = 2  --人物基础数据
 ItemShowType.MEMBER_EQUIP_INFO = 3  --成员装备信息
 ItemShowType.BASE_EQUIP_INFO   = 4  --装备基础数据
 
-EquipmentType = {}
-EquipmentType.WEAPON = 1
-EquipmentType.DRESS  = 2
-EquipmentType.SHOES  = 3
-EquipmentType.OTHER  = 4
+EquipmentType = {}     --装备类型
+EquipmentType.WEAPON = 1  --武器
+EquipmentType.DRESS  = 2  --衣服
+EquipmentType.SHOES  = 3  --鞋
+EquipmentType.OTHER  = 4  --其他
 
-EquipmentEffectType = {}
-EquipmentEffectType.ATTACK  = 0
-EquipmentEffectType.DEFENSE = 2
-EquipmentEffectType.HP      = 4
-EquipmentEffectType.MAGIC   = 6
+EquipmentEffectType = {} --装备加成类型
+EquipmentEffectType.ATTACK     = 0     --攻击固定数值
+EquipmentEffectType.ATTACK_PER = 1     --攻击加成百分比
+
+EquipmentEffectType.DEFENSE     = 2    --防御
+EquipmentEffectType.DEFENSE_PER = 3
+
+EquipmentEffectType.HP         = 4     --血值
+EquipmentEffectType.HP_PER     = 5
+
+EquipmentEffectType.MAGIC      = 6     --内力
+EquipmentEffectType.MAGIC_PER  = 7
 
 --0：单体
 --1：单行
@@ -42,8 +49,6 @@ CollectionType = {}
 CollectionType.HERO = 1
 CollectionType.EQUIP  = 2
 CollectionType.SKILL  = 3
-
-
 
 -- for load static data from scripts and network
 

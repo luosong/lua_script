@@ -81,10 +81,7 @@ function CBattleScene:init()
         local index = 1
 		for k, v in ipairs(form:getHeros()) do
             if (v ~= 0) then
-                local fighter = require("battle_system.CHeroSprite").new(v, "card")
-                fighter:setFlipX(true)
-                --local location = v:getLocation()
-
+                local fighter = require("battle_system.CHeroSprite").new(v, "card", true)
                 fighter:setPosition(ourArmyPosition[k])
                 self.ourMembersNode:addChild(fighter)
                 fighter:setTag(index)
@@ -226,19 +223,6 @@ function CBattleScene:init()
 		function onOKButton()
 			dlg:removeFromParentAndCleanup(true)
             display.replaceScene(require("adventure.CAdventureScene").new(self.map[1]))
-
---			printf("---- #levels[self.map[1]] = %d    self.map[2] = %d", #levels[self.map[1]], self.map[2])
---			if (#levels[self.map[1]] > self.map[2]) then
---				printf("subMpa + 1")
---				display.replaceScene(require("battle_system.CBattlePreparedScene").new(self.map[1], self.map[2] + 1))
---			else
---				if (#levels > self.map[1]) then
---					printf("mainMap + 1")
---					display.replaceScene(require("battle_system.CBattlePreparedScene").new(self.map[1] + 1, 1))
---				else
---					CCMessageBox("GameOver", "ERROR")
---				end
---			end
 			
 		end
 		

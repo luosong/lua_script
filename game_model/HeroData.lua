@@ -4,14 +4,6 @@ require("data.heros_gs")
 
 local CHeroData = class("CHeroData")
 
---function CHeroData:setLocation(x)
---	self.m_location = x
---end
---
---function CHeroData:getLocation()
---	return self.m_location
---end
-
 function CHeroData:getName()
 	return self.m_name
 end
@@ -121,12 +113,26 @@ function CHeroData:getProperty()
 end
 
 function CHeroData:getEquipments()
-    return self.m_equipment
+    local equips = {}
+
+    for k, v in ipairs(self.m_equipment) do
+        if v > 0 then
+            local equipment = game.Player:getEquipmentById(v)
+            if (equipment == nil) then
+                CCMessageBox("CHeroData:getEquipments", "ERROR")
+            end
+            equips[k]  = equipment
+        end
+    end
+    return equips
 end
 
-function CHeroData:addEquipment(equip, index)
+function CHeroData:addEquipment(equipId, index)
     local i = index or #self.m_equipment + 1
-    self.m_equipment[i] = equip
+    self.m_equipment[i] = equipId
+    if (equipId > 0) then
+        game.Player:getEquipmentById(equipId):setOwner(self.m_id)
+    end
 end
 
 function CHeroData:getKungFus()
@@ -170,10 +176,10 @@ function CHeroData:init(data)
     ]]
 
     self.m_id       = data.id
-    self.m_exp      = data.exp
+    self.m_exp      = data.exp or 0
     self.m_skills   = {0, 0, 0, 0}
     self.m_level    = require("FuncHelper"):encryptNum(data.level or 1)
-    self.m_equipment= {}
+    self.m_equipment= {0, 0, 0, 0}
     self.m_base_skill = data.base_skill or {value = 1, level = 1}
 
     if data.skills then
@@ -235,7 +241,7 @@ end
 
 
 --[[
-
+    将hero的基本数值，转换成服务器存贮需求数据结构
 ]]
 function CHeroData:genUploadHero( opt )
     local hero = {}
@@ -246,10 +252,10 @@ function CHeroData:genUploadHero( opt )
     hero.lv = self:getLevel()
     hero.extra = {ap = self.m_extra_ap, dp = self.m_extra_dp,
                   hp = self.m_extra_hp, mp = self.m_extra_mp}
-    hero.exp = self.exp
+    hero.exp = self.exp or 0
     hero.equip = {}   -- equip
     hero.skill = {} -- skill
-
+    hero.baseSkill = self.m_base_skill or {}
     return hero
 end
 

@@ -5,7 +5,7 @@
 -- Time: 下午4:03
 -- To change this template use File | Settings | File Templates.
 --
-
+local ItemType_Equip  = 3
 local CEquipmentsScene = class("CFriendsScene", function()
     return display.newScene("CFriendsScene")
 end)
@@ -25,7 +25,6 @@ function CEquipmentsScene:init()
             dlgNode:setPosition(0, 0)
             self.node:addChild(dlgNode, 2)
 
-
             local function displayAction()
 
                 local a1 = CCMoveTo:create(0.5, CCPointMake(display.width * (1/ 4), 0))
@@ -39,7 +38,6 @@ function CEquipmentsScene:init()
             end
 
             local function eventListener(event)
-                printf("                     " .. event.name)
 
                   if string.upper(event.name) == string.upper(GlobalVariable["NotificationTag"]["EQUIPMENT_DETAIL_LAYER"]) then
                       dlgNode.detailLayer = nil
@@ -48,7 +46,6 @@ function CEquipmentsScene:init()
                   elseif string.upper(event.name) == string.upper(GlobalVariable["NotificationTag"]["EQUIPMENT_ENHANCE_LAYER"]) then
                       dlgNode.Enhancelayer = nil
                       dlgNode.enhancelEvent:removeAllEventListenersForEvent(GlobalVariable["NotificationTag"]["EQUIPMENT_ENHANCE_LAYER"])
-
                       if (dlgNode.detailLayer ~= nil) then
                           local a3 = CCMoveTo:create(0.5, CCPointMake(0, 0))
                           local a4 = CCScaleTo:create(0.5, 1)
@@ -56,20 +53,14 @@ function CEquipmentsScene:init()
                       end
                   elseif string.upper(event.name) == string.upper(GlobalVariable["NotificationTag"]["EQUIPMENT_DOUBLE_DETAIL"]) then
 
-
                       dlgNode.Enhancelayer = require("possessions.CEnhanceLayer").new(dlgNode.detailLayer:getData(), dlgNode.Enhancelayer)
                       dlgNode:addChild(dlgNode.Enhancelayer)
-
-
                       dlgNode.enhancelEvent = require("framework.client.api.EventProtocol").extend(dlgNode.Enhancelayer)
                       dlgNode.Enhancelayer:addEventListener(GlobalVariable["NotificationTag"].EQUIPMENT_ENHANCE_LAYER, eventListener)
-
                       displayAction()
                   end
 
             end
-
-
 
             local function onTouchItem(itemData)
                 dlgNode.detailLayer = require("possessions.CItemInfoLayer").new(itemData)
@@ -98,7 +89,7 @@ function CEquipmentsScene:init()
 
             for k, v in ipairs(equips) do
 
-                nodes[k] = require("possessions.CItemSprite").new(v, 3)
+                nodes[k] = require("possessions.CItemSprite").new(v, ItemType_Equip)
                 nodes[k]:setTouchListener(c_func(onTouchItem, v))
 
                 local button = CSingleImageMenuItem:create("button.png")

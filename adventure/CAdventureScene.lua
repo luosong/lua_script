@@ -62,8 +62,6 @@ function CAdventureScene:init()
             nodes[index]:setEnable(false)
         end
 
-
-
         local function c_func(f, ...)
             local args = {... }
             return function()
@@ -86,8 +84,6 @@ function CAdventureScene:init()
             nodes[k]:addChild(label)
         end
 
-
-
         local scrollLayer = require("ui_common.CScrollLayer").new({
             x = self.leftBorder:getWidth() + headerSprite:getContentSize().width + 6,
             y = display.height - headerBg:getContentSize().height,
@@ -106,7 +102,6 @@ function CAdventureScene:init()
 
     initLevelsButton()
 
-
     --local infoMenu = ui.newMenu({})
     --self.layer:addChild(infoMenu)
     local infoLayer = nil
@@ -121,14 +116,11 @@ function CAdventureScene:init()
         self.layer:addChild(infoLayer)
 
         transition.moveTo(infoLayer, {x = display.width, y = 0, time = 0.3})
-
-
     end
 
     local function onChallenge(tag)
 
         if (game.Player:getCurrentFormation():isSetForm() == false) then
-
             local tipBox = require("ui_common.CPromptBox").new({
                 title = "提示",
                 info = "当前阵法还没有布置任务，现在就去设置吗？",
@@ -143,7 +135,6 @@ function CAdventureScene:init()
         else
             display.replaceScene(require("battle_system.CBattleScene").new({ currentMap.id, tag }))
         end
-
     end
 
     local flagIconNodes = display.newNode()
@@ -164,8 +155,6 @@ function CAdventureScene:init()
         self.map:setDisplayFrame(CCSpriteFrame:createWithTexture(display.newSprite(currentMap.map):getTexture(),
             self.map:getTextureRect()))
         initSubMap()
-
-
     end
 
     local function initCtlButton()
@@ -229,7 +218,6 @@ function CAdventureScene:ctor(mapId)
     self:addChild(self.layer)
     self.mapID = mapId or 1
 
-    printf("---------------------- mapId   ..  " .. self.mapID)
     self:init()
 
 --    local gridLine = CGridLineLayer:create()

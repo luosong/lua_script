@@ -134,14 +134,11 @@ function CMembersScene:init()
         local currentHeroKungFus = nil
         if currentHero then
             currentHeroKungFus = currentHero:getKungFus()
-
-            printf("^^^^^^^^^^^^^^^^^^^^^^^^^^  = " .. #currentHeroKungFus)
         end
 
         for i = 1, 4 do
             local button = nil
             if (currentHeroKungFus[i] ~= nil) then
-                printf("-------------------------- i = " .. i)
                 button = CSingleImageMenuItem:create(ResourceMgr:getIconSprite(currentHeroKungFus[i]:getIcon()))
                 button:registerScriptTapHandler(c_func(onKungFuButton, currentHeroKungFus[i], true))
             else
@@ -157,8 +154,6 @@ function CMembersScene:init()
 
                 button:registerScriptTapHandler(c_func(onKungFuButton, i, false))
             end
-
-
             iconNodes[i] = ui.newMenu({button})
         end
 
@@ -184,10 +179,9 @@ function CMembersScene:init()
 
             printf("--------------------------------------------------" .. data:getName())
         else
-            local equipLayer = require("possessions.CChooseLayer").new(currentHero, data, 2)
+            local equipLayer = require("possessions.CChooseLayer").new(currentHero, data, ItemType_Equip)
             equipLayer:setPosition(0, 0)
             self.node:addChild(equipLayer)
-
             registerNotification(equipLayer)
         end
 
@@ -206,17 +200,23 @@ function CMembersScene:init()
             currentHeroEqupments = currentHero:getEquipments()
         end
 
-        for i = 1, 4 do
+        local equipMapping = {
+            [EquipmentType.WEAPON] = "武器",
+            [EquipmentType.DRESS]  = "衣服",
+            [EquipmentType.SHOES]  = "鞋",
+            [EquipmentType.OTHER]  = "配饰"
+        }
+        for k, v in pairs(EquipmentType) do
 
             local button = nil
-            if (currentHeroEqupments[i] ~= nil) then
-                button = CSingleImageMenuItem:create(ResourceMgr:getIconSprite(currentHeroEqupments[i]:getIcon()))
-                button:registerScriptTapHandler(c_func(onEquipmentButton, currentHeroEqupments[i], true))
+            if (currentHeroEqupments[v] ~= nil) then
+                button = CSingleImageMenuItem:create(ResourceMgr:getIconSprite(currentHeroEqupments[v]:getIcon()))
+                button:registerScriptTapHandler(c_func(onEquipmentButton, currentHeroEqupments[v], true))
             else
                 button = CSingleImageMenuItem:create(display.newSprite("frame_bg.png"))
-                button:registerScriptTapHandler(c_func(onEquipmentButton, i, false))
+                button:registerScriptTapHandler(c_func(onEquipmentButton, v, false))
                 local label = ui.newTTFLabel({
-                    text = "装备" .. i,
+                    text = equipMapping[v],
                     color = ccc3(0, 0, 0),
                     align = ui.TEXT_ALIGN_CENTER,
                     x = button:getContentSize().width / 2,
@@ -224,7 +224,7 @@ function CMembersScene:init()
                 })
                 button:addChild(label)
             end
-            iconNodes[i] = ui.newMenu({button})
+            iconNodes[v] = ui.newMenu({button})
 
         end
 

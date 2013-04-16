@@ -7,7 +7,6 @@ function CPlayer:addSoul(id, num)
         self.m_heroSouls[id] = {}
         self.m_heroSouls[id].num = 0
     end
-
     self.m_heroSouls[id].num = self.m_heroSouls[id].num + num
 end
 
@@ -41,7 +40,6 @@ function CPlayer:addUnLockLevel(level, subLevel)
     end
 
     self.m_unlock_levels[level][subLevel] = 0
-
 end
 
 
@@ -147,14 +145,12 @@ function CPlayer:getSkills()
 end
 
 function CPlayer:getSkillById(id)
-
     local skill = nil
     for k, v in ipairs(self.m_skills) do
          if (id == v:getId()) then
             skill = v
          end
     end
-
     return skill
 end
 
@@ -170,6 +166,16 @@ function CPlayer:getEquipments()
     return self.m_equipments
 end
 
+function CPlayer:getEquipmentById(id)
+    local equip = nil
+    for k, v in ipairs(self.m_equipments) do
+        if (id == v:getId()) then
+            equip = v
+        end
+    end
+    return equip
+end
+
 function CPlayer:setQueueType(id)
     self.m_queueType = id
 end
@@ -178,11 +184,6 @@ function CPlayer:getQueueType()
     return self.m_queueType
 end
 
---function CPlayer:setMajorHeros(d)
---    if type(d) == "table" then
---        self.m_majorHeros = d
---    end
---end
 
 function CPlayer:addMajorHero(d)
     self.m_majorHeros[#self.m_majorHeros + 1] = d

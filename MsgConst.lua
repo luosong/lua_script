@@ -85,6 +85,11 @@ KEY_CONST = {
 	    BASE_INFO_GOLD_BUY = 'GoldBuy';
 	    BASE_INFO_ENERGY = 'Engy'; -- energy
 
+    	--hero
+    	HEROS = 'hero';
+    	HERO_ID = 'id';
+    	HERO_INFO = 'info';
+
 	    --formation
 	    FORMATIONS = 'form';
 	    FORM_USING_ID = 'id';

@@ -31,6 +31,27 @@ function CPlayerNetWork:SetDownloadData( playerInfo )
     self.player:setEnergy(playerInfo[KEY_CONST["BASE_INFO_ENERGY"]])       -- energy
 
     -- 弟子
+    local heros = {}
+    if(playerInfo[KEY_CONST["HEROS"]] ~= nil) then
+
+    	heros = playerInfo[KEY_CONST["HEROS"]] or {}
+
+		local herodata = require("game_model.HeroData")
+
+    	for k,v in pairs(heros) do
+    		game.Player:addHero(herodata.new({
+    			        id = tonumber(v.id),                 --id
+				        exp = tonumber(v.exp) or 0,          --经验
+				        level = tonumber(v.lv),              --级别
+				        skills = v.skill,    				 --技能 表
+				        extra_ap = tonumber(v.extra.ap),     --额外加成
+				        extra_dp = tonumber(v.extra.dp),
+				        extra_hp = tonumber(v.extra.hp),
+				        extra_mp = tonumber(v.extra.mp),
+				        base_skill = v.baseSkill --{value = 12, level = 22}
+    			}))
+    	end
+    end
 
     -- 阵法
     self.player:setCurrentFormationId(playerInfo[KEY_CONST["FORM_USING_ID"]])
@@ -114,6 +135,7 @@ function CPlayerNetWork:UploadHerosData( heros )
 			hero.info.exp = v.exp
 			hero.info.equip = v.equip -- equip
 			hero.info.skill = v.skill -- skill
+			hero.info.baseSkill = v.baseSkill
 
 		elseif(v.opt == OPTIONS_TYPE.OPT_DEL) then
 			hero.info[1] = v.m_id

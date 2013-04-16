@@ -48,19 +48,42 @@ function CEquip:getEffectType()
     return self.m_effect_type
 end
 
-function CEquip:setOwner(owner)
-    self.m_owner = owner
+function CEquip:getEffect()
+
+    local name = ""
+    if EquipmentEffectType.ATTACK == self.m_effect_type then
+        name = "攻 " .. tostring(self.m_value)
+    elseif  EquipmentEffectType.ATTACK_PER == self.m_effect_type then
+        name = "攻 %" .. tostring(self.m_value)
+    elseif EquipmentEffectType.DEFENSE == self.m_effect_type then
+        name = "防".. tostring(self.m_value)
+    elseif  EquipmentEffectType.DEFENSE_PER == self.m_effect_type then
+        name = "防 %".. tostring(self.m_value)
+    elseif EquipmentEffectType.HP == self.m_effect_type then
+        name = "血" .. tostring(self.m_value)
+    elseif EquipmentEffectType.HP_PER == self.m_effect_type then
+        name = "血 %" .. tostring(self.m_value)
+    elseif EquipmentEffectType.MAGIC == self.m_effect_type then
+        name = "内" .. tostring(self.m_value)
+    elseif  EquipmentEffectType.MAGIC_PER == self.m_effect_type then
+        name = "内 %" .. tostring(self.m_value)
+    end
+    return name
+end
+
+function CEquip:setOwner(id)
+    self.m_ownerId = id
 end
 
 function CEquip:getOwner()
-    return self.m_owner
+    return game.Player:getMajorHeroById(self.m_ownerId)
 end
 
 function CEquip:getStatus()
     local status = "未装备"
     local bIsEquip = false
-    if self.m_owner then
-        status = "装备于 " .. self.m_owner:getName()
+    if self.m_ownerId then
+        status = "装备于 " .. self:getOwner():getName()
         bIsEquip = true
     end
 
@@ -78,7 +101,7 @@ function CEquip:ctor(data)
 	self.m_matchid      = data.matchid
     self.m_property     = data.property
 
-    self.m_owner        = nil
+    self.m_ownerId        = nil
 
 end
 

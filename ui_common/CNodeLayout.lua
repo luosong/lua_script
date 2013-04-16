@@ -22,7 +22,7 @@ function CNodeLayout:ctor(params)
     local cellHeight = height / rowNum
 
     local cellCX = cellWidth / 2
-    local cellCY = cellHeight / 2
+    local cellCY = height - cellHeight / 2
 
     -------------------------------------------------
 
@@ -30,12 +30,9 @@ function CNodeLayout:ctor(params)
         local tmpX = cellCX
         local tmpY = cellCY
         for k, v in ipairs(nodes) do
-
-            --if ((k - 1) % rowSize == 0) and (k > 1) then
             tmpX = cellCX + cellWidth * math.floor((k - 1) % rowSize)
-            tmpY = cellCY + cellHeight * math.floor((k - 1) / rowSize)
+            tmpY = cellCY - cellHeight * math.floor((k - 1) / rowSize)
             v:setAnchorPoint(CCPointMake(0, 0))
-            --v:setPosition(tmpX - v:getContentSize().width / 2, tmpY - v:getContentSize().height / 2)
             v:setPosition(tmpX, tmpY)
             self:addChild(v);
         end

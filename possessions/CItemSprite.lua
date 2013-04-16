@@ -39,20 +39,8 @@ function CItemSprite:init(data, itemType)
         })
         self:addChild(desc)
 
-        local et = data:getEffectType()
-        local name = "攻"
-        if EquipmentEffectType.ATTACK == et then
-            name = "攻"
-        elseif EquipmentEffectType.DEFENSE == et then
-            name = "防"
-        elseif EquipmentEffectType.HP == et then
-            name = "血"
-        elseif EquipmentEffectType.MAGIC == et then
-            name = "内"
-        end
-
         local effectValue = ui.newTTFLabel({
-            text = name .. "  " .. tostring(data:getValue()),
+            text = data:getEffect(),
             x = -self:getContentSize().width * (8 / 32),
             y = 0,
             color = ccc3(0, 0, 255),

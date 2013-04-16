@@ -86,6 +86,8 @@ function CAdventureScene:init()
             nodes[k]:addChild(label)
         end
 
+
+
         local scrollLayer = require("ui_common.CScrollLayer").new({
             x = self.leftBorder:getWidth() + headerSprite:getContentSize().width + 6,
             y = display.height - headerBg:getContentSize().height,

@@ -106,9 +106,9 @@ function CScrollLayer:init(param)
         end
     end
 
-    local ptBeginPos = {x = 0, y = 0 }
-    local ptPrePos = {x = 0, y = 0}
-    local currentPage = 1
+    local ptBeginPos   = {x = 0, y = 0 }
+    local ptPrePos     = {x = 0, y = 0}
+    local currentPage  = 1
     local localPosition = {x = 0, y = 0 }
     local bIsMove = true
 

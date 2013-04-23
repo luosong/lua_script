@@ -4,7 +4,7 @@ require("ResourceMgr")
 local ScrollViewCell = require("ui.ScrollViewCell")
 local LevelsListCell = class("LevelsListCell", ScrollViewCell)
 
-function LevelsListCell:ctor(size, beginLevelIndex, endLevelIndex, rows, cols, inData, rect, VisiableArray)
+function LevelsListCell:ctor(size, beginLevelIndex, endLevelIndex, rows, cols, inData, rect, VisiableArray, itemType)
     local rowHeight = math.floor((size.height) / rows)
     local colWidth = math.floor(size.width  / cols)
 
@@ -51,19 +51,27 @@ function LevelsListCell:ctor(size, beginLevelIndex, endLevelIndex, rows, cols, i
             
             if(isVisiable) then
                 icon =  ResourceMgr:getIconSprite(inData[levelIndex].str_icon, x, y)--display.newSprite("#icon_azi.png", x, y)
+                local iconBgName = "icon_bg_white"
                 if(inData[levelIndex].property == 0) then
-                    iconBg = ResourceMgr:getUISprite("icon_bg_white", x, y)
+                    iconBgName = "icon_bg_white"
                 elseif(inData[levelIndex].property == 1) then
-                    iconBg = ResourceMgr:getUISprite("icon_bg_white", x, y)            
+                    iconBgName = "icon_bg_white"           
                 elseif(inData[levelIndex].property == 2) then
-                    iconBg = ResourceMgr:getUISprite("icon_bg_green", x, y)
+                    iconBgName = "icon_bg_green"
                 elseif(inData[levelIndex].property == 3) then
-                    iconBg = ResourceMgr:getUISprite("icon_bg_blue", x, y)
+                    iconBgName = "icon_bg_blue"
                 elseif(inData[levelIndex].property == 4) then
-                    iconBg = ResourceMgr:getUISprite("icon_bg_yellow", x, y)
+                    iconBgName = "icon_bg_yellow"
                 elseif(inData[levelIndex].property == 5) then
-                    iconBg = ResourceMgr:getUISprite("icon_bg_purple", x, y)
+                    iconBgName = "icon_bg_purple"
                 end
+
+                -- 装备，武功的背景icon不同，需要另外设置
+                if(itemType ~= CollectionType.HERO) then
+                    iconBgName = iconBgName .. "2"
+                end
+
+                iconBg = ResourceMgr:getUISprite(iconBgName, x, y)
                 
                 if(iconBg ~= nil) then
                     self:addChild(iconBg)

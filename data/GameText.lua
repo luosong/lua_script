@@ -1,9 +1,6 @@
 
 local GameText = {}
 
-
-
-
 local TEXT = {
 	confirm         = "确定",
     concel          = "取消",
@@ -16,6 +13,10 @@ local TEXT = {
 	next_map        = "继续前行",
 	pre_map         = "原路返回",
     IDS_QUEUE_SETTING = "快速摆阵",
+    IDS_WEAPON = "武器",
+    IDS_DRESS  = "衣服",
+    IDS_SHOES  = "鞋",
+    IDS_OTHER  = "配饰",
 
 	-- recruit scene
 	IDS_JINBANG       = "金榜",

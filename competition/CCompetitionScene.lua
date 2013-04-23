@@ -15,13 +15,13 @@ function CCompetitionScene:init()
     layer:setPosition(0, 0)
     self:addChild(layer)
 
-    local commonButton = require("CBaseLayer").new()
+    local commonButton = require("CBorderLayer").new()
     commonButton:setPosition(0, 0)
     layer:addChild(commonButton)
 
-    local bg = ResourceMgr:getUISprite("board19")--display.newSprite("competition.png")
-    bg:setAnchorPoint(CCPointMake(1, 0))
-    bg:setPosition(display.width, 0)
+    local bg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame(GAME_RES.HUAWEN_BG))
+    bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (35 / 40)))
+    bg:setPosition(game.cx, display.height * (17.8 / 40))
     layer:addChild(bg)
 
     local testBrainsButton = ui.newTTFLabelMenuItem({
@@ -39,7 +39,7 @@ function CCompetitionScene:init()
         size = 48,
         color = ccc3(0, 255, 0),
         listener = function()
-            display.replaceScene(require("competition.fight.CRivalSelectScene").new())
+            display.replaceScene(require("competition.fight.CChallengeScene").new())
         end
     })
     testMightsButton:setPosition(bg:getContentSize().width * (3 / 4), bg:getContentSize().height / 2)

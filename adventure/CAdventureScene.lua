@@ -20,14 +20,7 @@ function CAdventureScene:init()
 --    bg:setAnchorPoint(CCPointMake(0, 0))
 --    self.layer:addChild(bg)
 
-    self.leftBorder = require("CLeftBorder").new()
-    self.leftBorder:setPosition(0, 0)
-    self.layer:addChild(self.leftBorder)
 
-    local mapBg = display.newSprite("ui/bg04.png")
-    mapBg:setAnchorPoint(CCPointMake(0,0))
-    mapBg:setPosition(self.leftBorder:getWidth(), 0)
-    self.layer:addChild(mapBg)
 
     self.map = display.newSprite(currentMap.map)
     self.map:setAnchorPoint(CCPointMake(1, 0))
@@ -211,6 +204,19 @@ function CAdventureScene:init()
     initSubMap()
 end
 
+function CAdventureScene:test( ptr)
+
+    local gameNetWork = require("GameNetWork").new()
+
+
+    local function uploadCB( ... )
+        ptr:init()
+    end
+    gameNetWork:SendData( game.Player:getPlayerID(),game.Player:getServerID(), 
+        REQUEST_ID["LEVEL_DOWNLOAD"], {}, uploadCB)
+
+end
+
 function CAdventureScene:ctor(mapId)
 
     self.layer = display.newLayer()
@@ -218,11 +224,24 @@ function CAdventureScene:ctor(mapId)
     self:addChild(self.layer)
     self.mapID = mapId or 1
 
-    self:init()
+    self.leftBorder = require("CLeftBorder").new()
+    self.leftBorder:setPosition(0, 0)
+    self.layer:addChild(self.leftBorder)
+
+    local mapBg = display.newSprite("ui/bg04.png")
+    mapBg:setAnchorPoint(CCPointMake(0,0))
+    mapBg:setPosition(self.leftBorder:getWidth(), 0)
+    self.layer:addChild(mapBg)
+
+    --loading界面
+    local loading = require("ui_common.CLoadingLayer")
+    loading.new(CAdventureScene.test, self)
+    -- self:init()
 
 --    local gridLine = CGridLineLayer:create()
 --    gridLine:setPosition(0, 0)
 --    self:addChild(gridLine)
+
 end
 
 return CAdventureScene

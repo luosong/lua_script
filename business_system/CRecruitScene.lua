@@ -34,7 +34,7 @@ function CRecruitScene:ctor()
     bg:setPosition(0, 0)
     self.RootNode:addChild(bg)
 
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.RootNode:addChild(baseLayer)
 
@@ -121,8 +121,8 @@ function CRecruitScene:ctor()
 		self.m_cdTime[tag] = BaseData_recruit[tag].cdtime
 		self.priceLable[tag] :setVisible(true)
 
-        game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[50]))
-        game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[51]))
+        -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[50]))
+        -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[51]))
 
 		local r = game.Player:getRecruit()[tag]
 		
@@ -172,7 +172,7 @@ function CRecruitScene:ctor()
 
 		-- 招聘成功之后，显示动画，并向服务器更新
 		if(isSuccess == true) then
-			self:showHero()
+			self:showHero(tag)
 			game.Player:setRecruit(tag,r)
 			self:UploadRecruit()
 		end
@@ -232,9 +232,41 @@ end
 --[[
 	招贤成功后动画
 ]]
-function CRecruitScene:showHero( ... )
+function CRecruitScene:showHero( tag )
+	local function uploadhero( hero )
+
+		local temp = hero:genUploadHero(OPTIONS_TYPE.OPT_ADD)
+		local msg = game.PlayerNetWork:UploadHerosData({temp})
+
+		local function uploadheroCB( ... )
+
+		end 
+	    gnw = require ("GameNetWork").new()
+        gnw:SendData( game.Player:getPlayerID(), game.Player:getServerID(), REQUEST_ID["HERO_UPLOAD"],msg, uploadheroCB)
+       
+	end
+
+	local hid = self:GenHeroCard(tag)
+
+
+	local herocard = require("game_model.HeroData").new(BaseData_heros[hid])
+	-- 英雄不能重复，已添加，则该为碎片
+
+	if(game.Player:HasAddHero(hid)) then
+		print("==== has added" .. hid)
+		game.Player:addSoul(hid, BaseData_heros[hid].fragment)
+		local soul = game.Player:getSoulData(hid)
+
+		game.KZNetWork:UploadSouls({soul}, OPTIONS_TYPE.OPT_UPDATE)
+	else
+		game.Player:addHero(herocard)
+		-- uploadhero(herocard)
+		game.KZNetWork:UploadHero({herocard},OPTIONS_TYPE.OPT_ADD)
+	end
+
+
 	local bg = CCLayerColor:create(ccc4(0, 0, 0, 155), display.width, display.height)
-	local hero = ResourceMgr:getSprite("hongqigong")
+	local hero = ResourceMgr:getSprite(herocard:getAnimId())
 	local heroNode = display.newNode()
 	self:addChild(heroNode)
 	hero:setScale(0.1)
@@ -336,8 +368,55 @@ end
 
 
 
+--[[
+	5星：1-26
+	4星：27-80
+	3星：81-143
+	2星：144-179
+]]
+function CRecruitScene:GenHeroCard( tag )
+
+	local heroID = 170
+	-- 金榜 5,4
+	if(tag == 1) then
+		local jinbang_5star = 85
+		if(math.random(1,100) < jinbang_5star) then
+			heroID = math.random(1,26)
+		else
+			heroID = math.random(27,80)
+		end
+	
+	-- 银榜 5,4,3
+	elseif(tag == 2) then
+		local yinbang_5star = 1
+		local yinbang_4star = 30
+		local rn = math.random(1,100)
+		if(rn == yinbang_5star) then
+			heroID = math.random(1,26)
+		elseif(rn < yinbang_4star) then
+			heroID = math.random(27,80)
+		else	
+			heroID = math.random(81,143)
+		end	
+	-- 铜榜 4,3,2
+	elseif(tag == 3) then
+		local tongbang_4star = 10
+		local tongbang_3star = 30
+		local rn = math.random(1,100)
+		if(rn < tongbang_4star) then
+			heroID = math.random(27,80)
+		elseif(rn < tongbang_3star) then
+			heroID = math.random(81,143)
+		else	
+			heroID = math.random(144,179)
+		end
+	end
+
+	return heroID
+end
 
 function CRecruitScene:onExit()
+	self.scheduler.unscheduleGlobal(self.schedulerNextScene)
 	CCTextureCache:sharedTextureCache():removeUnusedTextures()
 end
 

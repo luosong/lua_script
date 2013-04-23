@@ -11,9 +11,15 @@ local CFormation = class("CFormation")
 function CFormation:ctor(data)
     self.m_id          = data[1] or 1
     self.m_level       = data[2] or 1
-    self.m_herosID     = data[3] or {0, 0, 0, 0, 0, 0, 0, 0, 0}
 
-
+    if (type(data[3]) == "table" and #data[3] == 9) then
+        self.m_herosID = {}
+        for k, v in ipairs(data[3]) do
+            self.m_herosID[k] = v
+        end
+    else
+       self.m_herosID = {0, 0, 0, 0, 0, 0, 0, 0, 0}
+    end
 
     self.m_str_name    = BaseData_formations[self.m_id].str_name
     self.m_unlockLevel = BaseData_formations[self.m_id].unlockLevel

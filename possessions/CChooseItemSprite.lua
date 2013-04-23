@@ -17,7 +17,7 @@ end)
 function CChooseItemSprite:init(data, itemType)
 
     local function initEquip()
-        local icon = ResourceMgr:getIconSprite(data:getIcon())
+        local icon = require("ui_object.CEquipIconSprite").new(data)
         icon:setScale(0.6)
         icon:setPosition(-self:getContentSize().width * (12 / 32), 0)
         self:addChild(icon)
@@ -80,7 +80,7 @@ function CChooseItemSprite:init(data, itemType)
     end
 
     local function initKungFu()
-        local icon = ResourceMgr:getIconSprite(data:getIcon())
+        local icon = require("ui_object.CSkillIconSprite").new(data)
         icon:setPosition(-self:getContentSize().width * (12 / 32), 0)
         self:addChild(icon)
         local desc = ui.newTTFLabel({

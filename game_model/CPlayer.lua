@@ -14,6 +14,21 @@ function CPlayer:getSouls()
     return self.m_heroSouls
 end
 
+function CPlayer:getSoulNum( id )
+    if(self.m_heroSouls[id] ~= nil) then
+        return self.m_heroSouls[id].num
+    end
+
+    return 0
+end
+
+function CPlayer:getSoulData( id )
+    if(self.m_heroSouls[id] ~= nil) then
+        return {id=id,num=self.m_heroSouls[id].num}
+    end
+    return {}
+end
+
 function CPlayer:setLevelStar(level, subLevel, star)
     self.m_unlock_levels[level][subLevel] = star
 
@@ -70,7 +85,7 @@ function CPlayer:ctor()
 
     self.m_heros      = {} --所有成员
     self.m_heroSouls  = {}
-    self.m_majorHeros = {} --主力成员
+    self.m_majorHeros = {0, 0, 0, 0, 0, 0} --主力成员
 
     self.m_level  = 0 -- 等级
     self.m_exp    = 0 -- 玩家经验
@@ -185,19 +200,6 @@ function CPlayer:getQueueType()
 end
 
 
-function CPlayer:addMajorHero(d)
-    self.m_majorHeros[#self.m_majorHeros + 1] = d
-end
-
-function CPlayer:removeMagorHeros(id)
-
-    for k, v in ipairs(self.m_majorHeros) do
-        if (v == id) then
-            table.remove(self.m_majorHeros, k)
-        end
-    end
-end
-
 function CPlayer:getMajorHerosId()
     return self.m_majorHeros
 end
@@ -217,13 +219,50 @@ function CPlayer:getMajorHeros()
     local majorHeros = {}
     for k, v in ipairs(self.m_majorHeros) do
         local hero = self:getHeroById(v)
-        if (hero == nil) then
+        if (v > 0 and hero == nil) then
             CCMessageBox("CPlayer:getMajorHeros", "ERROR")
         end
-        majorHeros[k] = hero
+        if (hero) then
+            majorHeros[#majorHeros + 1] = hero
+        end
     end
 
     return majorHeros
+end
+
+function CPlayer:addMajorHero(d, index)
+    if (d > 0) then
+        local hero = self:getHeroById(d)
+        if hero then
+            if (index > 6) then
+                CCMessageBox("addMajorHero.index > 6", "ERROR")
+            end
+            local majorHero = self:getMajorHeroById(self.m_majorHeros[index])
+            if ( majorHero) then
+                majorHero:setIsMajor(false)
+            end
+            self.m_majorHeros[index] = d
+            hero:setIsMajor(true)
+        else
+            CCMessageBox("addMajorHero>id error", "ERROR")
+        end
+    end
+end
+
+function CPlayer:removeMagorHeros(id)
+
+    for k, v in ipairs(self.m_majorHeros) do
+        if (v == id) then
+            local hero = self:getHeroById(d)
+            if hero then
+                table.remove(self.m_majorHeros, k)
+                hero:setIsMajor(false)
+            else
+                CCMessageBox("removeMagorHeros>id error", "ERROR")
+            end
+            break
+        end
+    end
 end
 
 function CPlayer:addFormation(form)
@@ -273,6 +312,19 @@ end
 
 function CPlayer:getHeros()
     return self.m_heros
+end
+
+-- 是否已经添加过该英雄，如果有，则添加碎片
+function CPlayer:HasAddHero( heroid )
+
+    local hero = self:getHeroById(heroid)
+
+    if(hero ~= nil) then
+        return true
+    end
+
+    
+    return false
 end
 
 

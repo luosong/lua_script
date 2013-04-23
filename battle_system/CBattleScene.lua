@@ -3,37 +3,15 @@ require "GameConst"
 require "Animation"
 require "data.heros_gs"
 require "data.levels_gs"
+require "battle_system.HeroPosition"
 
 local action = require("AnimAction")
-local ourArmyPosition = {}
-local enemyArmyPosition = {}
+local ourArmyPosition = getOutPositon()
+local enemyArmyPosition = getArmyPosition()
 local enemys = {0, 0, 0, 0, 0, 0, 0, 0, 0}
 local ourArmy = {}
 
-local function initPos()
-	local battleArea = CCSizeMake(display.width / 2, display.height * (3 / 4))
-	local cellWidth = battleArea.width / 3
-	local cellHeight = battleArea.height / 3
-
-	local baseX = display.width * (1.0 / 4) + battleArea.width / 2 - cellWidth / 2
-	local baseY = display.height / 2 + battleArea.height / 2 - cellHeight / 2
-	local function initOursPos()
-		for i = 1, 9 do
-			ourArmyPosition[i] = CCPointMake(baseX - cellWidth * (math.floor( (i - 1) / 3)), baseY - cellHeight * ((i - 1) % 3))
-		end
-	end
-
-	local function initEnemyPos()
-		baseX = display.width * (3.0 / 4) - battleArea.width / 2 + cellWidth / 2
-		baseY = display.height / 2 + battleArea.height / 2 - cellHeight / 2
-		for i = 1, 9 do
-			enemyArmyPosition[i] = CCPointMake(baseX + cellWidth * (math.floor( (i - 1) / 3)), baseY - cellHeight * ((i - 1) % 3))
-		end
-	end
-
-	initOursPos()
-	initEnemyPos()
-end
+local atkResult = require("battle_system.CAttackStruct").new()
 
 local CBattleScene = class("CBattleScene", function()
 	return display.newScene("CBattleScene")
@@ -44,7 +22,6 @@ function CBattleScene:init()
 	local maxRound = 3
     local cardOffset = 0
 	self.layer = display.newBackgroundSprite("ui/bg03.png")
- --    self.layer = CCLayerColor:create(ccc4(255, 255, 255, 255), display.width, display.height)
 	self:addChild(self.layer)
 	self.layer:setPosition(self.layer:getContentSize().width/2, display.height/2)
 
@@ -84,8 +61,16 @@ function CBattleScene:init()
                 local fighter = require("battle_system.CHeroSprite").new(v, "card", true)
                 fighter:setPosition(ourArmyPosition[k])
                 self.ourMembersNode:addChild(fighter)
-                fighter:setTag(index)
+                fighter:setTag(k)
                 self.ourArmySprite[index] = fighter
+                local n = ui.newTTFLabel({
+                    text = index,
+                    size = 20,
+                    color = ccc3(0, 255, 0),
+                    align = ui.TEXT_ALIGN_CENTER
+                })
+                fighter:addChild(n)
+
                 index = index + 1
             end
 		end
@@ -108,7 +93,7 @@ function CBattleScene:init()
 				self.enemyMembersNode:addChild(self.enemyArmySprite[count])
 
 				local n = ui.newTTFLabel({
-					text = BaseData_heros[v].str_name,
+					text = (k + 100),
 					size = 20,
 					color = ccc3(0, 255, 0),
 					align = ui.TEXT_ALIGN_CENTER
@@ -117,7 +102,9 @@ function CBattleScene:init()
 				count = count + 1
 			end
         end
-        cardOffset = self.enemyArmySprite[1]:getContentSize().width
+        if (self.enemyArmySprite[1]) then
+            cardOffset = self.enemyArmySprite[1]:getContentSize().width
+        end
 		self.atkTotalCount = (ourArmyCount + #self.enemyArmySprite) * maxRound
 	end
 
@@ -154,8 +141,6 @@ function CBattleScene:init()
 	local function hitHarm(atker_1, atker_2)
 
         local delayTime = 0
-        printf(atker_1:getTag())
-
         local layer = nil
         if (atker_1:getTag() > 100) then
             layer = require("skills_system.CSkillsMgr").new(atker_1:getHeroData(),
@@ -173,10 +158,19 @@ function CBattleScene:init()
         layer = nil
 
 		local ap = GameFormula.GetAttactResult(atker_1:getHeroData():getLevel(), atker_1:getHeroData():getAp(), 1, atker_2:getHeroData():getDp())
-		if atker_2:hurt(ap) == true then
+
+        atkResult.addItem({
+            atk_A = atker_1:getHeroData():getId(),
+            atk_B = atker_2:getHeroData():getId(),
+            delayTime = delayTime,
+            cutHP = ap
+        })
+        printf(atker_1:getHeroData():getName() .. "(攻" .. atker_1:getHeroData():getAp() ..")   ->   " ..
+                atker_2:getHeroData():getName() .. "(防" .. atker_2:getHeroData():getDp() .. ")" .. "   **伤害 " .. ap)
+        if atker_2:hurt(ap) == true then
 			printf("******************死了")	
 		end
-
+        atker_2:resetHp()
         if delayTime == 0 then
             local label = ui.newTTFLabel({
                 text = string.format("%d", -ap),
@@ -225,7 +219,8 @@ function CBattleScene:init()
             display.replaceScene(require("adventure.CAdventureScene").new(self.map[1]))
 			
 		end
-		
+
+        dump(atkResult:getResult())
 		dlg = require("ui_common.CPromptBox").new({
 			title       = "提示",
 			info        = "是否进行下一关？",
@@ -311,7 +306,7 @@ function CBattleScene:init()
 --        end
 --    end)
 
-	initPos()
+	--initPos()
 	loadArmy()
 	generateAtkOrder()
     onAttackScheduler()

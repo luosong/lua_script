@@ -47,9 +47,11 @@ function CHeroSprite:getHeroData()
 	return self.heroData
 end
 
---function CHeroSprite:getTexture()
---   return self.sprite:getTexture()
---end
+function CHeroSprite:resetHp()
+    if self.bloodSprite then
+       self.bloodSprite:setPercentage((self.heroData:getHp("real") / self.heroData:getHp("base")) * 100)
+    end
+end
 
 function CHeroSprite:setFlipX(b)
    self.sprite:setFlipX(b)
@@ -61,33 +63,10 @@ end
 
 function CHeroSprite:init(data, displayType, bFlipX)
 
+      if displayType == "card" then
 
-    if displayType == "head" then
-
-        if(data:getProperty() == 0) then
-            self.sprite = ResourceMgr:getUISprite("icon_bg_white")
-        elseif(data:getProperty() == 1) then
-            self.sprite = ResourceMgr:getUISprite("icon_bg_white")
-        elseif(data:getProperty() == 2) then
-            self.sprite = ResourceMgr:getUISprite("icon_bg_green")
-        elseif(data:getProperty() == 3) then
-            self.sprite = ResourceMgr:getUISprite("icon_bg_blue")
-        elseif(data:getProperty() == 4) then
-            self.sprite = ResourceMgr:getUISprite("icon_bg_yellow")
-        elseif(data:getProperty() == 5) then
-            self.sprite = ResourceMgr:getUISprite("icon_bg_purple")
-        end
-
-        local herosIcon = ResourceMgr:getIconSprite(data:getIconID())
-        self.sprite:addChild(herosIcon)
-        herosIcon:setPosition(self.sprite:getContentSize().width / 2, self.sprite:getContentSize().height / 2)
-    elseif displayType == "card" then
-
-        self.sprite = display.newSprite("ui/cards/card_bg" .. math.random(1, 2) .. ".png")
-
+        self.sprite = ResourceMgr:getUISprite("card_bg" .. math.random(1, 2))
         local herosBody = ResourceMgr:getSprite(data:getAnimId())
-
-
         if (self.sprite:getTextureRect().size.width < herosBody:getTextureRect().size.width * 0.55) then
             herosBody:setTextureRect(CCRectMake(herosBody:getTextureRect().origin.x +  41,
                 herosBody:getTextureRect().origin.y,
@@ -95,12 +74,14 @@ function CHeroSprite:init(data, displayType, bFlipX)
 
         end
 
-        if (herosBody:getTextureRect().size.height * 0.55 > self.sprite:getTextureRect().size.height - 25) then
-            herosBody:setTextureRect(CCRectMake(herosBody:getTextureRect().origin.x,
-                herosBody:getTextureRect().origin.y + 27,
-                herosBody:getTextureRect().size.width,
-                herosBody:getTextureRect().size.height - 27))
-        end
+--        printf("****************" .. herosBody:getTextureRect().size.height * 0.55 .. "   " .. self.sprite:getTextureRect().size.height - 25)
+--        if (herosBody:getTextureRect().size.height * 0.55 > self.sprite:getTextureRect().size.height - 25) then
+--            herosBody:setTextureRect(CCRectMake(herosBody:getTextureRect().origin.x,
+--                herosBody:getTextureRect().origin.y + 27,
+--                herosBody:getTextureRect().size.width,
+--                herosBody:getTextureRect().size.height - 27))
+--            printf("****************^^^^^^^^^^^^^^")
+--        end
 
         herosBody:setPosition(self.sprite:getContentSize().width / 2, self.sprite:getContentSize().height * (90 / 155))
         herosBody:setScale(0.55)
@@ -110,21 +91,21 @@ function CHeroSprite:init(data, displayType, bFlipX)
             herosBody:setFlipX(true)
         end
 
-        local cardSprite = display.newSprite("ui/cards/card_white.png")
+        local cardSprite = ResourceMgr:getUISprite("card_white")
         if(data:getProperty() == 1) then
-            cardSprite = display.newSprite("ui/cards/card_white.png")
+            cardSprite = ResourceMgr:getUISprite("card_white")
         elseif(data:getProperty() == 2) then
             --self.sprite = ResourceMgr:getUISprite("card_green")
-            cardSprite = display.newSprite("ui/cards/card_blue.png")
+            cardSprite = ResourceMgr:getUISprite("card_blue")
         elseif(data:getProperty() == 3) then
             --self.sprite = ResourceMgr:getUISprite("card_blue")
-            cardSprite = display.newSprite("ui/cards/card_yellow.png")
+            cardSprite = ResourceMgr:getUISprite("card_yellow")
         elseif(data:getProperty() == 4) then
             --self.sprite = ResourceMgr:getUISprite("card_yellow")
-            cardSprite = display.newSprite("ui/cards/card_green.png")
+            cardSprite = ResourceMgr:getUISprite("card_green")
         elseif(data:getProperty() == 5) then
             --self.sprite = ResourceMgr:getUISprite("card_purple")
-            cardSprite = display.newSprite("ui/cards/card_purple.png")
+            cardSprite = ResourceMgr:getUISprite("card_purple")
         end
 
         local lvLabel = ui.newTTFLabel({
@@ -133,7 +114,7 @@ function CHeroSprite:init(data, displayType, bFlipX)
             valign = ui.TEXT_VALIGN_TOP,
             x = cardSprite:getContentSize().width * (2 / 15),
             y = cardSprite:getContentSize().height * (14.2 / 15),
-            size = 12,
+            size = FONT_SIZE.HeroSpriteFont.NAME_LABEL_SIZE,
             font = "STHeitiJ-Medium"
         })
         cardSprite:addChild(lvLabel)
@@ -144,19 +125,34 @@ function CHeroSprite:init(data, displayType, bFlipX)
             align = ui.TEXT_ALIGN_CENTER,
             x = cardSprite:getContentSize().width / 2,
             y = cardSprite:getContentSize().height * (10 / 155),
-            size = 12,
+            size = FONT_SIZE.HeroSpriteFont.LV_LABEL_SIZE,
             font = "STHeitiJ-Medium"
         })
         cardSprite:addChild(nameLabel)
 
         cardSprite:setAnchorPoint(CCPointMake(0, 1))
         cardSprite:setPosition(0, self.sprite:getContentSize().height)
-
         self.sprite:addChild(cardSprite)
 
---        local shadowSprite = ResourceMgr:getUISprite("shadow")
---        shadowSprite:setPosition(self.sprite:getContentSize().width / 2, self.sprite:getContentSize().height * (1 / 10))
---        self.sprite:addChild(shadowSprite)
+        self.bloodSprite = CCProgressTimer:create(display.newSprite("ui/cards/blood03.png"))
+        self.bloodSprite:setMidpoint(CCPointMake(1, 0.5))
+        self.bloodSprite:setPosition(cardSprite:getContentSize().width /2, cardSprite:getContentSize().height * (25 / 155))
+        self.bloodSprite:setType(1)
+        self.bloodSprite:setPercentage(100)
+
+        cardSprite:addChild(self.bloodSprite)
+        local posX, posY = self.sprite:getPosition()
+        local rd = math.random(2, 5)
+        local rdTime = math.random(0.5, 1.5)
+        self.sprite:runAction(CCRepeatForever:create(
+            transition.sequence({
+                --CCSpawn:createWithTwoActions( CCMoveBy:create(0.5, CCPointMake(0, rd)), CCRotateBy:create(0.5, rd)),
+                --CCSpawn:createWithTwoActions( CCMoveBy:create(0.5, CCPointMake(0, -rd)), CCRotateBy:create(0.5, -rd))
+                CCMoveBy:create(rdTime, CCPointMake(0, rd)),
+                CCMoveBy:create(rdTime, CCPointMake(0, -rd))
+            })) )
+        --self.bloodSprite:runAction(action)
+
 
 
     else

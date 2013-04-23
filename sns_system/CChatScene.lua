@@ -11,7 +11,7 @@ local CChatScene = class("CChatScene", function()
 end)
 
 function CChatScene:init()
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 

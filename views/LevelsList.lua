@@ -6,7 +6,7 @@ local LevelsList = class("LevelsList", PageControl)
 
 LevelsList.INDICATOR_MARGIN = 46
 
-function LevelsList:ctor(rect,inData, visiableArray)
+function LevelsList:ctor(rect,inData, visiableArray, itemType)
     self.super.ctor(self, rect, PageControl.DIRECTION_HORIZONTAL)
 
     -- add cells
@@ -23,7 +23,7 @@ function LevelsList:ctor(rect,inData, visiableArray)
             endLevelIndex = Levels.ArrayCount()
         end
         local cell = LevelsListCell.new(CCSize(rect.size.width, rect.size.height-30), levelIndex, 
-            endLevelIndex, rows, cols, inData, rect, visiableArray)
+            endLevelIndex, rows, cols, inData, rect, visiableArray, itemType)
         cell:addEventListener("onTapLevelIcon", function(event) return self:onTapLevelIcon(event) end)
         self:addCell(cell)
         levelIndex = endLevelIndex + 1

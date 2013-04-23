@@ -36,7 +36,9 @@ function CQueueSettingScene:init()
 		color = ccc3(0, 0, 0),
 		listener = function()
             --game.Player:setMagorHeros(showLayer:getMagorHeros())
-            self.UploadFormation()
+            
+            -- self.UploadMajorHeros()
+            game.KZNetWork:UploadFormation()
             display.replaceScene(require("CGameMenuScene").new())
         end
 	})
@@ -82,18 +84,8 @@ function CQueueSettingScene:ctor(mainMapId, subMapId)
 end
 
 
---[[
-	上传阵型数据到服务器
-]]
-function CQueueSettingScene:UploadFormation( ... )
-	local gameNetWork = require("GameNetWork").new()
 
 
-	local function uploadCB( ... )
-		-- body
-	end
-	gameNetWork:SendData( game.Player:getPlayerID(),game.Player:getServerID(), 
-		REQUEST_ID["FORM_UPLOAD"],game.PlayerNetWork:UploadFormData(), uploadCB)
-end
+
 
 return CQueueSettingScene

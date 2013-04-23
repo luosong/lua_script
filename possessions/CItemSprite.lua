@@ -11,23 +11,24 @@ local ItemType_KungFu = 2
 local ItemType_Equip  = 3
 
 local CItemSprite = class("CItemSprite", function(data, itemType)
-    local bgFile = "equip_item.png"
+    local sprite = CCScale9Sprite:create("bartile.png")
+
     if ItemType_Bag == itemType then
-       bgFile = "bag_item.png"
-    elseif ItemType_KungFu == itemType then
-       bgFile = "equip_item.png"
+        sprite:setPreferredSize(CCSizeMake(display.width * (33 / 40), display.height * (9.5 / 40)))
     elseif ItemType_Equip == itemType then
-       bgFile = "equip_item.png"
+        sprite:setPreferredSize(CCSizeMake(display.width * (30 / 40), display.height * (8 / 40)))
+    elseif ItemType_KungFu == itemType then
+        sprite:setPreferredSize(CCSizeMake(display.width * (32.5 / 40), display.height * (8 / 40)))
     end
 
-    return require("ui_common.CScrollCell").new(display.newSprite(bgFile))
+    return require("ui_common.CScrollCell").new(sprite)
 
 end)
 
 function CItemSprite:init(data, itemType)
 
     local function initEquip()
-        local icon = ResourceMgr:getIconSprite(data:getIcon())
+        local icon = require("ui_object.CEquipIconSprite").new(data)
         icon:setPosition(-self:getContentSize().width * (12 / 32), 0)
         self:addChild(icon)
         local desc = ui.newTTFLabel({
@@ -35,7 +36,7 @@ function CItemSprite:init(data, itemType)
             x = -self:getContentSize().width * (8 / 32),
             y = self:getContentSize().height * (1 / 4.5),
             color = ccc3(0, 0, 255),
-            size = 28
+            size = FONT_SIZE.ItemSpriteFont.DESC_LABEL_SIZE
         })
         self:addChild(desc)
 
@@ -44,7 +45,7 @@ function CItemSprite:init(data, itemType)
             x = -self:getContentSize().width * (8 / 32),
             y = 0,
             color = ccc3(0, 0, 255),
-            size = 18
+            size = FONT_SIZE.ItemSpriteFont.EFFECT_VALUE_LABEL_SIZE
         })
         self:addChild(effectValue)
 
@@ -53,7 +54,7 @@ function CItemSprite:init(data, itemType)
             x = self:getContentSize().width * (1 / 32),
             y = self:getContentSize().height * (1 / 4.5),
             color = ccc3(0, 0, 255),
-            size = 22
+            size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
         })
         self:addChild(property)
 
@@ -62,7 +63,7 @@ function CItemSprite:init(data, itemType)
             x = self:getContentSize().width * (1 / 32),
             y = 0,
             color = ccc3(0, 0, 255),
-            size = 22
+            size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
         })
         self:addChild(levelLabel)
 
@@ -71,13 +72,13 @@ function CItemSprite:init(data, itemType)
             x = self:getContentSize().width * (1 / 32),
             y = -self:getContentSize().height * (1 / 4.5),
             color = ccc3(0, 0, 255),
-            size = 18
+            size = FONT_SIZE.ItemSpriteFont.EFFECT_VALUE_LABEL_SIZE
         })
         self:addChild(statusLabel)
     end
 
     local function initKungFu()
-        local icon = ResourceMgr:getIconSprite(data:getIcon())
+        local icon = require("ui_object.CSkillIconSprite").new(data)
         icon:setPosition(-self:getContentSize().width * (12 / 32), 0)
         self:addChild(icon)
         local desc = ui.newTTFLabel({
@@ -85,7 +86,7 @@ function CItemSprite:init(data, itemType)
             x = -self:getContentSize().width * (8 / 32),
             y = self:getContentSize().height * (1 / 4.5),
             color = ccc3(0, 0, 255),
-            size = 28
+            size = FONT_SIZE.ItemSpriteFont.DESC_LABEL_SIZE
         })
         self:addChild(desc)
 
@@ -104,7 +105,7 @@ function CItemSprite:init(data, itemType)
             x = -self:getContentSize().width * (8 / 32),
             y = 0,
             color = ccc3(0, 0, 255),
-            size = 18
+            size = FONT_SIZE.ItemSpriteFont.EFFECT_VALUE_LABEL_SIZE
         })
         self:addChild(effectValue)
 
@@ -113,7 +114,7 @@ function CItemSprite:init(data, itemType)
             x = self:getContentSize().width * (1 / 32),
             y = self:getContentSize().height * (1 / 4.5),
             color = ccc3(0, 0, 255),
-            size = 22
+            size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
         })
         self:addChild(property)
 
@@ -122,7 +123,7 @@ function CItemSprite:init(data, itemType)
             x = self:getContentSize().width * (1 / 32),
             y = 0,
             color = ccc3(0, 0, 255),
-            size = 22
+            size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
         })
         self:addChild(levelLabel)
 
@@ -131,7 +132,7 @@ function CItemSprite:init(data, itemType)
             x = self:getContentSize().width * (1 / 32),
             y = -self:getContentSize().height * (1 / 4.5),
             color = ccc3(0, 0, 255),
-            size = 18
+            size = FONT_SIZE.ItemSpriteFont.EFFECT_VALUE_LABEL_SIZE
         })
         self:addChild(statusLabel)
     end

@@ -6,12 +6,13 @@
 -- To change this template use File | Settings | File Templates.
 --
 
+require("data.task")
 local CChargeDartScene = class("CChargeDartScene", function()
     return display.newScene("CChargeDartScene");
 end)
 
 function CChargeDartScene:init()
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 
@@ -19,9 +20,31 @@ function CChargeDartScene:init()
     taskDescBg:setPosition(display.width * (10 / 40), game.cy)
     self.node:addChild(taskDescBg)
 
+    local taskDescLabel = ui.newTTFLabel({
+        text = "的法律阿斯顿发阿达啊sdf阿道夫啊发送到发送到阿斯顿发生大发阿斯顿发送到发送到的发生的发生发生的发生法大赛的发生发到",
+        x = taskDescBg:getContentSize().width * 0.2,
+        y = taskDescBg:getContentSize().height / 2,
+        dimensions = CCSizeMake(taskDescBg:getContentSize().width * 0.6,
+            taskDescBg:getContentSize().height * 0.8)
+    })
+    taskDescBg:addChild(taskDescLabel)
+
     local nodes = {}
-    for i = 1, 8 do
-        nodes[i] = require("ui_common.CScrollCell").new(display.newSprite("task_item.png"))
+
+    local function onTaskInfo(data)
+        taskDescLabel:setString(data.desc)
+    end
+
+    local function c_func(f, ...)
+        local args = {... }
+        return function()
+            f(unpack(args))
+        end
+    end
+
+    for k, v in ipairs(tasks) do
+        nodes[k] = require("task_system.CTaskItemSprite").new(v)
+        nodes[k]:setTouchListener(c_func(onTaskInfo, v))
     end
 
     local scrollLayer = require("ui_common.CScrollLayer").new({

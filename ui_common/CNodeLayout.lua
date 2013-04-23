@@ -23,6 +23,10 @@ function CNodeLayout:ctor(params)
 
     local cellCX = cellWidth / 2
     local cellCY = height - cellHeight / 2
+    if (height == 0) then
+        cellCY = cellHeight / 2
+    end
+
 
     -------------------------------------------------
 

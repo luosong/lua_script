@@ -50,22 +50,22 @@ game.Player:addSkill(require("game_model.CSkill").new(BaseData_skills[17]))
 
 
 game.Player:addHero(require("game_model.HeroData").new(
-    {
-        id = 1,                  --id
-        exp = 100,               --经验
-        level = 10,              --级别
-        skills = {0, 1, 2, 0},    --技能 表
-        extra_ap = 1,            --额外加成
-        extra_dp = 2,
-        extra_hp = 3,
-        extra_mp = 4,
-        base_skill = {value = 12, level = 22}
-    }
+     {
+         id = 1,                  --id
+         exp = 100,               --经验
+         level = 10,              --级别
+         skills = {0, 0, 0, 0},    --技能 表
+         extra_ap = 1,            --额外加成
+         extra_dp = 2,
+         extra_hp = 3,
+         extra_mp = 4,
+         base_skill = {value = 12, level = 22}
+     }
 ))
-game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[2]))
-game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[50]))
-game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[20]))
-game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[5]))
+-- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[2]))
+-- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[50]))
+-- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[20]))
+-- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[5]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[6]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[7]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[8]))
@@ -74,10 +74,10 @@ game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[5]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[2]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[3]))
 
-local h = game.Player:getHeros()
-for i = 1, 4 do
-     game.Player:addMajorHero(h[i]:getId())
-end
+--local h = game.Player:getHeros()
+--for i = 1, 4 do
+--     game.Player:addMajorHero(h[i]:getId())
+--end
 
 game.Player:addEquipment(require("game_model.CEquip").new(BaseData_equipments[1]))
 game.Player:addEquipment(require("game_model.CEquip").new(BaseData_equipments[11]))

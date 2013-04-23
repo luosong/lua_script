@@ -10,11 +10,11 @@ local CBagScene = class("CBagScene", function()
 end)
 
 function CBagScene:init()
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 
-    self.bg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame("board19"))
+    self.bg = CCScale9Sprite:createWithSpriteFrameName("board29.png")
     self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (36 / 40)))
 
     self.bg:setPosition(game.cx, display.height * (18 / 40))
@@ -25,23 +25,28 @@ function CBagScene:init()
         local bag = game.Player:getPackage()
         if #bag >= 1 then
 
-            local function onTouchItem()
-
+            local function onUseButton(bagData)
+                 printf("------------------------ 包裹-------")
             end
 
-            local function onEnhanceButton(tag, sender)
-                 printf("------------------------ 包裹-------")
+            local function c_func(f, ...)
+                local args = {... }
+                return function()
+                    f(unpack(args))
+                end
             end
 
             for k, v in ipairs(bag) do
 
                 nodes[k] = require("possessions.CItemSprite").new(v, 1)
-                nodes[k]:setTouchListener(onTouchItem)
 
-                local button = CSingleImageMenuItem:create("button_use.png")
-                button.data = v
-                button:setPosition(nodes[k]:getContentSize().width * (10 / 32), -nodes[k]:getContentSize().height * (1.2 / 4.5))
-                button:registerScriptTapHandler(onEnhanceButton)
+                local button = ui.newImageMenuItem({
+                    image = "#button10.png",
+                    imageSelected = "#button11.png",
+                    listener = c_func(onUseButton, v),
+                    x =  nodes[k]:getContentSize().width * (12 / 32),
+                    y = 0
+                })
 
                 local menu = ui.newMenu({button})
                 menu:setPosition(0, 0)
@@ -53,7 +58,7 @@ function CBagScene:init()
                 y = display.height * (0.6 / 40),
                 width = display.width * (35.8 / 40),
                 height = display.height * (35 / 40),
-                pageSize = 2,
+                pageSize = 3,
                 rowSize = 1,
                 nodes = nodes,
                 vertical = true

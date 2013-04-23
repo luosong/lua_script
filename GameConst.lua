@@ -5,6 +5,71 @@ GAME_DEBUG = {
 	DEBUG_RANDNAME = true
 }
 
+if device.platform == "android" then
+    FONT_SIZE = {
+        GameMenuSceneFont = {
+            TITLE_LABEL_SIZE = 13,
+            LV_LABEL_SIZE    = 9,
+            EXP_LABEL_SIZE   = 8,
+            VIP_LABEL_SIZE   = 9
+        },
+        MembersSceneFont = {
+            ICON_LABEL_SIZE = 11
+        },
+        ItemSpriteFont = {
+            DESC_LABEL_SIZE = 13,
+            EFFECT_VALUE_LABEL_SIZE   = 9,
+            PROPERTY_LABEL_SIZE = 11,
+
+        } ,
+        HeroSpriteFont = {
+            NAME_LABEL_SIZE = 6,
+            LV_LABEL_SIZE = 6,
+        }
+    }
+else
+    FONT_SIZE = {
+        GameMenuSceneFont = {
+            TITLE_LABEL_SIZE = 26,
+            LV_LABEL_SIZE    = 18,
+            EXP_LABEL_SIZE   = 16,
+            VIP_LABEL_SIZE   = 18
+        },
+        MembersSceneFont = {
+            ICON_LABEL_SIZE = 22
+        },
+        ItemSpriteFont = {
+            DESC_LABEL_SIZE = 26,
+            EFFECT_VALUE_LABEL_SIZE   = 18,
+            PROPERTY_LABEL_SIZE = 22,
+
+        },
+        HeroSpriteFont = {
+            NAME_LABEL_SIZE = 12,
+            LV_LABEL_SIZE = 12,
+        }
+    }
+end
+
+CEmailType = {
+    FRIEND    = 1,
+    FIGHTING  = 2,
+    SYSTEM    = 3
+}
+
+CFirendType = {
+    FRIEND = 1,
+    ENEMY = 2,
+    FINDFRIEND = 3
+}
+
+SettingType = {
+    MUSIC = 1,
+    SOUND = 2,
+    WEIBO = 3,
+    HELP  = 4
+}
+
 --[[ =================================]]
 ItemShowType = {}
 ItemShowType.MEMBER_HEROS_INFO = 1  --成员信息
@@ -76,7 +141,8 @@ DataDefs = {
 GAME_FONT = {
 	font_youyuan = "fonts/font_names.fnt",
 	font_maobi = "fonts/font_names_maobi.fnt",
-	font_zhaoxian = "fonts/font_zhaoxian.fnt"
+	font_zhaoxian = "fonts/font_zhaoxian.fnt",
+    font_vip = "fonts/font_vip.fnt",
 }
 
 GAME_SFX = {
@@ -100,4 +166,9 @@ OPTIONS_TYPE = {
 	OPT_ADD = 1,
 	OPT_UPDATE = 2,
 	OPT_DEL = 3,
+}
+
+
+GAME_RES = {
+    HUAWEN_BG = "board29",
 }

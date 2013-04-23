@@ -19,8 +19,11 @@ function CGameLoginScene:ctor()
 	-- colorbg:setPosition(0, 0)
 	-- self:addChild(colorbg)
 
-    local skill = require("skills_system.CXiXingDaFa").new()
-    self:addChild(skill)
+--    local skill = require("skills_system.CXiXingDaFa").new()
+--    self:addChild(skill)
+
+    local skill2 = require("skills_system.CHaMaGong").new()
+    self:addChild(skill2)
     
 	local function ReqServerListCB( data )
 		local codeJson  = {}

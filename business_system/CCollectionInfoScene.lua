@@ -43,7 +43,7 @@ function CCollectionInfoScene:ctor( itemID, itemtype )
 	bg:setPosition(display.width/2 + 100, display.height/2)
 	rootNode:addChild(bg)
 
-	local baseLayer = require("CBaseLayer").new()
+	local baseLayer = require("CBorderLayer").new()
     rootNode:addChild(baseLayer)
 
 
@@ -77,6 +77,7 @@ function CCollectionInfoScene:ctor( itemID, itemtype )
         it = ItemShowType.BASE_EQUIP_INFO
     elseif(itemtype == CollectionType.SKILL) then
         indata = BaseData_skills[itemID]
+        it = ItemShowType.BASE_EQUIP_INFO
     end
 
     local cc = (require("possessions.CDetailItemSprite").new(true, indata, it))

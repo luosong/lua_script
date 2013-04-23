@@ -59,33 +59,40 @@ function CChooseLayer:init(data, index, itemType)
                 return function() f(unpack(args)) end
             end
 
+            local i = 1
             for k, v in ipairs(items) do
-                nodes[k] = require("possessions.CChooseItemSprite").new(v, itemType)
-                nodes[k]:setTouchListener(c_func(onTouchItem, v))
 
-                local button = CSingleImageMenuItem:create("button_use.png")
-                button:setPosition(nodes[k]:getContentSize().width * (10 / 32), 0)
-                button:registerScriptTapHandler(c_func(onEquipButton, v, button))
-                button:setScale(0.6)
+                if itemType == ItemType_KungFu or
+                        ((itemType == ItemType_Equip) and (index == v:getType())) then
+                    nodes[i] = require("possessions.CChooseItemSprite").new(v, itemType)
+                    nodes[i]:setTouchListener(c_func(onTouchItem, v))
 
-                local _, bIsEquip = v:getStatus()
-                if (bIsEquip) then
-                    button:setEnabled(false)
-                    button:selected()
+                    local button = CSingleImageMenuItem:create("button_use.png")
+                    button:setPosition(nodes[i]:getContentSize().width * (10 / 32), 0)
+                    button:registerScriptTapHandler(c_func(onEquipButton, v, button))
+                    button:setScale(0.6)
+
+                    local _, bIsEquip = v:getStatus()
+                    if (bIsEquip) then
+                        button:setEnabled(false)
+                        button:selected()
+                    end
+
+                    local text = ui.newTTFLabel({
+                        text = "装备",
+                        x    = button:getContentSize().width / 2,
+                        y    = button:getContentSize().height / 2,
+                        align = ui.TEXT_ALIGN_CENTER,
+                        size = 36
+                    })
+                    button:addChild(text)
+
+                    local menu = ui.newMenu({button})
+                    menu:setPosition(0, 0)
+                    nodes[i]:addChild(menu)
+                    i = i + 1
                 end
 
-                local text = ui.newTTFLabel({
-                    text = "装备",
-                    x    = button:getContentSize().width / 2,
-                    y    = button:getContentSize().height / 2,
-                    align = ui.TEXT_ALIGN_CENTER,
-                    size = 36
-                })
-                button:addChild(text)
-
-                local menu = ui.newMenu({button})
-                menu:setPosition(0, 0)
-                nodes[k]:addChild(menu)
             end
 
             local scrollLayer = require("ui_common.CScrollLayer").new({

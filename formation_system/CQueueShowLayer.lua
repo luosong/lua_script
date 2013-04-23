@@ -12,10 +12,6 @@ function CQueueShowLayer:init()
 
 	local cellLayerSize = require("formation_system.CellsLayerSize")
 
---	self.background =  CCLayerColor:create(ccc4(101, 226, 224, 144), cellLayerSize.layerWidth, cellLayerSize.layerHeight)
---	self.background:setPosition(cellLayerSize:getMidPos())
---	self:addChild(self.background)
-
 	self.iconNode = display.newNode()
     self.iconNode:setPosition(ccp(0, 0))
     self:addChild(self.iconNode, 2)
@@ -36,7 +32,6 @@ function CQueueShowLayer:init()
     self.touchSprite = nil
 
     local function onDeselect(touchSprite)
-
         iconSprites[touchSprite:getTag()]:setSelect(false)
         iconSprites[touchSprite:getTag()]:setColor(ccc3(255, 255, 255))
         touchSprite:removeFromParentAndCleanup(true)
@@ -131,7 +126,7 @@ function CQueueShowLayer:init()
 	    	if (#heros > 0) then
 	    		for k, v in ipairs(heros) do
 					iconRects[k] = CCRectMake(bottomBaseX + bottomCellWidth * (k - 1) - bottomCellWidth / 2, 0, bottomCellWidth, bottomCellHeight)
-					iconSprites[k] = require("formation_system.CTouchNode").new(require("battle_system.CHeroSprite").new(v, "head"))
+                    iconSprites[k] = require("formation_system.CTouchNode").new(require("ui_object.CHeroIconSprite").new(v))
 					iconSprites[k]:setTag(k)
 					iconSprites[k]:setTouchTarget(touchTarget)
 				end

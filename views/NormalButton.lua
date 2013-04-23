@@ -4,7 +4,7 @@ local NormalButton = {}
 NormalButton.TYPE_NORMAL = 1
 NormalButton.TYPE_BUBBLE = 2
 NormalButton.TYPE_DARKER = 3
-
+local btnContentsize = nil
 -- create normal button
 function NormalButton.new(params)
     local listener = params.listener
@@ -135,7 +135,12 @@ function NormalButton.new(params)
     end -- listener = function(tag)
 
     button = ui.newImageMenuItem(params)
+    btnContentsize = button:getContentSize()
     return button
+end
+
+function NormalButton.getContentSize( ... )
+    return btnContentsize
 end
 
 return NormalButton

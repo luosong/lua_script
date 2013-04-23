@@ -20,26 +20,14 @@ function CGameCollectionScene:ctor()
  --    bg:setScaleX(display.width/bg:getContentSize().width)
 	-- bg:setPosition(display.width/2, display.height/2)
 	-- self:addChild(bg)
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     self:addChild(baseLayer)
     
-    self.bg = CCScale9Sprite:createWithSpriteFrameName("board19.png")
+    self.bg = CCScale9Sprite:createWithSpriteFrameName("board29.png")
     self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (36 / 40)))
     self.bg:setPosition(game.cx, display.height * (18 / 40))
     self:addChild(self.bg)
 
-    -- back button
-	local backButton = ui.newImageMenuItem({image = "back_btn.png",
-											imageSelected = "back_btn_dark.png",											
-											listener = function ()
-												display.replaceScene(require("CGameMenuScene").new())
-											end										
-											})
-    --backButton:setAnchorPoint(CCPointMake(0, 1))
-	backButton:setPosition(backButton:getContentSize().width/2, display.top-backButton:getContentSize().height/2)
-	local menu = ui.newMenu({})
-    menu:addChild(backButton)
-    self:addChild(menu)
 
     -- initialize the values
     self.index = 1
@@ -59,7 +47,7 @@ function CGameCollectionScene:ctor()
                 print("====================================nil====")
             end
             
-            self.levelsList = require("views.LevelsList").new(rect, self.indata, self.visiableArray)
+            self.levelsList = require("views.LevelsList").new(rect, self.indata, self.visiableArray, self.itemType)
             self.levelsList:addEventListener("onTapLevelIcon", function(event)
                 return self:onTapLevelIcon(event)
             end)

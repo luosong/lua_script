@@ -53,10 +53,12 @@ function CSelectHeroLayer:ctor(...)
 		local hero = herodata.new(BaseData_heros[heroId])
 
 		uploadhero(hero)
-		game.Player:addHero(hero)
-		game.Player:addMajorHero(hero:getId())
+		-- game.Player:addHero(hero)
+		-- game.Player:addMajorHero(hero:getId())
 
 		display.replaceScene(require("CGameLoginScene").new())
+
+		-- 选择完毕之后，应该直接进入游戏，不应该再走选择服务器界面 fixme
 	end 
 
 	local norButtonFactory = require("views.NormalButton")

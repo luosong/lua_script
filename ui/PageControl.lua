@@ -13,7 +13,7 @@ function PageControl:onTouchEndedWithoutTap(x, y)
         while i <= count do
             local cell = self.cells[i]
             local size = cell:getContentSize()
-            if offsetX < x + size.width / 2 then
+            if offsetX < x + size.width / 4 then
                 index = i
                 break
             end

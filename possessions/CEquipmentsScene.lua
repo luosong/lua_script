@@ -12,18 +12,70 @@ end)
 
 function CEquipmentsScene:init()
 
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 
-    local nodes = {}
-    local function initItem()
+    self.bg = CCScale9Sprite:createWithSpriteFrameName("board29.png")
+    self.bg:setPreferredSize(CCSizeMake(display.width * (33.2 / 40), display.height * (36 / 40)))
 
+    self.bg:setPosition(display.width * (20.4 / 40), display.height * (18 / 40))
+    self.node:addChild(self.bg)
+
+    local allButton = nil
+    local weaponButton = nil
+    local dressButton = nil
+    local otherButton = nil
+    local perButton = nil
+
+
+    local nodes = {}
+    local itemNodes = display.newNode()
+    itemNodes:setPosition(0, 0)
+    self.node:addChild(itemNodes)
+    local function setSelButtonDisable(buttonType)
+        if (perButton) then
+            perButton:setEnabled(true)
+            perButton:unselected()
+        end
+
+        if buttonType == EquipmentType.WEAPON then
+            if weaponButton then
+                weaponButton:setEnabled(false)
+                weaponButton:selected()
+                perButton = weaponButton
+            end
+        elseif buttonType == EquipmentType.DRESS then
+            if (dressButton) then
+                dressButton:setEnabled(false)
+                dressButton:selected()
+                perButton = dressButton
+            end
+        elseif buttonType == EquipmentType.OTHER then
+            if (otherButton) then
+                otherButton:setEnabled(false)
+                otherButton:selected()
+                perButton = otherButton
+            end
+        else
+            if allButton then
+                allButton:setEnabled(false)
+                allButton:selected()
+                perButton = allButton
+            end
+
+        end
+    end
+
+    local function initItem(equitType)
+        nodes = {}
+        itemNodes:removeAllChildrenWithCleanup(true)
+        setSelButtonDisable(equitType)
         local equips = game.Player:getEquipments()
         if #equips >= 1 then
             local dlgNode = display.newNode()
             dlgNode:setPosition(0, 0)
-            self.node:addChild(dlgNode, 2)
+            itemNodes:addChild(dlgNode, 2)
 
             local function displayAction()
 
@@ -78,8 +130,8 @@ function CEquipmentsScene:init()
                 return function() f(unpack(args)) end
             end
 
-            local function onEnhanceButton(tag, sender)
-                dlgNode.Enhancelayer = require("possessions.CEnhanceLayer").new(sender.data, dlgNode.Enhancelayer)
+            local function onEnhanceButton(obj)
+                dlgNode.Enhancelayer = require("possessions.CEnhanceLayer").new(obj, dlgNode.Enhancelayer)
                 dlgNode:addChild(dlgNode.Enhancelayer)
 
                 dlgNode.enhancelEvent = require("framework.client.api.EventProtocol").extend(dlgNode.Enhancelayer)
@@ -87,40 +139,44 @@ function CEquipmentsScene:init()
 
             end
 
+            local i = 1
             for k, v in ipairs(equips) do
 
-                nodes[k] = require("possessions.CItemSprite").new(v, ItemType_Equip)
-                nodes[k]:setTouchListener(c_func(onTouchItem, v))
+                if (equitType == nil or equitType == v:getType()) then
+                    nodes[i] = require("possessions.CItemSprite").new(v, ItemType_Equip)
+                    nodes[i]:setTouchListener(c_func(onTouchItem, v))
+                    local button = ui.newImageMenuItem({
+                        image = "#button12.png",
+                        imageSelected = "#button13.png",
+                        listener = c_func(onEnhanceButton, v),
+                        x =  nodes[i]:getContentSize().width * (10 / 32),
+                        y = 0
+                    })
 
-                local button = CSingleImageMenuItem:create("button.png")
-                button.data = v
-                button:setPosition(nodes[k]:getContentSize().width * (10 / 32), 0)
-                button:registerScriptTapHandler(onEnhanceButton)
-                local label = ui.newTTFLabel({
-                    text = "强化",
-                    align = ui.TEXT_ALIGN_CENTER,
-                    x = button:getContentSize().width / 2,
-                    y = button:getContentSize().height / 2
-                })
-                button:addChild(label)
+                    local label = ResourceMgr:getUISprite("font_dz")
+                    label:setPosition(button:getContentSize().width / 2, button:getContentSize().height / 2)
+                    button:addChild(label)
 
-                local menu = ui.newMenu({button})
-                menu:setPosition(0, 0)
-                nodes[k]:addChild(menu)
+                    local menu = ui.newMenu({button})
+                    menu:setPosition(0, 0)
+                    nodes[i]:addChild(menu)
+                    i = i + 1
+                end
+
             end
 
             local scrollLayer = require("ui_common.CScrollLayer").new({
-                x = display.width * (4 / 40),
-                y = display.height * (0.6 / 40),
-                width = display.width * (35.8 / 40),
-                height = display.height * (35 / 40),
+                x = display.width * (5 / 40),
+                y = display.height * (2 / 40),
+                width = display.width * (30.8 / 40),
+                height = display.height * (32 / 40),
                 pageSize = 4,
                 rowSize = 1,
                 nodes = nodes,
                 vertical = true
             })
             scrollLayer:setPosition(0, 0)
-            self.node:addChild(scrollLayer)
+            itemNodes:addChild(scrollLayer)
         else
             local label = ui.newTTFLabel({
                 text = "赶紧战斗，抢几件装备吧",
@@ -130,12 +186,100 @@ function CEquipmentsScene:init()
                 align = ui.TEXT_ALIGN_CENTER
             })
 
-            self.node:addChild(label)
+            itemNodes:addChild(label)
         end
 
     end
 
+    local function initButton()
+
+        local function onButton(buttonType)
+            initItem(buttonType)
+
+        end
+
+        local function c_func(f, ...)
+            local argc = {... }
+            return function()
+                f(unpack(argc))
+            end
+        end
+
+        allButton = ui.newImageMenuItem({
+            image = "#board31.png",
+            imageSelected = "#board30.png",
+            listener = c_func(onButton),
+        })
+        allButton:setPosition(self.bg:getContentSize().width + allButton:getContentSize().width / 2,
+            self.bg:getContentSize().height - allButton:getContentSize().height * 0.5)
+        local allLabel = ui.newTTFLabel({
+            text = "所\n有",
+            size = 28,
+            align = ui.TEXT_ALIGN_CENTER,
+            x = allButton:getContentSize().width / 2,
+            y = allButton:getContentSize().height / 2
+        })
+        allButton:addChild(allLabel)
+        local maodingSprite = ResourceMgr:getUISprite("maoding")
+        maodingSprite:setPosition(self.bg:getContentSize().width,
+            self.bg:getContentSize().height - allButton:getContentSize().height * 0.5)
+        self.bg:addChild(maodingSprite, 2)
+
+
+        weaponButton = ui.newImageMenuItem({
+            image = "#board31.png",
+            imageSelected = "#board30.png",
+            listener = c_func(onButton, EquipmentType.WEAPON),
+        })
+        weaponButton:setPosition(self.bg:getContentSize().width + weaponButton:getContentSize().width / 2,
+            self.bg:getContentSize().height - weaponButton:getContentSize().height * 1.5)
+        local weaponLabel = ResourceMgr:getUISprite("font_bq")
+        weaponLabel:setPosition(weaponButton:getContentSize().width / 2, weaponButton:getContentSize().height / 2)
+        weaponButton:addChild(weaponLabel)
+        maodingSprite = ResourceMgr:getUISprite("maoding")
+        maodingSprite:setPosition(self.bg:getContentSize().width,
+            self.bg:getContentSize().height - weaponButton:getContentSize().height * 1.5)
+        self.bg:addChild(maodingSprite, 2)
+
+
+        dressButton = ui.newImageMenuItem({
+            image = "#board31.png",
+            imageSelected = "#board30.png",
+            listener = c_func(onButton, EquipmentType.DRESS),
+        })
+        dressButton:setPosition(self.bg:getContentSize().width + dressButton:getContentSize().width / 2,
+            self.bg:getContentSize().height - dressButton:getContentSize().height * 2.5)
+        local dressLabel = ResourceMgr:getUISprite("font_fz")
+        dressLabel:setPosition(dressButton:getContentSize().width / 2, dressButton:getContentSize().height / 2)
+        dressButton:addChild(dressLabel)
+        maodingSprite = ResourceMgr:getUISprite("maoding")
+        maodingSprite:setPosition(self.bg:getContentSize().width,
+            self.bg:getContentSize().height - weaponButton:getContentSize().height * 2.5)
+        self.bg:addChild(maodingSprite, 2)
+
+
+        otherButton = ui.newImageMenuItem({
+            image = "#board31.png",
+            imageSelected = "#board30.png",
+            listener = c_func(onButton, EquipmentType.OTHER),
+        })
+        otherButton:setPosition(self.bg:getContentSize().width + otherButton:getContentSize().width / 2,
+            self.bg:getContentSize().height - otherButton:getContentSize().height * 3.5)
+        local otherLabel = ResourceMgr:getUISprite("font_sp")
+        otherLabel:setPosition(otherButton:getContentSize().width / 2, otherButton:getContentSize().height / 2)
+        otherButton:addChild(otherLabel)
+        maodingSprite = ResourceMgr:getUISprite("maoding")
+        maodingSprite:setPosition(self.bg:getContentSize().width,
+            self.bg:getContentSize().height - weaponButton:getContentSize().height * 3.5)
+        self.bg:addChild(maodingSprite, 2)
+
+        local menu = ui.newMenu({allButton, weaponButton, dressButton, otherButton})
+        self.bg:addChild(menu)
+    end
+
+    initButton()
     initItem()
+
 
 
 end

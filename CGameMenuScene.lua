@@ -16,16 +16,25 @@ function CGameMenuScene:init()
 
     local nameLabel = ui.newTTFLabel({
         text = game.Player:getName(),
-        size = 26,
+        size = FONT_SIZE.GameMenuSceneFont.TITLE_LABEL_SIZE,
         color = ccc3(0,0,0),
         x = headIcon:getContentSize().width * (5 / 13),
         y = headIcon:getContentSize().height * (6 / 7)
     })
     headIcon:addChild(nameLabel)
 
+    local lvLabel = ui.newTTFLabel({
+        text = tostring(game.Player:getLevel()),
+        size = FONT_SIZE.GameMenuSceneFont.LV_LABEL_SIZE,
+        color = ccc3(0, 0, 0),
+        x = headIcon:getContentSize().width * (2.2 / 13),
+        y = headIcon:getContentSize().height * (1.5 / 7)
+    })
+    headIcon:addChild(lvLabel)
+
     local expLabel = ui.newTTFLabel({
         text = "100000/100000",
-        size = 16,
+        size = FONT_SIZE.GameMenuSceneFont.EXP_LABEL_SIZE,
         color = ccc3(0,0,0),
         x = headIcon:getContentSize().width * (5 / 13),
         y = headIcon:getContentSize().height * (3 / 7)
@@ -36,14 +45,24 @@ function CGameMenuScene:init()
     vipSprite:setPosition(CFuncHelper:getRelativeX(14), CFuncHelper:getRelativeY(38.5))
     vipSprite:setAnchorPoint(CCPointMake(0, 0.5))
     self.bg:addChild(vipSprite)
-    local vipLabel = ui.newTTFLabel({
-        text = "10",
-        size = 18,
-        color = ccc3(0,0,0),
-        x = CFuncHelper:getRelativeX(15.6),
-        y = CFuncHelper:getRelativeY(38.5)
-    })
-    self.bg:addChild(vipLabel)
+    local vipLabel = ui.newBMFontLabel({
+                    text  = "10",
+                    font  = GAME_FONT.font_vip,
+                    x = CFuncHelper:getRelativeX(16.2),
+                    y = CFuncHelper:getRelativeY(38.2),
+                    align = ui.TEXT_ALIGEN_CENTER,
+                })
+
+                
+                self.bg:addChild(vipLabel)
+    -- local vipLabel = ui.newTTFLabel({
+    --     text = "10",
+    --     size = FONT_SIZE.GameMenuSceneFont.LV_LABEL_SIZE,
+    --     color = ccc3(0,0,0),
+    --     x = CFuncHelper:getRelativeX(15.6),
+    --     y = CFuncHelper:getRelativeY(38.5)
+    -- })
+    -- self.bg:addChild(vipLabel)
 
     local xingSprite = ResourceMgr:getUISprite("sicon17")
     xingSprite:setPosition(CFuncHelper:getRelativeX(14), CFuncHelper:getRelativeY(36.5))
@@ -51,7 +70,7 @@ function CGameMenuScene:init()
     self.bg:addChild(xingSprite)
     local xingLabel = ui.newTTFLabel({
         text = "100",
-        size = 18,
+        size = FONT_SIZE.GameMenuSceneFont.LV_LABEL_SIZE,
         color = ccc3(0,0,0),
         x = CFuncHelper:getRelativeX(15.6),
         y = CFuncHelper:getRelativeY(36.5)
@@ -62,8 +81,8 @@ function CGameMenuScene:init()
     goldenSprite:setPosition(CFuncHelper:getRelativeX(18), CFuncHelper:getRelativeY(38.5))
     self.bg:addChild(goldenSprite)
     local goldenLabel = ui.newTTFLabel({
-        text = "10000000",
-        size = 18,
+        text = tostring(game.Player:getGold()),
+        size = FONT_SIZE.GameMenuSceneFont.LV_LABEL_SIZE,
         color = ccc3(0,0,0),
         x = CFuncHelper:getRelativeX(19),
         y = CFuncHelper:getRelativeY(38.5)
@@ -74,8 +93,8 @@ function CGameMenuScene:init()
     sliverSprite:setPosition(CFuncHelper:getRelativeX(18), CFuncHelper:getRelativeY(36.5))
     self.bg:addChild(sliverSprite)
     local sliverLabel = ui.newTTFLabel({
-        text = "10000000",
-        size = 18,
+        text = tostring(game.Player:getSilver()),
+        size = FONT_SIZE.GameMenuSceneFont.LV_LABEL_SIZE,
         color = ccc3(0,0,0),
         x = CFuncHelper:getRelativeX(19),
         y = CFuncHelper:getRelativeY(36.5)
@@ -88,6 +107,16 @@ function CGameMenuScene:init()
     broadcastSprite:setPosition(CFuncHelper:getRelativeX(22.5), CFuncHelper:getRelativeY(38))
     broadcastSprite:setAnchorPoint(CCPointMake(0, 0.5))
     self.bg:addChild(broadcastSprite)
+
+    local  scrollLabel = require("ui_common.CScrollLabel").new({
+        x = display.width - broadcastSprite:getContentSize().width,
+        y =  display.height - broadcastSprite:getContentSize().height,
+        width = broadcastSprite:getContentSize().width * (18.6 / 20),
+        height = display.height * (2.3 / 40)
+    })
+    local disMsg = "broadcastSprite broadcastSprite broadcastSprite"
+    self.bg:addChild(scrollLabel, 1000)
+    scrollLabel:scroll(disMsg)
 
     ---------------好友----------------------
     local friendButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("board05"))
@@ -153,7 +182,7 @@ function CGameMenuScene:init()
     local wldhButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("board03"))
     wldhButton:setPosition(display.width * (19 / 40), display.height * (28 / 40))
     wldhButton:registerScriptTapHandler(function()
-        display.replaceScene(require("battle_system.CBattleLoadingScene").new())
+        display.replaceScene(require("competition.CCompetitionScene").new())
     end)
     local wldhLabel = ResourceMgr:getUISprite("font_wldh")
     wldhLabel:setPosition(wldhButton:getContentSize().width / 2, wldhButton:getContentSize().height / 2)
@@ -204,7 +233,7 @@ function CGameMenuScene:init()
     local membersButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("board04"))
     membersButton:setPosition(display.width * (25 / 40), display.height * (16 / 40))
     membersButton:registerScriptTapHandler(function()
-        display.replaceScene(require("possessions.CMembersScene").new())
+        display.replaceScene(require("possessions.CMajorHerosScene").new())
     end)
     local membersLabel = ResourceMgr:getUISprite("font_ry")
     membersLabel:setPosition(membersButton:getContentSize().width / 2, membersButton:getContentSize().height / 2)
@@ -237,52 +266,55 @@ function CGameMenuScene:init()
         display.replaceScene(require("formation_system.CQueueSettingScene").new(1, 1))
     end)
 
+    local renyuanButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("board04"))
+    renyuanButton:setPosition(display.width * (2 / 40), display.height * (8 / 40))
+    renyuanButton:registerScriptTapHandler(function()
+        display.replaceScene(require("possessions.CMembersScene").new(1, 1))
+    end)
+
     --------------------------------------------------------------------------
     local menu = ui.newMenu({friendButton, settingButton, chatButton, mailButton, herosButton, activityButton,
-        wldhButton, zxbButton, jbButton, cjhButton, wgButton, membersButton, equipButton, bagButton, zhenrongButton})
+        wldhButton, zxbButton, jbButton, cjhButton, wgButton, membersButton, equipButton, bagButton, zhenrongButton,
+        renyuanButton})
     self.bg:addChild(menu)
 
+    local iconNodes = nil
     function initHerosIcon()
+        if (iconNodes) then
+            iconNodes:removeAllChildrenWithCleanup(true)
+            iconNodes:removeFromParentAndCleanup(true)
+            iconNodes = nil
+        end
         local heros = game.Player:getMajorHeros()
         local nodes = {}
         local onTouchHeros = function(sender)
             printf("Hello hello: " .. sender:getData():getName())
         end
-        if (#heros > 0) then
-            for k, v in ipairs(heros) do
 
-                nodes[k] = require("ui_common.CScrollCell").new(require("battle_system.CHeroSprite").new(v, "head"))
-                nodes[k]:setTouchListener(onTouchHeros)
-            end
-
-            local scrollLayer = require("ui_common.CScrollLayer").new({
-                x = display.width * (6 / 40),
-                y = display.height * (1 / 40),
-                width = display.width * (32 / 40),
-                height = display.height * (8 / 40),
-                pageSize = 6,
-                rowSize = 6,
-                nodes = nodes,
-                vertical = false
-            })
-            scrollLayer:setPosition(0, 0)
-            self.bg:addChild(scrollLayer)
+        for i = 1, 6 do
+                local iconSprite = CSingleImageMenuItem:create(require("ui_object.CHeroIconSprite").new(heros[i]))
+                iconSprite:registerScriptTapHandler(function()
+                    local chooseMajorHeroLayer = require("possessions.CChooseMajorHeroLayer").new(i)
+                    require("framework.client.api.EventProtocol").extend(chooseMajorHeroLayer)
+                    chooseMajorHeroLayer:addEventListener(GlobalVariable["NotificationTag"]["UPDATA_MAINMENUSCENE_ICON"], initHerosIcon)
+                    chooseMajorHeroLayer:setPosition(0, 0)
+                    self:addChild(chooseMajorHeroLayer)
+                end)
+                nodes[i] = ui.newMenu({ iconSprite })
         end
+
+        local iconNodes = require("ui_common.CNodeLayout").new({
+            nodes = nodes,
+            width = display.width * (32 / 40),
+            height = 0,
+            rowSize = 6
+        })
+        iconNodes:setPosition(display.width * (6 / 40), display.height * (5 / 40))
+        self.bg:addChild(iconNodes)
     end
 
     initHerosIcon()
 
---    -- player name
---    local nameLabel = ui.newTTFLabel({
---        text = game.Player:getName(),
---        size = 26,
---        color = ccc3(0,0,0),
---        x = 170,
---        y = display.height - 30
---        })
---    self:addChild(nameLabel)
-
- --   echoInfo(string.format("==========MEMORY USED: %0.2f KB, UPTIME: %04.2fs", collectgarbage("count"), 1))
 end
 
 function CGameMenuScene:onEnter( ... )
@@ -292,27 +324,22 @@ function CGameMenuScene:ctor()
 	self.bg = display.newBackgroundSprite("ui/bg02.png")
     self.bg:setPosition(self.bg:getContentSize().width / 2, self.bg:getContentSize().height / 2)
 
---    local baseLayer = require("CBaseLayer").new(true)
---    self.bg:addChild(baseLayer)
 	self:addChild(self.bg)
-
---    local gridLine = CGridLineLayer:create()
---    gridLine:setPosition(0, 0)
---    self:addChild(gridLine)
-
     self:init()
 
+ --    local flashAttack = "attack/pugong_01blue.sam"
+ --    local flashFish = "fish_150/fish.sam"
+ --    local move = "idle"
+	-- local anAnimFileFullPath = CCFileUtils:sharedFileUtils():fullPathForFilename(flashAttack)
+	-- printf(anAnimFileFullPath)
+	-- local mAnim = SuperAnimNode:create(anAnimFileFullPath, 0, nil);
 
---	local anAnimFileFullPath = CCFileUtils:sharedFileUtils():fullPathForFilename("fish_150/fish.sam")
---	printf(anAnimFileFullPath)
---	local mAnim = SuperAnimNode:create(anAnimFileFullPath, 0, nil);
---
---	self:addChild(mAnim, 1000);
---	mAnim:setPosition(680, 420);
---	mAnim:PlaySection("idle");
---	mAnim:registerScriptHandlerOnAnimSectionEnd(function()
---		mAnim:PlaySection("active")
---	end)
+	-- self:addChild(mAnim, 1000);
+	-- mAnim:setPosition(display.width/2, 200);
+	-- mAnim:PlaySection("daoguang1");
+	-- mAnim:registerScriptHandlerOnAnimSectionEnd(function()
+	-- 	mAnim:PlaySection("daoguang1")
+	-- end)
 
     -- systemMsgTest(self)
 

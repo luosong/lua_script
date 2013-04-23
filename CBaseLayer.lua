@@ -18,12 +18,20 @@ function CBaseLayer:init(bIsHomePage)
     self.bg = display.newNode()
     self:addChild(self.bg, 0)
 
-    local backButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("button_shouye"))
-    backButton:setAnchorPoint(CCPointMake(0, 1))
-    backButton:setPosition(0, display.height)
-    backButton:registerScriptTapHandler(function()
-        display.replaceScene(require("CGameMenuScene").new())
-    end)
+    local NormalButton = require("views.NormalButton")
+    local backButton = NormalButton.new({
+            image = ResourceMgr:getUISpriteFrameName("button_shouye"),
+            x = 0,
+            y = display.height,
+            buttonType = NormalButton.TYPE_DARKER,
+
+            listener = function()
+                display.replaceScene(require("CGameMenuScene").new())
+            end,
+        })
+
+    backButton:setPosition(backButton:getContentSize().width/2, display.height-backButton:getContentSize().height/2)
+
 
 
     if (bIsHomePage) then

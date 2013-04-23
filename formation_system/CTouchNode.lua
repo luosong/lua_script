@@ -13,9 +13,7 @@ function CTouchNode:init(heroSprite)
 	local contentSize = CCSizeMake(display.width / 10 - 3, display.height / 8 - 8)
 	self:setContentSize(CCSizeMake(contentSize.width, contentSize.height))
     self:setAnchorPoint(CCPointMake(0.5, 0.5))
-	--self:setAnchorPoint(CCPointMake(0, 0))
 	self.sprite = heroSprite
-    --self.sprite:setScale(0.6)
 	self.sprite:setPosition(CCPointMake(contentSize.width / 2, contentSize.height / 2))
 	self:addChild(self.sprite)
 
@@ -26,7 +24,7 @@ function CTouchNode:init(heroSprite)
 		if eventType == "began" then
 			if CCRectMake(0, 0, contentSize.width, contentSize.height):containsPoint(self:convertToNodeSpace(CCPointMake(x, y))) then
 				if (self.touchTarget ~= nil) then
-					self:touchTarget(eventType, x, y, self.sprite:getHeroData())
+					self:touchTarget(eventType, x, y, self.sprite:getData())
 				end
 				return true
 			else
@@ -49,7 +47,7 @@ function CTouchNode:init(heroSprite)
 end
 
 function CTouchNode:getHeroData()
-	return self.sprite:getHeroData()
+	return self.sprite:getData()
 end
 
 function CTouchNode:setTouchTarget(target)

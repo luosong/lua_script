@@ -55,7 +55,21 @@ function CHeroData:addHp(hp)
 end
 
 function CHeroData:getHp(key)
-    return require("FuncHelper"):decryptNum(self.m_hp[key] or self.m_hp.real)
+    local hp = require("FuncHelper"):decryptNum(self.m_hp[key] or self.m_hp.real)
+    for k, v in ipairs(self.m_equipment) do
+        if v > 0 then
+            local equipment = game.Player:getEquipmentById(v)
+            if equipment:getEffectType() == EquipmentEffectType.HP then
+                hp = hp + equipment:getValue()
+                break
+            elseif equipment:getEffectType() == EquipmentEffectType.HP_PER then
+                hp = hp + hp * (equipment:getValue() / 100)
+                break
+            end
+
+        end
+    end
+    return  hp
 end
 
 function CHeroData:setHp(hp)
@@ -74,7 +88,21 @@ function CHeroData:addMp(mp)
 end
 
 function CHeroData:getMp(key)
-	return require("FuncHelper"):decryptNum(self.m_mp[key] or self.m_mp.real)
+    local mp = require("FuncHelper"):decryptNum(self.m_mp[key] or self.m_mp.real)
+    for k, v in ipairs(self.m_equipment) do
+        if v > 0 then
+            local equipment = game.Player:getEquipmentById(v)
+            if equipment:getEffectType() == EquipmentEffectType.MAGIC then
+                mp = mp + equipment:getValue()
+                break
+            elseif equipment:getEffectType() == EquipmentEffectType.MAGIC_PER then
+                mp = mp + mp * (equipment:getValue() / 100)
+                break
+            end
+
+        end
+    end
+    return  mp
 end
 
 function CHeroData:addDp(dp)
@@ -87,7 +115,21 @@ function CHeroData:addDp(dp)
 end
 
 function CHeroData:getDp(key)
-	return require("FuncHelper"):decryptNum(self.m_dp[key] or self.m_dp.real)
+	local dp =  require("FuncHelper"):decryptNum(self.m_dp[key] or self.m_dp.real)
+    for k, v in ipairs(self.m_equipment) do
+        if v > 0 then
+            local equipment = game.Player:getEquipmentById(v)
+            if equipment:getEffectType() == EquipmentEffectType.DEFENSE then
+                dp = dp + equipment:getValue()
+                break
+            elseif equipment:getEffectType() == EquipmentEffectType.DEFENSE_PER then
+                dp = dp + dp * (equipment:getValue() / 100)
+                break
+            end
+
+        end
+    end
+    return  dp
 end
 
 function CHeroData:addAp(ap)
@@ -100,8 +142,22 @@ function CHeroData:addAp(ap)
 end
 
 function CHeroData:getAp(key)
-    local a =  require("FuncHelper"):decryptNum(self.m_ap[key] or self.m_ap.real)
-    return require("FuncHelper"):decryptNum(self.m_ap[key] or self.m_ap.real)
+    local ap =  require("FuncHelper"):decryptNum(self.m_ap[key] or self.m_ap.real)
+
+    for k, v in ipairs(self.m_equipment) do
+        if v > 0 then
+            local equipment = game.Player:getEquipmentById(v)
+            if equipment:getEffectType() == EquipmentEffectType.ATTACK then
+                ap = ap + equipment:getValue()
+                break
+            elseif equipment:getEffectType() == EquipmentEffectType.ATTACK_PER then
+                ap = ap + ap * (equipment:getValue() / 100)
+                break
+            end
+
+        end
+    end
+    return ap
 end
 
 function CHeroData:getId()
@@ -114,7 +170,6 @@ end
 
 function CHeroData:getEquipments()
     local equips = {}
-
     for k, v in ipairs(self.m_equipment) do
         if v > 0 then
             local equipment = game.Player:getEquipmentById(v)
@@ -181,7 +236,7 @@ function CHeroData:init(data)
     self.m_level    = require("FuncHelper"):encryptNum(data.level or 1)
     self.m_equipment= {0, 0, 0, 0}
     self.m_base_skill = data.base_skill or {value = 1, level = 1}
-
+    self.m_bIsMajor     = data.isMajorfalse
     if data.skills then
         for k, v in ipairs(data.skills) do
             self:addKungFu(v, k)
@@ -235,6 +290,18 @@ function CHeroData:init(data)
 
 end
 
+function CHeroData:setIsMajor(b)
+    self.m_bIsMajor = b
+end
+
+function CHeroData:getState()
+     if self.m_bIsMajor then
+        return "已上场", true
+     else
+        return "", false
+     end
+end
+
 function CHeroData:ctor(data)
 	self:init(data)
 end
@@ -258,5 +325,7 @@ function CHeroData:genUploadHero( opt )
     hero.baseSkill = self.m_base_skill or {}
     return hero
 end
+
+
 
 return CHeroData

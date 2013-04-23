@@ -30,6 +30,7 @@ function CCoordinateSprite:ctor(tag, infoButtonListener, challengeListener, star
 
     local starBg = ResourceMgr:getUISprite("level_star_bg")
     starBg:setPosition(0, flagSprite:getContentSize().height / 2 + starBg:getContentSize().height / 2)
+    starBg:setOpacity(100)
     self:addChild(starBg)
 
     for i = 1, 3 do

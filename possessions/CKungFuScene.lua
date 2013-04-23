@@ -11,14 +11,14 @@ local CKungFuScene = class("CKungFuScene", function()
 end)
 
 function CKungFuScene:init()
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 
-    self.bg = CCScale9Sprite:createWithSpriteFrameName("board19.png")
-    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (36 / 40)))
+    self.bg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame(GAME_RES.HUAWEN_BG))
+    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (35 / 40)))
 
-    self.bg:setPosition(game.cx, display.height * (18 / 40))
+    self.bg:setPosition(game.cx, display.height * (17.8 / 40))
     self.node:addChild(self.bg)
     local nodes = {}
 
@@ -31,19 +31,32 @@ function CKungFuScene:init()
 
             end
 
-            local function onEnhanceButton(tag, sender)
-                 printf("--------------CKungFuScene----------" .. sender.data:getName())
+            local function c_func(f, ...)
+                local args = {... }
+
+                return function() f(unpack(args)) end
+            end
+
+            local function onEnhanceButton(obj)
+                 printf("--------------CKungFuScene----------" .. obj:getName())
             end
 
             for k, v in ipairs(skills) do
-
+                printf("---------------" .. v:getName())
                 nodes[k] = require("possessions.CItemSprite").new(v, 2)
                 nodes[k]:setTouchListener(onTouchItem)
 
-                local button = CSingleImageMenuItem:create("button_use.png")
-                button.data = v
-                button:setPosition(nodes[k]:getContentSize().width * (10 / 32), 0)
-                button:registerScriptTapHandler(onEnhanceButton)
+                local button = ui.newImageMenuItem({
+                    image = "#button14.png",
+                    imageSelected = "#button15.png",
+                    listener = c_func(onEnhanceButton, v),
+                    x =  nodes[k]:getContentSize().width * (12 / 32),
+                    y = 0
+                })
+
+                local label =  ResourceMgr:getUISprite("font_sj")
+                label:setPosition(button:getContentSize().width / 2, button:getContentSize().height / 2)
+                button:addChild(label)
 
                 local menu = ui.newMenu({button})
                 menu:setPosition(0, 0)
@@ -51,15 +64,17 @@ function CKungFuScene:init()
             end
 
             local scrollLayer = require("ui_common.CScrollLayer").new({
-                x = display.width * (4 / 40),
-                y = display.height * (0.6 / 40),
-                width = display.width * (35.8 / 40),
-                height = display.height * (35 / 40),
+                x = display.width * (5.6 / 40),
+                y = display.height * (2 / 40),
+                width = display.width * (32.5 / 40),
+                height = display.height * (32 / 40),
                 pageSize = 4,
                 rowSize = 1,
                 nodes = nodes,
                 vertical = true
             })
+
+
             scrollLayer:setPosition(0, 0)
             self.node:addChild(scrollLayer)
         else

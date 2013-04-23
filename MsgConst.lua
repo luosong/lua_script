@@ -56,9 +56,15 @@ REQUEST_ID = {
 
 	    -- heros
 	    HERO_UPLOAD = 'heroupload';
-
+    	HERO_MAJOR_UPLOAD = 'majheroupload';
+    	HERO_SOUL_UPLOAD = 'herosoulupload';
+	    
 	    -- formation
 	    FORM_UPLOAD = 'formupload';
+
+	    --levels
+    	LEVEL_UPLOAD = 'lvupload';
+    	LEVEL_DOWNLOAD = 'lvdownload';
 }
 
 
@@ -89,6 +95,8 @@ KEY_CONST = {
     	HEROS = 'hero';
     	HERO_ID = 'id';
     	HERO_INFO = 'info';
+    	HERO_MAJOR = 'majhero';
+    	HERO_SOUL = 'herosoul';
 
 	    --formation
 	    FORMATIONS = 'form';

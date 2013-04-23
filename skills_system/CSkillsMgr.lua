@@ -14,14 +14,13 @@ function CSkillsMgr:getDelayTime()
 
     local a =  math.random(1,10)
     if a == 2 then
-
         delayTime = 3
-        self:init()
+        self:init(delayTime)
     end
     return delayTime
 end
 
-function CSkillsMgr:init()
+function CSkillsMgr:init(delayTime)
     local atkSprite = ResourceMgr:getSprite(self.attacker:getAnimId())
     if (self.bSelfIsAtk) then
         atkSprite:setPosition(display.width * (1 / 4), display.height / 2)
@@ -60,17 +59,20 @@ function CSkillsMgr:init()
         end
     end
 
+    local skill2 = require("skills_system.CHaMaGong").new()
+    self:addChild(skill2)
 
-    local animation = display.newSprite("xianglong18/4.png")
-    animation:setPosition(0, display.height / 2)
-    self:addChild(animation)
-    animation:runAction(transition.sequence({
-        CCMoveTo:create(3.0, CCPointMake(display.width, display.height / 2)),
-        CCCallFunc:create(function()
-            self:removeAllChildrenWithCleanup(true)
-            self:removeFromParentAndCleanup(true)
-        end)
-    }))
+--
+--    local animation = display.newSprite("xianglong18/4.png")
+--    animation:setPosition(0, display.height / 2)
+--    self:addChild(animation)
+--    animation:runAction(transition.sequence({
+--        CCMoveTo:create(3.0, CCPointMake(display.width, display.height / 2)),
+--        CCCallFunc:create(function()
+--
+--        end)
+--    }))
+
 
     ----------------------------------------------------------------------------------------------
     local cancelButton = CSingleImageMenuItem:create("button_use.png")
@@ -91,6 +93,11 @@ function CSkillsMgr:init()
     local menu = ui.newMenu({cancelButton})
     menu:setPosition(0, 0)
     self:addChild(menu)
+
+    require("framework.client.scheduler").performWithDelayGlobal(function()
+        self:removeAllChildrenWithCleanup(true)
+        self:removeFromParentAndCleanup(true)
+    end, delayTime)
 end
 
 function CSkillsMgr:ctor(attacker, enemys, pos, bSelfIsAtk)

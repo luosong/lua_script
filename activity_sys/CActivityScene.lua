@@ -22,13 +22,16 @@ end)
 
 function CActivityScene:init()
 
-    local baseLayer = require("CBaseLayer").new()
+    local baseLayer = require("CBorderLayer").new()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 
-    self.bg = display.newSprite("treasure.png")
-    self.bg:setPosition(game.cx, self.bg:getContentSize().height / 2)
+    self.bg = CCScale9Sprite:createWithSpriteFrameName("board29.png")
+    self.bg:setPreferredSize(CCSizeMake(display.width * (33.2 / 40), display.height * (36 / 40)))
+
+    self.bg:setPosition(display.width * (20.4 / 40), display.height * (18 / 40))
     self.node:addChild(self.bg)
+
 
 
 end

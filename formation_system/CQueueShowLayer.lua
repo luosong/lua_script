@@ -32,6 +32,8 @@ function CQueueShowLayer:init()
     self.touchSprite = nil
 
     local function onDeselect(touchSprite)
+        printf("########## ---- >  " .. iconSprites[touchSprite:getTag()]:getHeroData():getName())
+        printf("######### tag   " .. touchSprite:getTag())
         iconSprites[touchSprite:getTag()]:setSelect(false)
         iconSprites[touchSprite:getTag()]:setColor(ccc3(255, 255, 255))
         touchSprite:removeFromParentAndCleanup(true)
@@ -44,6 +46,8 @@ function CQueueShowLayer:init()
             for k, v in ipairs(self.cellSprites) do
                 if v:boundingBox():containsPoint(CCPointMake(x, y)) then
                     if (v:getEmpty() == false) then
+
+                        printf("_________________________ >>  " .. v.touchSprite.heroData:getName())
                         self.touchSprite = v.touchSprite
                         self.queueType:setHero(k, 0)
                         v:setEmpty(true)
@@ -165,7 +169,7 @@ function CQueueShowLayer:init()
     end
 
     local function getHeroTag(v)
-        local heros = game.Player:getHeros()
+        local heros = game.Player:getMajorHeros()
         if (#heros > 0) then
             for i, value in ipairs(heros) do
                 if value:getId() == v:getId() then
@@ -173,27 +177,34 @@ function CQueueShowLayer:init()
                 end
             end
         end
+        return 0
     end
 
     local function showHeros(index)
         local formation = game.Player:getFormationById(index)
+
         for k, v in ipairs(formation:getHeros()) do
 
+
             if v ~= 0 then
-                local heroSprite = ResourceMgr:getSprite(v:getAnimId())
-                heroSprite:setScale(0.6)
-                heroSprite:setAnchorPoint(CCPointMake(0.5, 0))
-                local posX, posY = self.cellSprites[k]:getPosition()
-                posY = posY - self.cellSprites[k]:getContentSize().width / 6
-                heroSprite:setPosition(CCPointMake(posX, posY))
-                heroSprite.heroData = v
-                heroSprite:setTag(getHeroTag(v))
+                local heroTag = getHeroTag(v)
+                if heroTag > 0 then
+                    local heroSprite = ResourceMgr:getSprite(v:getAnimId())
+                    heroSprite:setScale(0.6)
+                    heroSprite:setAnchorPoint(CCPointMake(0.5, 0))
+                    local posX, posY = self.cellSprites[k]:getPosition()
+                    posY = posY - self.cellSprites[k]:getContentSize().width / 6
+                    heroSprite:setPosition(CCPointMake(posX, posY))
+                    heroSprite.heroData = v
 
-                self.cellSprites[k].touchSprite = heroSprite
-                self.cellSprites[k]:setEmpty(false)
-                self.iconNode:addChild(heroSprite, 100)
+                    heroSprite:setTag(heroTag)
 
-                resetIcon(v)
+                    self.cellSprites[k].touchSprite = heroSprite
+                    self.cellSprites[k]:setEmpty(false)
+                    self.iconNode:addChild(heroSprite, 100)
+
+                    resetIcon(v)
+                 end
             end
 
         end
@@ -202,10 +213,7 @@ function CQueueShowLayer:init()
 	--变换阵法
 	local function changeQueue(id)
 
-        printf("-------------------------------- id        " .. id)
         self.queueType = game.Player:getFormationById(id)
-
-
         local arr = self.queueType:getForm()
 		reset()
 		for k, v in ipairs(arr) do

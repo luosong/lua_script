@@ -281,6 +281,23 @@ function CHeroData:haveEquipment(eqipId)
     return false
 end
 
+function CHeroData:reset()
+
+    local equipments = self:getEquipments()
+    for k, v in pairs(equipments) do
+        v:setOwner(nil)
+    end
+    self.m_equipment = {0, 0, 0, 0 }
+
+    local skills = self:getKungFus()
+    for k, v in pairs(skills) do
+         if (k > 1 and v ~= nil) then
+            v:setOwner(nil)
+         end
+    end
+    self.m_skills   = {0, 0, 0, 0}
+end
+
 function CHeroData:haveKungFu(kungFuId)
     local kungFus = self:getKungFus()
     for i = 1, 4 do
@@ -289,6 +306,8 @@ function CHeroData:haveKungFu(kungFuId)
          end
     end
     return false
+
+
 end
 
 function CHeroData:init(data)
@@ -362,7 +381,6 @@ function CHeroData:init(data)
 	self.m_growType     = BaseData_heros[self.m_id].str_growType
 	self.m_matchid      = BaseData_heros[self.m_id].matchid
 	self.m_property     = BaseData_heros[self.m_id].property
-
 
 end
 

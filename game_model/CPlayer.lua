@@ -242,7 +242,24 @@ function CPlayer:getMajorHeros()
     return majorHeros
 end
 
+function CPlayer:replaceFormHero(oldHeroId, newHeroId)
+
+    for k, v in ipairs(self.m_formation) do
+       local heros = v:getHeros()
+        for kk, vv in ipairs(heros) do
+            if vv ~= 0 then
+                if vv:getId() == oldHeroId then
+                    vv:reset()
+                    v:setHero(kk, self:getHeroById(newHeroId))
+                    break;
+                end
+            end
+        end
+    end
+end
+
 function CPlayer:addMajorHero(d, index)
+
     if (d > 0) then
         local hero = self:getHeroById(d)
         if hero then
@@ -252,6 +269,9 @@ function CPlayer:addMajorHero(d, index)
             local majorHero = self:getMajorHeroById(self.m_majorHeros[index])
             if ( majorHero) then
                 majorHero:setIsMajor(false)
+            end
+            if (self.m_majorHeros[index] ~= 0) then
+                self:replaceFormHero(self.m_majorHeros[index], d)
             end
             self.m_majorHeros[index] = d
             hero:setIsMajor(true)

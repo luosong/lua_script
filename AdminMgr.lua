@@ -10,6 +10,7 @@ require ("data.heros_gs")
 require("data/names_1_gs")
 require("data/names_2_gs")
 require("data/names_3_gs")
+require("data/formations_gs")
 
 local AdminMgr = class("AdminMgr")
 
@@ -71,26 +72,38 @@ function AdminMgr:genNPC( level )
 	npc[KEY_CONST.HEROS] = heroArray
 	npc[KEY_CONST.HERO_MAJOR] = majorHero
 
+	local formID = 1
+	if(level < 20) then
+		formID = math.random(1,4)
+	elseif(level < 40) then
+		formID = math.random(1,6) 
+	else
+		formID = math.random(1,8)
+	end
 	-- form
-	local function getHerosId( heros)
+	local function getHerosId(formID, heros)
+		local form = BaseData_formations[formID].form
         local ids = {}
-        for i,v in ipairs(heros) do
-            if(heros[i] ~= 0) then
-                ids[i] = heros[i].id
-            else
-                ids[i] = 0
-            end
+        local index = 1
+        for i=1,9 do 
+        	ids[i] = 0
+        	if(form[i] == 1 and heros[index]) then       
+            	ids[i] = heros[index]            	
+            	index = index + 1
+            end        	
         end
+
         return ids
     end
 	local form = {}
 	form[KEY_CONST.FORM_USING_ID] = 1
-	form[KEY_CONST.FORMATIONS] = {getHerosId(heroArray)}
+	form.form = {}
+	form.form[1] = {id=1, lv=1,form=getHerosId(formID,majorHero)}
 
 	npc[KEY_CONST.FORMATIONS] = form
 	
-	print(npc[KEY_CONST.NICKNAME] .. npc[KEY_CONST.HEROS][1].id .. "," .. npc[KEY_CONST.HEROS][2].id .. "," .. npc[KEY_CONST.HEROS][3].id)
-
+	-- print(npc[KEY_CONST.NICKNAME] .. npc[KEY_CONST.HEROS][1].id .. "," .. npc[KEY_CONST.HEROS][2].id .. "," .. npc[KEY_CONST.HEROS][3].id)
+	-- dump(form)
 	return npc
 end
 

@@ -12,6 +12,59 @@ local CAdventureScene = class("CAdventureScene", function()
     return display.newScene("CAdventureScene")
 end)
 
+function CAdventureScene:initLevelsButton(headerBg, headerSprite)
+
+    local nodes = {}
+    local preClickedButton = nil
+    local onMapButton = function(data, index)
+        self.mapID =  data.id
+        self:resetMap()
+
+        if (preClickedButton) then
+            preClickedButton:setEnable(true)
+        end
+        preClickedButton = nodes[index]
+        nodes[index]:setEnable(false)
+    end
+
+    local function c_func(f, ...)
+        local args = {... }
+        return function()
+            f(unpack(args))
+        end
+    end
+
+    for k, v in ipairs(levels) do
+        nodes[k] = require("ui_common.CScrollCell").new(ResourceMgr:getUISprite("board26"))
+        nodes[k]:setTouchListener(c_func(onMapButton, v,  k))
+        if v.id == self.mapID then
+            nodes[k]:setEnable(false)
+            preClickedButton = nodes[k]
+        end
+        local label = ui.newTTFLabel({
+            text = v.name,
+            align = ui.TEXT_ALIGN_CENTER
+
+        })
+        nodes[k]:addChild(label)
+    end
+
+    local scrollLayer = require("ui_common.CScrollLayer").new({
+        x = self.leftBorder:getWidth() + headerSprite:getContentSize().width + 6,
+        y = display.height - headerBg:getContentSize().height - CFuncHelper:getTopBarH(),
+        width = headerBg:getContentSize().width - 13,
+        height = headerBg:getContentSize().height,
+        pageSize = 3,
+        rowSize = 3,
+        nodes = nodes,
+        vertical = false,
+        bFreeScroll = true
+    })
+    scrollLayer:setCurrentNode(self.mapID)
+    scrollLayer:setPosition(0, 0)
+    self.layer:addChild(scrollLayer)
+end
+
 function CAdventureScene:init()
 
     local currentMap =  levels[self.mapID]
@@ -23,74 +76,7 @@ function CAdventureScene:init()
     self.map:setPosition(display.width, CFuncHelper:getTopBarH())
     self.layer:addChild(self.map)
 
-    local headerSprite = ResourceMgr:getUISprite("board01")
-    headerSprite:setAnchorPoint(CCPointMake(0, 0.5))
-    headerSprite:setPosition(self.leftBorder:getWidth(), display.height - headerSprite:getContentSize().height / 2-CFuncHelper:getTopBarH())
-    self.layer:addChild(headerSprite)
 
-    local headerBg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame("board24"))
-    headerBg:setPreferredSize(CCSizeMake(display.width - self.leftBorder:getWidth() - headerSprite:getContentSize().width,
-        CFuncHelper:getRelativeY(4.2)))
-    headerBg:setAnchorPoint(CCPointMake(0, 0.5))
-    headerBg:setPosition(self.leftBorder:getWidth() + headerSprite:getContentSize().width, 
-        display.height - headerBg:getContentSize().height / 2 - CFuncHelper:getTopBarH())
-    self.layer:addChild(headerBg)
-
-    local resetMap = nil
-    function initLevelsButton()
-
-        local nodes = {}
-        local preClickedButton = nil
-        local onMapButton = function(data, index)
-            self.mapID =  data.id
-            resetMap()
-
-            if (preClickedButton) then
-                preClickedButton:setEnable(true)
-            end
-            preClickedButton = nodes[index]
-            nodes[index]:setEnable(false)
-        end
-
-        local function c_func(f, ...)
-            local args = {... }
-            return function()
-                f(unpack(args))
-            end
-        end
-
-        for k, v in ipairs(levels) do
-            nodes[k] = require("ui_common.CScrollCell").new(ResourceMgr:getUISprite("board26"))
-            nodes[k]:setTouchListener(c_func(onMapButton, v,  k))
-            if v.id == self.mapID then
-                nodes[k]:setEnable(false)
-                preClickedButton = nodes[k]
-            end
-            local label = ui.newTTFLabel({
-                text = v.name,
-                align = ui.TEXT_ALIGN_CENTER
-
-            })
-            nodes[k]:addChild(label)
-        end
-
-        local scrollLayer = require("ui_common.CScrollLayer").new({
-            x = self.leftBorder:getWidth() + headerSprite:getContentSize().width + 6,
-            y = display.height - headerBg:getContentSize().height - CFuncHelper:getTopBarH(),
-            width = headerBg:getContentSize().width - 13,
-            height = headerBg:getContentSize().height,
-            pageSize = 3,
-            rowSize = 3,
-            nodes = nodes,
-            vertical = false,
-            bFreeScroll = true
-        })
-        scrollLayer:setCurrentNode(20)
-        scrollLayer:setPosition(0, 0)
-        self.layer:addChild(scrollLayer)
-    end
-
-    initLevelsButton()
 
     --local infoMenu = ui.newMenu({})
     --self.layer:addChild(infoMenu)
@@ -154,7 +140,7 @@ function CAdventureScene:init()
         end
     end
 
-    resetMap = function ()
+    self.resetMap = function ()
         currentMap = levels[self.mapID]
         self.map:setDisplayFrame(CCSpriteFrame:createWithTexture(display.newSprite(currentMap.map):getTexture(),
             self.map:getTextureRect()))
@@ -172,7 +158,7 @@ function CAdventureScene:init()
                     return
                 end
                 self.mapID = self.mapID + 1
-                resetMap()
+                self.resetMap()
             end
         })
         nextMapButton:setPosition(display.width * (35 / 40), display.height * (5 / 40))
@@ -188,7 +174,7 @@ function CAdventureScene:init()
                     return
                 end
                 self.mapID = self.mapID - 1
-                resetMap()
+                self:resetMap()
             end
         })
         preMapButton:setPosition(display.width * (5 / 40), display.height * (5 / 40))
@@ -211,6 +197,7 @@ function CAdventureScene:init()
 
     end)
     self.layer:setTouchEnabled(true)
+
     initCtlButton()
     initSubMap()
 end
@@ -228,13 +215,7 @@ function CAdventureScene:test( ptr)
 
 end
 
-function CAdventureScene:ctor(mapId)
-
-    self.layer = display.newLayer()
-    self.layer:setPosition(0, 0)
-    self:addChild(self.layer)
-    self.mapID = mapId or 1
-
+function CAdventureScene:initUI()
     self.leftBorder = require("CLeftBorder").new()
     self.leftBorder:setPosition(0, 0)
     self.layer:addChild(self.leftBorder)
@@ -244,6 +225,31 @@ function CAdventureScene:ctor(mapId)
     mapBg:setPosition(self.leftBorder:getWidth(), CFuncHelper:getTopBarH())
     self.layer:addChild(mapBg)
 
+
+    local headerSprite = ResourceMgr:getUISprite("board01")
+    headerSprite:setAnchorPoint(CCPointMake(0, 0.5))
+    headerSprite:setPosition(self.leftBorder:getWidth(), display.height - headerSprite:getContentSize().height / 2-CFuncHelper:getTopBarH())
+    self.layer:addChild(headerSprite)
+
+    local headerBg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame("board24"))
+    headerBg:setPreferredSize(CCSizeMake(display.width - self.leftBorder:getWidth() - headerSprite:getContentSize().width,
+        CFuncHelper:getRelativeY(4.2)))
+    headerBg:setAnchorPoint(CCPointMake(0, 0.5))
+    headerBg:setPosition(self.leftBorder:getWidth() + headerSprite:getContentSize().width,
+        display.height - headerBg:getContentSize().height / 2 - CFuncHelper:getTopBarH())
+    self.layer:addChild(headerBg)
+
+    self:initLevelsButton(headerBg, headerSprite)
+end
+
+function CAdventureScene:ctor(mapId)
+
+    self.layer = display.newLayer()
+    self.layer:setPosition(0, 0)
+    self:addChild(self.layer)
+    self.mapID = mapId or 1
+
+    self:initUI()
     --loading界面
     local loading = require("ui_common.CLoadingLayer")
     loading.new(CAdventureScene.test, self)

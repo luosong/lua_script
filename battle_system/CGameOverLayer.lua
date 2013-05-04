@@ -66,7 +66,7 @@ function CGameOverLayer:init(data, battleType)
             imageSelected = "#button_small.png",
             listener = function()
                 --CCDirector:sharedDirector():popScene()
-                if self.battleType == BattleType.Adventure_map then
+                if battleType == BattleType.Adventure_map then
                     display.replaceScene(require("adventure.CAdventureScene").new())
                 else
                     display.replaceScene(require("competition.fight.CChallengeScene").new())

@@ -160,7 +160,7 @@ function CScrollLayer:init(param)
         if bFreeScroll then
 
             localPosition.y = localPosition.y - dis
-            if (localPosition.y < 0) then
+            if (localPosition.y <= 0) or totoaRow <= rowNum then
                 localPosition.y = 0
             elseif localPosition.y > (totoaRow - rowNum) * cellHeight then
                 localPosition.y =  (totoaRow - rowNum) * cellHeight

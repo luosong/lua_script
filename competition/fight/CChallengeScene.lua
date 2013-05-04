@@ -36,6 +36,7 @@ function CChallengeScene:initEnemy( enemylist )
 
     -- 将服务器上玩家，加入到list中
     local herodata = require("game_model.HeroData")
+
     for k,v in pairs(enemylist) do
         local heros = v[KEY_CONST.HEROS]
         local mh = {}
@@ -58,6 +59,7 @@ function CChallengeScene:initEnemy( enemylist )
 
         
         local form = v[KEY_CONST.FORMATIONS]
+
         local formid = form[KEY_CONST.FORM_USING_ID]
         local forms = {}
 
@@ -65,9 +67,11 @@ function CChallengeScene:initEnemy( enemylist )
             forms[form_Key] = require("game_model.CFormation").new({form_Value["id"], form_Value["lv"], form_Value["form"]})
         end
 
+
+
         addEnemy(require("game_model.COtherPlayer").new({
             name    = v[KEY_CONST.NICKNAME],
-            ranking = 1000,
+            ranking = v[KEY_CONST.ARENA_SCORE],
             level   = v[KEY_CONST.BASE_INFO_LEVELl],
             majorHeros = mh,
             currentFormId = formid,
@@ -104,8 +108,7 @@ function CChallengeScene:initEnemy( enemylist )
     self.node:addChild(scrollLayer)
 
     self:registerScriptHandler(function(action)
-        if action == "exit" then
-            self:removeAllChildrenWithCleanup(true)
+        if action == "exit" then            self:removeAllChildrenWithCleanup(true)
             self:removeAllChildrenWithCleanup(true)
         end
     end)

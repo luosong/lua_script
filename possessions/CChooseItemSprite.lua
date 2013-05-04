@@ -61,7 +61,7 @@ function CChooseItemSprite:init(data, itemType)
         self:addChild(property)
 
         local levelLabel = ui.newTTFLabel({
-            text = "级别:  " .. tostring(11),
+            text = "级别:  " .. tostring(data:getLevel()),
             x = self:getContentSize().width * (1 / 32),
             y = 0,
             color = ccc3(0, 0, 255),
@@ -121,7 +121,7 @@ function CChooseItemSprite:init(data, itemType)
         self:addChild(property)
 
         local levelLabel = ui.newTTFLabel({
-            text = "级别:  " .. tostring(11),
+            text = "级别:  " .. tostring(data:getLevel()),
             x = self:getContentSize().width * (1 / 32),
             y = 0,
             color = ccc3(0, 0, 255),

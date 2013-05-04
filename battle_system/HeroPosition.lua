@@ -9,7 +9,7 @@ local ourArmyPosition = {}
 local enemyArmyPosition = {}
 
 local function initPos()
-    local battleArea = CCSizeMake(display.width / 2, display.height * (3 / 4))
+    local battleArea = CCSizeMake(display.width / 2.4, display.height * (3 / 4))
     local cellWidth = battleArea.width / 3
     local cellHeight = battleArea.height / 3
 

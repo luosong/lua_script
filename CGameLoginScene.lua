@@ -165,10 +165,12 @@ function CGameLoginScene:ctor()
 
 	local smallSun1 = CCParticleSystemQuad:create("particle/flowerParticle.plist")
 	smallSun1:setPosition(display.width/3,display.height)
+	smallSun1:setBlendAdditive(false)
 	self:addChild(smallSun1)
 
 	local smallSun2 = CCParticleSystemQuad:create("particle/leavesParticle.plist")
 	smallSun2:setPosition(display.width*2/3,display.height)
+	smallSun2:setBlendAdditive(false)
 	self:addChild(smallSun2,1)
 
 	-- local plistName = "particle/snow.plist"--"particle/SpinningPeas.plist"

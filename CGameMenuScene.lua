@@ -124,7 +124,8 @@ function CGameMenuScene:init()
 
     local smallSun2 = CCParticleSystemQuad:create("particle/leavesParticle.plist")
     smallSun2:setPosition(display.width/2,display.height)
-    RootNode:addChild(smallSun2,1)
+    smallSun2:setBlendAdditive(false)
+    RootNode:addChild(smallSun2)
     ---------------好友----------------------
     local friendButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("board05"))
     friendButton:setPosition(display.width * (3 / 40), display.height * (16 / 40))

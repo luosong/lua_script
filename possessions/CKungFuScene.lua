@@ -16,9 +16,9 @@ function CKungFuScene:init()
     self.node:addChild(baseLayer)
 
     self.bg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame(GAME_RES.HUAWEN_BG))
-    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (35 / 40)))
+    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), baseLayer:getLeftHeight()-10))
 
-    self.bg:setPosition(game.cx, display.height * (17.8 / 40))
+    self.bg:setPosition(game.cx, CFuncHelper:getTopBarH() + baseLayer:getLeftHeight()/2)
     self.node:addChild(self.bg)
     local nodes = {}
 
@@ -38,7 +38,9 @@ function CKungFuScene:init()
             end
 
             local function onEnhanceButton(obj)
-                 printf("--------------CKungFuScene----------" .. obj:getName())
+                local upgradeSkillLayer = require("possessions.CUpgradeSkillLayer").new(obj)
+                upgradeSkillLayer:setPosition(0, 0)
+                self.node:addChild(upgradeSkillLayer, 1)
             end
 
             for k, v in ipairs(skills) do
@@ -47,11 +49,11 @@ function CKungFuScene:init()
                 nodes[k]:setTouchListener(onTouchItem)
 
                 local button = ui.newImageMenuItem({
-                    image = "#button14.png",
-                    imageSelected = "#button15.png",
+                    image = "#button12.png",
+                    imageSelected = "#button13.png",
                     listener = c_func(onEnhanceButton, v),
                     x =  nodes[k]:getContentSize().width * (12 / 32),
-                    y = 0
+                    y = - nodes[k]:getContentSize().height / 5
                 })
 
                 local label =  ResourceMgr:getUISprite("font_sj")
@@ -65,9 +67,9 @@ function CKungFuScene:init()
 
             local scrollLayer = require("ui_common.CScrollLayer").new({
                 x = display.width * (5.6 / 40),
-                y = display.height * (2 / 40),
+                y = CFuncHelper:getTopBarH() + 15,
                 width = display.width * (32.5 / 40),
-                height = display.height * (32 / 40),
+                height = baseLayer:getLeftHeight()-30,
                 pageSize = 4,
                 rowSize = 1,
                 nodes = nodes,

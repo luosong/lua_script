@@ -6,28 +6,8 @@
 -- To change this template use File | Settings | File Templates.
 --
 --选择对手
-local enemyPlayer = {}
-local function addEnemy(enemy)
-   enemyPlayer[#enemyPlayer + 1] = enemy
-end
 
 
-
-for i = 1, 10 do
-    addEnemy(require("game_model.COtherPlayer").new({
-        name    = "张三" .. i,
-        ranking = 1000,
-        level   = 10,
-        majorHeros = {
-            require("game_model.HeroData").new(BaseData_heros[2]),
-            require("game_model.HeroData").new(BaseData_heros[50]),
-            require("game_model.HeroData").new(BaseData_heros[20]),
-            require("game_model.HeroData").new(BaseData_heros[5]),
-            require("game_model.HeroData").new(BaseData_heros[6]),
-            require("game_model.HeroData").new(BaseData_heros[7])
-        }
-    }))
-end
 
 local CChallengeScene = class("CChallengeScene", function()
     return display.newScene("CChallengeScene")
@@ -43,6 +23,60 @@ function CChallengeScene:init()
     bg:setPosition(game.cx, display.height * (18 / 40))
     self.node:addChild(bg)
 
+    
+
+end
+
+function CChallengeScene:initEnemy( enemylist )
+    local enemyPlayer = {}
+
+    local function addEnemy(enemy)
+       enemyPlayer[#enemyPlayer + 1] = enemy
+    end
+
+    -- 将服务器上玩家，加入到list中
+    local herodata = require("game_model.HeroData")
+    for k,v in pairs(enemylist) do
+        local heros = v[KEY_CONST.HEROS]
+        local mh = {}
+        local index = 1
+
+        for k,v in pairs(heros) do
+            mh[index] = herodata.new({
+                        id = tonumber(v.id),                 --id
+                        exp = tonumber(v.exp) or 0,          --经验
+                        level = tonumber(v.lv),              --级别
+                        skills = v.skill,                    --技能 表
+                        extra_ap = tonumber(v.extra.ap),     --额外加成
+                        extra_dp = tonumber(v.extra.dp),
+                        extra_hp = tonumber(v.extra.hp),
+                        extra_mp = tonumber(v.extra.mp),
+                        base_skill = v.baseSkill --{value = 12, level = 22}
+                })
+            index = index + 1
+        end
+
+        
+        local form = v[KEY_CONST.FORMATIONS]
+        local formid = form[KEY_CONST.FORM_USING_ID]
+        local forms = {}
+
+        for form_Key, form_Value in ipairs(form["form"]) do
+            forms[form_Key] = require("game_model.CFormation").new({form_Value["id"], form_Value["lv"], form_Value["form"]})
+        end
+
+        addEnemy(require("game_model.COtherPlayer").new({
+            name    = v[KEY_CONST.NICKNAME],
+            ranking = 1000,
+            level   = v[KEY_CONST.BASE_INFO_LEVELl],
+            majorHeros = mh,
+            currentFormId = formid,
+            formations   = forms
+                    }))
+
+    end
+
+
     local nodes = {}
     local function onFightButton()
 
@@ -51,6 +85,9 @@ function CChallengeScene:init()
     for k, v in ipairs(enemyPlayer) do
         nodes[k] = require("ui_common.CScrollCell").new(require("competition.fight.CChallengeItemSprite").new(v))
         nodes[k]:setTouchListener(onFightButton)
+
+        local form = v:getCurrentFormation()
+        --dump(form)
     end
 
     local scrollLayer = require("ui_common.CScrollLayer").new({
@@ -68,13 +105,26 @@ function CChallengeScene:init()
 
     self:registerScriptHandler(function(action)
         if action == "exit" then
-            bg:removeAllChildrenWithCleanup(true)
+            self:removeAllChildrenWithCleanup(true)
             self:removeAllChildrenWithCleanup(true)
         end
     end)
-
 end
 
+
+function CChallengeScene:test( ptr)
+
+    local gameNetWork = require("GameNetWork").new()
+
+
+    local function uploadCB( data )
+
+        ptr:initEnemy( data[KEY_CONST.MSG_BODY][REQUEST_ID.ARENA_LIST] )
+    end
+    gameNetWork:SendData( game.Player:getPlayerID(),game.Player:getServerID(), 
+        REQUEST_ID.ARENA_LIST, {}, uploadCB)
+
+end
 
 function CChallengeScene:ctor()
     self.node = display.newNode()
@@ -82,6 +132,10 @@ function CChallengeScene:ctor()
     self:addChild(self.node)
 
     self:init()
+
+        --loading界面
+    local loading = require("ui_common.CLoadingLayer")
+    loading.new(CChallengeScene.test, self)
 end
 
 return CChallengeScene

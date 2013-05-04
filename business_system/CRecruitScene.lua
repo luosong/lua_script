@@ -30,8 +30,8 @@ function CRecruitScene:ctor()
 	self:addChild(self.RootNode, 0)
 
     local bg = display.newSprite("ui/bg01.png")
-    bg:setAnchorPoint(CCPointMake(0, 0))
-    bg:setPosition(0, 0)
+    -- bg:setAnchorPoint(CCPointMake(0, 0))
+    bg:setPosition(display.width/2, display.height/2)
     self.RootNode:addChild(bg)
 
     local baseLayer = require("CBorderLayer").new()
@@ -49,7 +49,7 @@ function CRecruitScene:ctor()
 
     local leftBarWidth = 88
     local widthSize = display.width - leftBarWidth
-    local heightSize = display.height - 72
+    local heightSize = display.height - 72 
 
     self.freeTimeText = {}
     self.priceLable = {}
@@ -190,7 +190,7 @@ local NormalButton = require("views.NormalButton")
 		recruitButton[i] = NormalButton.new({
 	        image = "#button_zhaoxian_red.png",
 	        x = leftBarWidth + widthSize/6 + widthSize/3 * (i-1),
-	        y = heightSize/9,
+	        y = heightSize/9 + CFuncHelper:getTopBarH(),
 	       
 	        prepare = function()
 	            -- self.menu:setEnabled(false)
@@ -377,13 +377,39 @@ end
 function CRecruitScene:GenHeroCard( tag )
 
 	local heroID = 170
+	
+	local star_5_start = 1
+	local star_5_end = 35
+	local star_4_start = 36
+	local star_4_end = 92
+	local star_3_start = 93
+	local star_3_end = 150
+	local star_2_start = 151
+	local star_2_end = 185
+
+	local function get5star( ... )
+		return math.random(star_5_start, star_5_end)
+	end 
+
+	local function get4star( ... )
+		return math.random(star_4_start, star_4_end)
+	end
+
+	local function get3star( ... )
+		return math.random(star_3_start, star_3_end)
+	end
+
+	local function get2star( ... )
+		return math.random(star_2_start, star_2_end)
+	end
+
 	-- 金榜 5,4
 	if(tag == 1) then
 		local jinbang_5star = 85
 		if(math.random(1,100) < jinbang_5star) then
-			heroID = math.random(1,26)
+			heroID = get5star()
 		else
-			heroID = math.random(27,80)
+			heroID = get4star()
 		end
 	
 	-- 银榜 5,4,3
@@ -392,11 +418,11 @@ function CRecruitScene:GenHeroCard( tag )
 		local yinbang_4star = 30
 		local rn = math.random(1,100)
 		if(rn == yinbang_5star) then
-			heroID = math.random(1,26)
+			heroID = get5star
 		elseif(rn < yinbang_4star) then
-			heroID = math.random(27,80)
+			heroID = get4star()
 		else	
-			heroID = math.random(81,143)
+			heroID = get3star()
 		end	
 	-- 铜榜 4,3,2
 	elseif(tag == 3) then
@@ -404,11 +430,11 @@ function CRecruitScene:GenHeroCard( tag )
 		local tongbang_3star = 30
 		local rn = math.random(1,100)
 		if(rn < tongbang_4star) then
-			heroID = math.random(27,80)
+			heroID = get4star()
 		elseif(rn < tongbang_3star) then
-			heroID = math.random(81,143)
+			heroID = get3star()
 		else	
-			heroID = math.random(144,179)
+			heroID = get2star()
 		end
 	end
 

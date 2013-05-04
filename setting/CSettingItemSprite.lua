@@ -8,11 +8,23 @@
 
 local CSettingItemSprite = class("CSettingItemSprite", function()
     local sprite = CCScale9Sprite:create("bartile.png")
-    sprite:setPreferredSize(CCSizeMake(display.width * (32 / 40), display.height * (7 / 40)))
+    sprite:setPreferredSize(CCSizeMake(display.width * (32 / 40), sprite:getContentSize().height ))
     return require("ui_common.CScrollCell").new(sprite)
 end)
 
-function CSettingItemSprite:ctor(settingType)
+function CSettingItemSprite:EnableSound( enable )
+
+    CCUserDefault:sharedUserDefault():setBoolForKey(GAME_SETTING.ENABLE_MUSIC, enable)
+    CCUserDefault:sharedUserDefault():flush()
+    if(enable == true) then
+        game.GameAudio:playMusic(GAME_MUSIC.LOGO)
+    else
+        game.GameAudio:stopMusic(true)
+    end
+
+end
+
+function CSettingItemSprite:ctor(settingType, isEnable)
     local str = ""
     if (settingType == SettingType.MUSIC) then
         str = "音乐"
@@ -47,8 +59,10 @@ function CSettingItemSprite:ctor(settingType)
 
         if selSprite:isVisible() then
             selSprite:setVisible(false)
+            self:EnableSound(false)
         else
             selSprite:setVisible(true)
+            self:EnableSound(true)
         end
     end)
     boxButton:setPosition(self:getContentSize().width * (1.5 / 5), 0)
@@ -58,7 +72,7 @@ function CSettingItemSprite:ctor(settingType)
     selSprite = ResourceMgr:getUISprite("sicon20")
     selSprite:setPosition(boxButton:getContentSize().width, boxButton:getContentSize().height / 2)
     boxButton:addChild(selSprite)
-    selSprite:setVisible(false)
+    selSprite:setVisible(isEnable)
 
     --------------------------
     self.setEnable = function(self, b)

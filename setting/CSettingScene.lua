@@ -17,26 +17,26 @@ function CSettingScene:init()
     self.node:addChild(baseLayer)
 
     self.bg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame(GAME_RES.HUAWEN_BG))
-    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (35 / 40)))
-    self.bg:setPosition(game.cx, display.height * (17.8 / 40))
+    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), baseLayer:getLeftHeight()) )
+    self.bg:setPosition(game.cx, CFuncHelper:getTopBarH() + baseLayer:getLeftHeight()/2)
     self.node:addChild(self.bg)
 
 
 
     local nodes = {}
-    nodes[1] = require("setting.CSettingItemSprite").new(SettingType.MUSIC)
-    nodes[2] = require("setting.CSettingItemSprite").new(SettingType.SOUND)
-    nodes[3] = require("setting.CSettingItemSprite").new(SettingType.WEIBO)
-    nodes[4] = require("setting.CSettingItemSprite").new(SettingType.HELP)
+    nodes[1] = require("setting.CSettingItemSprite").new(SettingType.MUSIC, self.soundOn)
+    nodes[2] = require("setting.CSettingItemSprite").new(SettingType.SOUND, self.sfxOn)
+    nodes[3] = require("setting.CSettingItemSprite").new(SettingType.WEIBO, false)
+    nodes[4] = require("setting.CSettingItemSprite").new(SettingType.HELP, false)
 
 
     local nodesLayout = require("ui_common.CNodeLayout").new({
         nodes = nodes,
         width =  CFuncHelper:getRelativeX(34),
-        height = CFuncHelper:getRelativeY(31.5),
+        height = baseLayer:getLeftHeight()-20,
         rowSize = 1
     })
-    nodesLayout:setPosition(CFuncHelper:getRelativeX(4.8), CFuncHelper:getRelativeY(2))
+    nodesLayout:setPosition(CFuncHelper:getRelativeX(4.8), CFuncHelper:getTopBarH()+5)
     self.node:addChild(nodesLayout)
 
 end
@@ -46,13 +46,20 @@ function CSettingScene:ctor()
     self.node:setPosition(0, 0)
     self:addChild(self.node)
 
-    self:init()
 
-    local soundOn = CCUserDefault:sharedUserDefault():getBoolForKey(GAME_SETTING.ENABLE_MUSIC)
+
+    self.soundOn = CCUserDefault:sharedUserDefault():getBoolForKey(GAME_SETTING.ENABLE_MUSIC)
     if(soundOn == false) then
         CCUserDefault:sharedUserDefault():setBoolForKey(GAME_SETTING.ENABLE_MUSIC, true)
     end
+
+    self.sfxOn = CCUserDefault:sharedUserDefault():getBoolForKey(GAME_SETTING.ENABLE_SFX)
+    if(sfxOn == false) then
+        CCUserDefault:sharedUserDefault():setBoolForKey(GAME_SETTING.ENABLE_SFX, true)
+    end
     CCUserDefault:sharedUserDefault():flush()
+
+    self:init()
 end
 
 return CSettingScene

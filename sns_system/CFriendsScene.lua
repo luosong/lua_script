@@ -10,6 +10,13 @@ local CFriendsScene = class("CFriendsScene", function()
     return display.newScene("CFriendsScene")
 end)
 
+game.Player:addFriend("a")
+game.Player:addFriend("b")
+game.Player:addFriend("c")
+game.Player:addFriend("d")
+game.Player:addFriend("e")
+
+
 function CFriendsScene:init()
 
     local bg = display.newSprite("ui/bg01.png")
@@ -58,62 +65,153 @@ function CFriendsScene:init()
                 friendButton:selected()
                 perButton = friendButton
             end
-
         end
     end
 
+    local itemNodes = display.newNode()
+    itemNodes:setPosition(0, 0)
+    self.node:addChild(itemNodes)
+
     local function initItem(buttonType)
         setSelButtonDisable(buttonType)
+        itemNodes:removeAllChildrenWithCleanup(true)
 
---        local friends = game.Player:getFriends()
---        if #friends >= 1 then
---
---            local function onFriend()
---
---            end
---
---            local function onEnhanceButton(tag, sender)
---                --printf("--------------Friends----------" .. sender.data:getName())
---            end
---
---            for k, v in ipairs(friends) do
---
---                nodes[k] = require("possessions.CItemSprite").new(v, 2)
---                nodes[k]:setTouchListener(onTouchItem)
---
---                local button = CSingleImageMenuItem:create("button_use.png")
---                button.data = v
---                button:setPosition(nodes[k]:getContentSize().width * (10 / 32), 0)
---                button:registerScriptTapHandler(onFriend)
---
---                local menu = ui.newMenu({button})
---                menu:setPosition(0, 0)
---                nodes[k]:addChild(menu)
---            end
---
---            local scrollLayer = require("ui_common.CScrollLayer").new({
---                x = display.width * (4 / 40),
---                y = display.height * (0.6 / 40),
---                width = display.width * (35.8 / 40),
---                height = display.height * (35 / 40),
---                pageSize = 4,
---                rowSize = 1,
---                nodes = nodes,
---                vertical = true
---            })
---            scrollLayer:setPosition(0, 0)
---            self.node:addChild(scrollLayer)
---        else
---            local label = ui.newTTFLabel({
---                text = "江湖上行走，没有几个朋友哪行？",
---                size = 38,
---                x    = game.cx,
---                y    = display.cy,
---                align = ui.TEXT_ALIGN_CENTER
---            })
---
---            self.node:addChild(label)
---        end
+        local function initFriendItem()
+            local friends = game.Player:getFriends()
+            if #friends >= 1 then
+
+                local function onFriend()
+                end
+
+                local function onEnhanceButton()
+
+                end
+
+                for k, v in ipairs(friends) do
+
+                    nodes[k] = require("sns_system.CFriendItemSprite").new()
+                    nodes[k]:setTouchListener(onTouchItem)
+
+                    local button = CSingleImageMenuItem:create(ResourceMgr:getUISprite("button_small"))
+                    button:setPosition(nodes[k]:getContentSize().width * (10 / 32), 0)
+                    button:registerScriptTapHandler(onFriend)
+
+                    local menu = ui.newMenu({ button })
+                    menu:setPosition(0, 0)
+                    nodes[k]:addChild(menu)
+                end
+
+                local scrollLayer = require("ui_common.CScrollLayer").new({
+                    x = display.width * (5 / 40),
+                    y = display.height * (2 / 40),
+                    width = display.width * (30.8 / 40),
+                    height = display.height * (32 / 40),
+                    pageSize = 4,
+                    rowSize = 1,
+                    nodes = nodes,
+                    vertical = true
+                })
+                scrollLayer:setPosition(0, 0)
+                itemNodes:addChild(scrollLayer)
+            else
+                local label = ui.newTTFLabel({
+                    text = "江湖上行走，没有几个朋友哪行？",
+                    size = 38,
+                    x = game.cx,
+                    y = display.cy,
+                    align = ui.TEXT_ALIGN_CENTER
+                })
+
+                itemNodes:addChild(label)
+            end
+        end
+
+        local function initEnemyItem()
+            local friends = game.Player:getFriends()
+            if #friends >= 1 then
+
+                local function onFriend()
+                end
+
+                local function onEnhanceButton(tag, sender)
+
+                end
+
+                for k, v in ipairs(friends) do
+
+                    nodes[k] = require("sns_system.CFriendItemSprite").new()
+                    nodes[k]:setTouchListener(onTouchItem)
+
+                    local button = CSingleImageMenuItem:create(ResourceMgr:getUISprite("button_small"))
+                    button:setPosition(nodes[k]:getContentSize().width * (10 / 32), 0)
+                    button:registerScriptTapHandler(onFriend)
+
+                    local menu = ui.newMenu({ button })
+                    menu:setPosition(0, 0)
+                    nodes[k]:addChild(menu)
+                end
+
+                local scrollLayer = require("ui_common.CScrollLayer").new({
+                    x = display.width * (5 / 40),
+                    y = display.height * (2 / 40),
+                    width = display.width * (30.8 / 40),
+                    height = display.height * (32 / 40),
+                    pageSize = 4,
+                    rowSize = 1,
+                    nodes = nodes,
+                    vertical = true
+                })
+                scrollLayer:setPosition(0, 0)
+                itemNodes:addChild(scrollLayer)
+            else
+                local label = ui.newTTFLabel({
+                    text = "没有仇敌",
+                    size = 38,
+                    x = game.cx,
+                    y = display.cy,
+                    align = ui.TEXT_ALIGN_CENTER
+                })
+               itemNodes:addChild(label)
+            end
+        end
+
+        local function findFriend()
+
+            local inputItem = require("sns_system.CFriendItemSprite").new()
+            inputItem:setPosition(CFuncHelper:getRelativeX(20.4), CFuncHelper:getRelativeY(30))
+            itemNodes:addChild(inputItem)
+
+            local inputBorder = ResourceMgr:getUISprite("board39")
+            inputBorder:setPosition(-inputBorder:getContentSize().width / 6, 0)
+            inputItem:addChild(inputBorder)
+
+            local function onOKButton()
+                printf(" 查找好友")
+            end
+
+            local okButton = ui.newImageMenuItem({
+                image = "#button14.png",
+                imageSelected = "#button15.png",
+                listener = onOKButton,
+            })
+            okButton:setPosition(inputItem:getContentSize().width / 2.8, 0)
+            local menu = ui.newMenu({okButton})
+            inputItem:addChild(menu)
+
+            local okLabel = ResourceMgr:getUISprite("font_enter")
+            okLabel:setPosition(okButton:getContentSize().width / 2, okButton:getContentSize().height / 2)
+            okButton:addChild(okLabel)
+
+        end
+
+        if buttonType == CFirendType.FINDFRIEND then
+            findFriend()
+        elseif buttonType == CFirendType.ENEMY then
+            initEnemyItem()
+        else
+            initFriendItem()
+        end
+
 
     end
 
@@ -124,7 +222,7 @@ function CFriendsScene:init()
         end
 
         local function c_func(f, ...)
-            local argc = {... }
+            local argc = { ... }
             return function()
                 f(unpack(argc))
             end
@@ -137,7 +235,7 @@ function CFriendsScene:init()
         })
         friendButton:setPosition(self.bg:getContentSize().width + friendButton:getContentSize().width / 2,
             self.bg:getContentSize().height - friendButton:getContentSize().height * 0.5)
-        local friendLabel =ResourceMgr:getUISprite("font_haoyou")
+        local friendLabel = ResourceMgr:getUISprite("font_haoyou")
         friendLabel:setPosition(friendButton:getContentSize().width / 2, friendButton:getContentSize().height / 2)
         friendButton:addChild(friendLabel)
         local maodingSprite = ResourceMgr:getUISprite("maoding")
@@ -165,7 +263,7 @@ function CFriendsScene:init()
         addFriendButton = ui.newImageMenuItem({
             image = "#board31.png",
             imageSelected = "#board30.png",
-            listener = c_func(onButton,CFirendType.FINDFRIEND),
+            listener = c_func(onButton, CFirendType.FINDFRIEND),
         })
         addFriendButton:setPosition(self.bg:getContentSize().width + addFriendButton:getContentSize().width / 2,
             self.bg:getContentSize().height - addFriendButton:getContentSize().height * 2.5)
@@ -177,14 +275,13 @@ function CFriendsScene:init()
             self.bg:getContentSize().height - addFriendButton:getContentSize().height * 2.5)
         self.bg:addChild(maodingSprite, 2)
 
-        local menu = ui.newMenu({enemyButton, friendButton, addFriendButton})
+        local menu = ui.newMenu({ enemyButton, friendButton, addFriendButton })
         self.bg:addChild(menu)
     end
 
     initButton()
 
     initItem()
-
 end
 
 function CFriendsScene:ctor()

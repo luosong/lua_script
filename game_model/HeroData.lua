@@ -1,6 +1,7 @@
 
 require "GameFormula"
 require("data.heros_gs")
+require("data.ExpTable_gs")
 
 local CHeroData = class("CHeroData")
 
@@ -16,6 +17,49 @@ function CHeroData:getIconID( )
     return self.m_icon_id
 end
 
+function CHeroData:upgrade()
+    self.m_level = require("FuncHelper"):addForChaosNum(self.m_level, 1)
+
+    ---混淆数据
+    local baseHp = require("FuncHelper"):decryptNum(self.m_hp.base)
+    local lv    = require("FuncHelper"):decryptNum(self.m_level)
+
+    self.m_hp.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeHP(baseHp, lv))
+
+    self.m_ap.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeAP(
+        require("FuncHelper"):decryptNum(self.m_ap.base),
+        require("FuncHelper"):decryptNum(self.m_level)))
+
+    self.m_mp.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeMP(
+        require("FuncHelper"):decryptNum(self.m_mp.base),
+        require("FuncHelper"):decryptNum(self.m_level)))
+
+    self.m_dp.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeDP(
+        require("FuncHelper"):decryptNum(self.m_dp.base),
+        require("FuncHelper"):decryptNum(self.m_level)))
+end
+
+function CHeroData:updataProperty()
+    ---混淆数据
+    local baseHp = require("FuncHelper"):decryptNum(self.m_hp.base)
+    local lv    = require("FuncHelper"):decryptNum(self.m_level)
+
+    self.m_hp.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeHP(baseHp, lv))
+
+    self.m_ap.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeAP(
+        require("FuncHelper"):decryptNum(self.m_ap.base),
+        require("FuncHelper"):decryptNum(self.m_level)))
+
+    self.m_mp.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeMP(
+        require("FuncHelper"):decryptNum(self.m_mp.base),
+        require("FuncHelper"):decryptNum(self.m_level)))
+
+    self.m_dp.real = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeDP(
+        require("FuncHelper"):decryptNum(self.m_dp.base),
+        require("FuncHelper"):decryptNum(self.m_level)))
+
+end
+
 function CHeroData:setLevel(level)
     self.m_level = require("FuncHelper"):encryptNum( level )
 end
@@ -24,34 +68,34 @@ function CHeroData:getLevel()
 	return require("FuncHelper"):decryptNum(self.m_level)
 end
 
-function CHeroData:upgrade()
-    self.m_level = require("FuncHelper"):addForChaosNum(self.m_level, 1)
+function CHeroData:addExp( exp )
+    if self.m_exp < 0 or exp < 0 then
+        CCMessageBox("Exp is  < 0", "ERROR")
+    end
+    self.m_exp = self.m_exp + exp
 
-    ---混淆数据
-    self.m_hp.base = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeHP(
-        require("FuncHelper"):decryptNum(self.m_hp.base),
-        require("FuncHelper"):decryptNum(self.m_level)))
+    while(BaseData_ExpTable[self:getLevel()][self.m_growType] < self.m_exp) do
+        printf("成长类型: " .. self.m_growType .. " 当前级别: " .. self:getLevel() .. " 需要经验：" .. BaseData_ExpTable[self:getLevel()][self.m_growType] .. " 共得到的经验: " .. exp)
+        self.m_exp = self.m_exp - BaseData_ExpTable[self:getLevel()][self.m_growType]
+        self:upgrade()
+    end
 
-    self.m_ap.base = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeAP(
-        require("FuncHelper"):decryptNum(self.m_ap.base),
-        require("FuncHelper"):decryptNum(self.m_level)))
-
-    self.m_mp.base = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeMP(
-        require("FuncHelper"):decryptNum(self.m_mp.base),
-        require("FuncHelper"):decryptNum(self.m_level)))
-
-    self.m_dp.base = require("FuncHelper"):encryptNum(GameFormula.GetUpgradeDP(
-        require("FuncHelper"):decryptNum(self.m_dp.base),
-        require("FuncHelper"):decryptNum(self.m_level)))
 end
 
+function CHeroData:getExp( ... )
+    return self.m_exp
+end
+
+
+
 function CHeroData:addHp(hp)
+
     local hpReal = require("FuncHelper"):decryptNum(self.m_hp.real)
-    if (hpReal + hp) > require("FuncHelper"):decryptNum(self.m_hp.base) then
-       self.m_hp.real = self.m_hp.base
-    else
+--    if (hpReal + hp) > require("FuncHelper"):decryptNum(self.m_hp.base) then
+--       self.m_hp.real = self.m_hp.base
+--    else
         self.m_hp.real = require("FuncHelper"):encryptNum(hpReal + hp)
-    end
+--    end
 end
 
 function CHeroData:getHp(key)
@@ -70,6 +114,14 @@ function CHeroData:getHp(key)
         end
     end
     return  hp
+end
+
+function CHeroData:isDead()
+    if (require("FuncHelper"):decryptNum(self.m_hp.real) < 1) then
+        return true
+    end
+
+    return false
 end
 
 function CHeroData:setHp(hp)
@@ -165,6 +217,10 @@ function CHeroData:getId()
 end
 
 function CHeroData:getProperty()
+    if(self.m_property > 5) then
+        -- FIXME
+        device.showAlert("", "property ERROR!" .. self.m_id..","..self.m_property)
+    end
     return self.m_property
 end
 
@@ -213,6 +269,26 @@ function CHeroData:addKungFu(kungFuId, index)
     if kungFuId > 0 then
         game.Player:getSkillById(kungFuId):setOwner(self.m_id)
     end
+end
+
+function CHeroData:haveEquipment(eqipId)
+    local equipments = self:getEquipments()
+    for i = 1, 4 do
+        if equipments[i] and equipments[i]:getId() == eqipId then
+            return true
+        end
+    end
+    return false
+end
+
+function CHeroData:haveKungFu(kungFuId)
+    local kungFus = self:getKungFus()
+    for i = 1, 4 do
+         if kungFus[i] and kungFus[i]:getId() == kungFuId then
+            return true
+         end
+    end
+    return false
 end
 
 function CHeroData:init(data)
@@ -289,6 +365,7 @@ function CHeroData:init(data)
 
 
 end
+
 
 function CHeroData:setIsMajor(b)
     self.m_bIsMajor = b

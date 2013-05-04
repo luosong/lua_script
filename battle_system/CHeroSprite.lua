@@ -12,7 +12,7 @@ end
 
 function CHeroSprite:hurt(h)
 
-	if (h * -1) > self.heroData:getHp() then
+	if (h) > self.heroData:getHp() then
 		self.heroData:setHp(0)
 		self.bDead = true
 	else
@@ -50,6 +50,14 @@ end
 function CHeroSprite:resetHp()
     if self.bloodSprite then
        self.bloodSprite:setPercentage((self.heroData:getHp("real") / self.heroData:getHp("base")) * 100)
+       self.nameLabel:setString(self.heroData:getName() .. "   " .. string.format("%d", self.heroData:getHp()))
+    end
+end
+
+function CHeroSprite:refreshHp(hp, fullHp)
+    if self.bloodSprite then
+        self.bloodSprite:setPercentage((hp / fullHp) * 100)
+        self.nameLabel:setString(self.heroData:getName() .. "   " .. string.format("%d", hp))
     end
 end
 
@@ -61,30 +69,20 @@ function CHeroSprite:boundingBox()
     return self.sprite:boundingBox()
 end
 
-function CHeroSprite:init(data, displayType, bFlipX)
-
-      if displayType == "card" then
+function CHeroSprite:init(data, displayType, bFlipX, hp)
+        if displayType == "card" then
 
         self.sprite = ResourceMgr:getUISprite("card_bg" .. math.random(1, 2))
         local herosBody = ResourceMgr:getSprite(data:getAnimId())
-        if (self.sprite:getTextureRect().size.width < herosBody:getTextureRect().size.width * 0.55) then
-            herosBody:setTextureRect(CCRectMake(herosBody:getTextureRect().origin.x +  41,
-                herosBody:getTextureRect().origin.y,
-                herosBody:getTextureRect().size.width - 42, herosBody:getTextureRect().size.height))
+        -- if (self.sprite:getTextureRect().size.width < herosBody:getTextureRect().size.width * 0.55) then
+        --     herosBody:setTextureRect(CCRectMake(herosBody:getTextureRect().origin.x +  41,
+        --         herosBody:getTextureRect().origin.y,
+        --         herosBody:getTextureRect().size.width - 42, herosBody:getTextureRect().size.height))
 
-        end
-
---        printf("****************" .. herosBody:getTextureRect().size.height * 0.55 .. "   " .. self.sprite:getTextureRect().size.height - 25)
---        if (herosBody:getTextureRect().size.height * 0.55 > self.sprite:getTextureRect().size.height - 25) then
---            herosBody:setTextureRect(CCRectMake(herosBody:getTextureRect().origin.x,
---                herosBody:getTextureRect().origin.y + 27,
---                herosBody:getTextureRect().size.width,
---                herosBody:getTextureRect().size.height - 27))
---            printf("****************^^^^^^^^^^^^^^")
---        end
+        -- end
 
         herosBody:setPosition(self.sprite:getContentSize().width / 2, self.sprite:getContentSize().height * (90 / 155))
-        herosBody:setScale(0.55)
+        herosBody:setScale(0.51)
         self.sprite:addChild(herosBody)
 
         if (bFlipX) then
@@ -115,20 +113,22 @@ function CHeroSprite:init(data, displayType, bFlipX)
             x = cardSprite:getContentSize().width * (2 / 15),
             y = cardSprite:getContentSize().height * (14.2 / 15),
             size = FONT_SIZE.HeroSpriteFont.NAME_LABEL_SIZE,
+            color = ccc3(0,0,0),
             font = "STHeitiJ-Medium"
         })
         cardSprite:addChild(lvLabel)
 
-
-        local nameLabel = ui.newTTFLabel({
-            text = data:getName(),
+        local _hp = hp or data:getHp()
+        self.nameLabel = ui.newBMFontLabel({
+            text = data:getName() .. "   " .. string.format("%d", _hp),
             align = ui.TEXT_ALIGN_CENTER,
             x = cardSprite:getContentSize().width / 2,
             y = cardSprite:getContentSize().height * (10 / 155),
-            size = FONT_SIZE.HeroSpriteFont.LV_LABEL_SIZE,
-            font = "STHeitiJ-Medium"
+            font = GAME_FONT.font_youyuan
         })
-        cardSprite:addChild(nameLabel)
+        self.nameLabel:setScale(0.5)
+        cardSprite:addChild(self.nameLabel)
+
 
         cardSprite:setAnchorPoint(CCPointMake(0, 1))
         cardSprite:setPosition(0, self.sprite:getContentSize().height)
@@ -160,8 +160,6 @@ function CHeroSprite:init(data, displayType, bFlipX)
     end
 
 	self.bDead = false
-
-
 	self.sprite:setPosition(0, 0)
 	self:addChild(self.sprite)
 	self.heroData = data
@@ -172,8 +170,8 @@ function CHeroSprite:setColor(color)
 end
 
 
-function CHeroSprite:ctor(data, head, bFlipX)
-	self:init(data, head, bFlipX)
+function CHeroSprite:ctor(data, head, bFlipX, tempHp)
+	self:init(data, head, bFlipX, tempHp)
 end
 
 return CHeroSprite

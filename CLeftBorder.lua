@@ -12,6 +12,11 @@ end)
 
 function CLeftBorder:ctor()
 
+    if(display.height > CONFIG_SCREEN_HEIGHT ) then
+        local pad = require("CLayerIpad").new()
+        self:addChild(pad)
+    end
+
     local NormalButton = require("views.NormalButton")
     local backButton = NormalButton.new({
             image = ResourceMgr:getUISpriteFrameName("button_shouye"),
@@ -20,18 +25,20 @@ function CLeftBorder:ctor()
             buttonType = NormalButton.TYPE_DARKER,
 
             listener = function()
-                display.replaceScene(require("CGameMenuScene").new())
+                display.replaceScene(require("CGameMenuScene").new(),"fade", 0.5, display.COLOR_BLACK)
             end,
         })
 
-    backButton:setPosition(backButton:getContentSize().width/2, display.height-backButton:getContentSize().height/2)
+    backButton:setPosition(backButton:getContentSize().width/2, display.height-backButton:getContentSize().height/2-CFuncHelper:getTopBarH())
 
     self.width = backButton:getContentSize().width
 
     local buttonsBg = ResourceMgr:getUISprite("board06")
-    buttonsBg:setAnchorPoint(CCPointMake(0, 0))
-    buttonsBg:setPosition(0, 0)
+    -- buttonsBg:setAnchorPoint(CCPointMake(0, 0))
+    buttonsBg:setPosition(buttonsBg:getContentSize().width/2, buttonsBg:getContentSize().height/2 + CFuncHelper:getTopBarH())
     self:addChild(buttonsBg)
+    self.leftWidth = buttonsBg:getContentSize().width
+    self.leftHeight = buttonsBg:getContentSize().height
 
     -------------------比武-------------------------------
     local biWuButton = CSingleImageMenuItem:create(ResourceMgr:getUISprite("button_biwu"))
@@ -74,6 +81,14 @@ end
 
 function CLeftBorder:getWidth()
     return self.width
+end
+
+function CLeftBorder:getLeftWidth( ... )
+    return self.leftWidth
+end
+
+function CLeftBorder:getLeftHeight( ... )
+    return self.leftHeight
 end
 
 return CLeftBorder

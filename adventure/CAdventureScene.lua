@@ -15,28 +15,25 @@ end)
 function CAdventureScene:init()
 
     local currentMap =  levels[self.mapID]
-
 --    local bg = display.newSprite("ui/bg01.png")
 --    bg:setAnchorPoint(CCPointMake(0, 0))
 --    self.layer:addChild(bg)
-
-
-
     self.map = display.newSprite(currentMap.map)
     self.map:setAnchorPoint(CCPointMake(1, 0))
-    self.map:setPosition(display.width, 0)
+    self.map:setPosition(display.width, CFuncHelper:getTopBarH())
     self.layer:addChild(self.map)
 
     local headerSprite = ResourceMgr:getUISprite("board01")
     headerSprite:setAnchorPoint(CCPointMake(0, 0.5))
-    headerSprite:setPosition(self.leftBorder:getWidth(), display.height - headerSprite:getContentSize().height / 2)
+    headerSprite:setPosition(self.leftBorder:getWidth(), display.height - headerSprite:getContentSize().height / 2-CFuncHelper:getTopBarH())
     self.layer:addChild(headerSprite)
 
     local headerBg = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame("board24"))
     headerBg:setPreferredSize(CCSizeMake(display.width - self.leftBorder:getWidth() - headerSprite:getContentSize().width,
         CFuncHelper:getRelativeY(4.2)))
     headerBg:setAnchorPoint(CCPointMake(0, 0.5))
-    headerBg:setPosition(self.leftBorder:getWidth() + headerSprite:getContentSize().width, display.height - headerBg:getContentSize().height / 2)
+    headerBg:setPosition(self.leftBorder:getWidth() + headerSprite:getContentSize().width, 
+        display.height - headerBg:getContentSize().height / 2 - CFuncHelper:getTopBarH())
     self.layer:addChild(headerBg)
 
     local resetMap = nil
@@ -79,7 +76,7 @@ function CAdventureScene:init()
 
         local scrollLayer = require("ui_common.CScrollLayer").new({
             x = self.leftBorder:getWidth() + headerSprite:getContentSize().width + 6,
-            y = display.height - headerBg:getContentSize().height,
+            y = display.height - headerBg:getContentSize().height - CFuncHelper:getTopBarH(),
             width = headerBg:getContentSize().width - 13,
             height = headerBg:getContentSize().height,
             pageSize = 3,
@@ -104,11 +101,12 @@ function CAdventureScene:init()
             infoLayer:removeFromParentAndCleanup(true)
             infoLayer = nil
         end
+        local infoLayerY = 0 + CFuncHelper:getTopBarH()
         infoLayer = require("adventure.CMapInfoLayer").new(currentMap[tag])
-        infoLayer:setPosition(display.width + infoLayer:getContentSize().width, 0)
+        infoLayer:setPosition(display.width + infoLayer:getContentSize().width, infoLayerY)
         self.layer:addChild(infoLayer)
 
-        transition.moveTo(infoLayer, {x = display.width, y = 0, time = 0.3})
+        transition.moveTo(infoLayer, {x = display.width, y = infoLayerY, time = 0.3})
     end
 
     local function onChallenge(tag)
@@ -126,7 +124,7 @@ function CAdventureScene:init()
             tipBox:setPosition(0, 0)
             self.layer:addChild(tipBox)
         else
-            display.replaceScene(require("battle_system.CBattleScene").new({ currentMap.id, tag }))
+            display.replaceScene(require("battle_system.CBattleScene").new({ currentMap.id, tag }, BattleType.Adventure_map))
         end
     end
 
@@ -134,10 +132,23 @@ function CAdventureScene:init()
     flagIconNodes:setPosition(0, 0)
     self.layer:addChild(flagIconNodes)
     local function initSubMap()
+
+        local function getheroID( form )
+            for i,v in ipairs(form) do
+                if(v > 0) then
+                    return v
+                end
+            end
+            return 10
+        end
         flagIconNodes:removeAllChildrenWithCleanup(true)
         for k, v in ipairs(currentMap) do
+            local bossid = 0
+            if(v.bossType > 0) then
+                bossid = getheroID(v.form)
+            end
             local icon = require("adventure.CCoordinateSprite").new(k, onInfoButton,
-                onChallenge, game.Player:getStarsById(self.mapID, v.id), game.Player:isLevelUnlock(self.mapID, v.id))
+                onChallenge, game.Player:getStarsById(self.mapID, v.id), game.Player:isLevelUnlock(self.mapID, v.id), bossid)
             icon:setPosition(display.width * (v.pos.x / 40), display.height * (v.pos.y / 40))
             flagIconNodes:addChild(icon)
         end
@@ -189,7 +200,7 @@ function CAdventureScene:init()
     self.layer:addTouchEventListener(function()
         if (infoLayer ~= nil) then
             local action = transition.sequence({
-                CCMoveTo:create(0.1, CCPointMake(display.width + infoLayer:getContentSize().width, 0)),
+                CCMoveTo:create(0.1, CCPointMake(display.width + infoLayer:getContentSize().width, CFuncHelper:getTopBarH())),
                 CCCallFunc:create(function()
                     infoLayer:removeFromParentAndCleanup(true)
                     infoLayer = nil
@@ -230,7 +241,7 @@ function CAdventureScene:ctor(mapId)
 
     local mapBg = display.newSprite("ui/bg04.png")
     mapBg:setAnchorPoint(CCPointMake(0,0))
-    mapBg:setPosition(self.leftBorder:getWidth(), 0)
+    mapBg:setPosition(self.leftBorder:getWidth(), CFuncHelper:getTopBarH())
     self.layer:addChild(mapBg)
 
     --loading界面

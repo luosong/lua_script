@@ -10,17 +10,49 @@ local CCoordinateSprite = class("CCoordinateSprite", function()
     return  display.newNode()
 end)
 
-function CCoordinateSprite:ctor(tag, infoButtonListener, challengeListener, stars, bIsLock)
+function CCoordinateSprite:ctor(tag, infoButtonListener, challengeListener, stars, bIsLock, bossid)
 
     local flagSprite = nil
-
-    if (bIsLock) then
-        flagSprite = CSingleImageMenuItem:create(ResourceMgr:getUISprite("icon_road_point_passed"))
-        flagSprite:registerScriptTapHandler(challengeListener)
-    else
-        flagSprite = CSingleImageMenuItem:create(ResourceMgr:getUISprite("icon_road_point"))
-
+    local function getheroIconBgName( property )
+        local iconBgName = "icon_bg_white"
+            if(property == 0) then
+                iconBgName = "icon_bg_white"
+            elseif(property == 1) then
+                iconBgName = "icon_bg_white"           
+            elseif(property == 2) then
+                iconBgName = "icon_bg_green"
+            elseif(property == 3) then
+                iconBgName = "icon_bg_blue"
+            elseif(property == 4) then
+                iconBgName = "icon_bg_yellow"
+            elseif(property == 5) then
+                iconBgName = "icon_bg_purple"
+            end
+            return iconBgName
     end
+    if(bossid > 0) then
+        flagSprite = CSingleImageMenuItem:create(ResourceMgr:getUISprite(getheroIconBgName(BaseData_heros[bossid].property)))
+        local bossSpriteName = BaseData_heros[bossid].str_icon
+        bossSprite = ResourceMgr:getIconSprite(bossSpriteName)
+        flagSprite:addChild(bossSprite)
+        bossSprite:setPosition(flagSprite:getContentSize().width/2, flagSprite:getContentSize().height/2)
+        flagSprite:setScale(0.8)
+        if (bIsLock) then            
+            flagSprite:registerScriptTapHandler(challengeListener)
+        else         
+            bossSprite:setColor(ccc3(100,100,100))  
+        end
+    else    
+        if (bIsLock) then
+            flagSprite = CSingleImageMenuItem:create(ResourceMgr:getUISprite("icon_road_point_passed"))
+            flagSprite:registerScriptTapHandler(challengeListener)
+        else
+            flagSprite = CSingleImageMenuItem:create(ResourceMgr:getUISprite("icon_road_point"))
+
+        end
+    end
+
+
     flagSprite:setPosition(0, 0)
 
 

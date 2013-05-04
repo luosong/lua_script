@@ -4,7 +4,7 @@ require("ResourceMgr")
 local ScrollViewCell = require("ui.ScrollViewCell")
 local LevelsListCell = class("LevelsListCell", ScrollViewCell)
 
-function LevelsListCell:ctor(size, beginLevelIndex, endLevelIndex, rows, cols, inData, rect, VisiableArray, itemType)
+function LevelsListCell:ctor(size, beginLevelIndex, endLevelIndex, rows, cols, inData, rect, VisiableArray, itemType, startY)
     local rowHeight = math.floor((size.height) / rows)
     local colWidth = math.floor(size.width  / cols)
 
@@ -25,7 +25,7 @@ function LevelsListCell:ctor(size, beginLevelIndex, endLevelIndex, rows, cols, i
     self.buttons = {}
 
     local startX =  rect.origin.x + (rect.size.width - colWidth * (cols - 1)) / 2
-    local y = display.top - 160
+    local y = startY - 80
     local levelIndex = beginLevelIndex
 
     local isVisiableArray = {}

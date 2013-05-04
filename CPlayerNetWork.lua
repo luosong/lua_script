@@ -35,6 +35,8 @@ function CPlayerNetWork:SetDownloadData( playerInfo )
 
     -- 阵法
     self:SetFormation( playerInfo )
+
+    self.player:setUnloadLevel( playerInfo[KEY_CONST.LEVEL_UNLOCK_LV])
 end
 
 
@@ -61,10 +63,10 @@ function CPlayerNetWork:UploadFormData( ... )
     end
 
     for i,v in ipairs(self.player.m_formation) do
-        msg.form[i] = {v.m_id,v.m_level, getHerosId(v.m_heros)}
+        msg.form[i] = {id=v.m_id,lv=v.m_level, form=getHerosId(v.m_heros)}
     end
 
-    -- dump(msg)
+    dump(msg)
     return msg
     
 end
@@ -150,13 +152,12 @@ function CPlayerNetWork:UploadEquipsData( equipments )
 		equip.opt = v.opt
 		equip.info = {}
 		if(v.opt == OPTIONS_TYPE.OPT_ADD or v.opt == OPTIONS_TYPE.OPT_UPDATE) then
-			equip.info[0] = v.m_id
-			equip.info[1] = v.m_level
-			equip.info[3] = v.m_extra
-
+			equip.info.id = v.id
+			equip.info.ev = v.ev
+			equip.info.lv = v.lv
 
 		elseif(v.opt == OPTIONS_TYPE.OPT_DEL) then
-			equip.info[0] = v.m_id
+			equip.info.id = v.id
 		end
 	end
 
@@ -176,13 +177,12 @@ function CPlayerNetWork:UploadSkillsData(skills)
 		skill.opt = v.opt
 		skill.info = {}
 		if(v.opt == OPTIONS_TYPE.OPT_ADD or v.opt == OPTIONS_TYPE.OPT_UPDATE) then
-			skill.info[0] = v.m_id
-			skill.info[1] = v.m_level
-			skill.info[3] = v.m_extra
-
+			skill.info.id = v.id
+			skill.info.ev = v.ev
+			skill.info.lv = v.lv
 
 		elseif(v.opt == OPTIONS_TYPE.OPT_DEL) then
-			skill.info[0] = v.m_id
+			skill.info.id = v.id
 		end
 	end
 
@@ -228,13 +228,36 @@ function CPlayerNetWork:UploadLevels( levelInfo )
 end
 
 --[[
-	过关之后，上传数据
+	战斗结果数据
 	1.exp,gold
 	2.heros exp.lv
 	3.解锁关卡信息
 ]]
-function CPlayerNetWork:UploadPassLevel( exp, gold, heros, levelInfo )
-	-- body
+function CPlayerNetWork:UploadBattleResultData(   )
+	local msg = {}
+	msg[KEY_CONST.BASE_INFO_EXP] = self.player:getExp()
+	msg[KEY_CONST.BASE_INFO_LEVEL] = self.player:getLevel()
+	msg[KEY_CONST.BASE_INFO_SILVER] = self.player:getSilver() 
+	msg[KEY_CONST.BASE_INFO_ENERGY] = self.player:getEnerty() 
+
+	local mh = self.player:getMajorHerosId()
+	local heros = {}
+
+	local index = 1
+	for k,v in pairs(mh) do
+		if(v > 0) then
+			local h = self.player:getHeroById(v)
+			heros[index] = {id = h:getId(), lv = h:getLevel(), exp = h:getExp()}
+			index = index + 1
+		end
+	end
+	
+	msg[KEY_CONST.HEROS] = heros
+
+	msg[KEY_CONST.LEVEL_UNLOCK_LV] = self.player:getUnlockLevels()
+
+	-- dump(msg)
+	return msg
 end
 
 
@@ -254,7 +277,7 @@ function CPlayerNetWork:SetHeros( playerInfo )
 
 		local herodata = require("game_model.HeroData")
 
-		-- dump(heros)
+		
     	for k,v in pairs(heros) do
     		game.Player:addHero(herodata.new({
     			        id = tonumber(v.id),                 --id
@@ -309,7 +332,7 @@ function CPlayerNetWork:SetFormation( playerInfo )
     if(formLen > 0) then 
         local cform = require("game_model.CFormation")
         for i,v in ipairs(form) do
-            game.Player:addFormation(cform.new({tonumber(v[1]),tonumber(v[2]),v[3]}))
+            game.Player:addFormation(cform.new({tonumber(v.id),tonumber(v.lv),v.form}))
         end
 
         local forms = game.Player:getFormations()

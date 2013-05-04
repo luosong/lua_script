@@ -49,19 +49,21 @@ game.Player:addSkill(require("game_model.CSkill").new(BaseData_skills[13]))
 game.Player:addSkill(require("game_model.CSkill").new(BaseData_skills[17]))
 
 
-game.Player:addHero(require("game_model.HeroData").new(
-     {
-         id = 1,                  --id
-         exp = 100,               --经验
-         level = 10,              --级别
-         skills = {0, 0, 0, 0},    --技能 表
-         extra_ap = 1,            --额外加成
-         extra_dp = 2,
-         extra_hp = 3,
-         extra_mp = 4,
-         base_skill = {value = 12, level = 22}
-     }
-))
+game.Player:addFormation(require("game_model.CFormation").new({2, 1}))
+game.Player:addFormation(require("game_model.CFormation").new({3, 1}))
+-- game.Player:addHero(require("game_model.HeroData").new(
+--      {
+--          id = 1,                  --id
+--          exp = 100,               --经验
+--          level = 10,              --级别
+--          skills = {0, 0, 0, 0},    --技能 表
+--          extra_ap = 1,            --额外加成
+--          extra_dp = 2,
+--          extra_hp = 3,
+--          extra_mp = 4,
+--          base_skill = {value = 12, level = 22}
+--      }
+-- ))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[2]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[50]))
 -- game.Player:addHero(require("game_model.HeroData").new(BaseData_heros[20]))

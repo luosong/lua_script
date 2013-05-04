@@ -10,6 +10,7 @@ local function main()
     -- avoid memory leak
     -- collectgarbage("setpause", 300)
     -- collectgarbage("setstepmul", 5000)
+
 	
 	require("game")
     game.startup()

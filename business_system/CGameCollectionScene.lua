@@ -20,12 +20,17 @@ function CGameCollectionScene:ctor()
  --    bg:setScaleX(display.width/bg:getContentSize().width)
 	-- bg:setPosition(display.width/2, display.height/2)
 	-- self:addChild(bg)
+        -- CONFIG_SCREEN_HEIGHT = 640,ipad，上下加板
+
+
     local baseLayer = require("CBorderLayer").new()
     self:addChild(baseLayer)
     
+
+     -- 背景
     self.bg = CCScale9Sprite:createWithSpriteFrameName("board29.png")
-    self.bg:setPreferredSize(CCSizeMake(display.width * (36 / 40), display.height * (36 / 40)))
-    self.bg:setPosition(game.cx, display.height * (18 / 40))
+    -- self.bg:setPreferredSize(CCSizeMake(display.width * ( rightX / 40), baseLayer:getLeftHeight()))
+    -- self.bg:setPosition(baseLayer:getLeftWidth() + self.bg:getContentSize().width/2, baseLayer:getLeftHeight()/2 + CFuncHelper:getTopBarH())
     self:addChild(self.bg)
 
 
@@ -41,13 +46,13 @@ function CGameCollectionScene:ctor()
             device.showActivityIndicator()
         elseif(self.index == 2) then
                 -- create levels list
-            local rect = CCRect(display.left+100, display.bottom + 30, display.width - 180 , display.height - 130)
+            local rect = CCRect(display.left+baseLayer:getLeftWidth()+12, display.bottom + 30+CFuncHelper:getTopBarH(), display.width - baseLayer:getLeftWidth()-20 - CFuncHelper:getRightBarW() , baseLayer:getLeftHeight())
 
             if(self.visiableArray == nil) then
                 print("====================================nil====")
             end
-            
-            self.levelsList = require("views.LevelsList").new(rect, self.indata, self.visiableArray, self.itemType)
+            local startY =  CFuncHelper:getTopBarH() + baseLayer:getLeftHeight()
+            self.levelsList = require("views.LevelsList").new(rect, self.indata, self.visiableArray, self.itemType, startY)
             self.levelsList:addEventListener("onTapLevelIcon", function(event)
                 return self:onTapLevelIcon(event)
             end)
@@ -72,19 +77,25 @@ function CGameCollectionScene:ctor()
 
     -- right buttons
 
-    local buttonNames = {"font_ry","font_zb","font_wg"}    
+    local buttonNames = {"font_rw","font_zbei","font_wug"}    
     local collectButtons = {}
     local offY = 180
-    local offSize = (display.height-offY)/3
+    local offSize = baseLayer:getLeftHeight()/3
     for i=1,3 do
-        collectButtons[i] = CSingleImageMenuItem:create(ResourceMgr:getUISprite("board05"))
-        collectButtons[i]:setPosition(display.width - collectButtons[i]:getContentSize().width/2, display.height-offY- (i-1)*offSize)
+        collectButtons[i] = ui.newImageMenuItem({
+            image = "#board31.png",
+            imageSelected = "#board30.png",
+          --  listener = c_func(onButton),
+        })--CSingleImageMenuItem:create(ResourceMgr:getUISprite("board31"))
+        collectButtons[i]:setPosition(display.width -  collectButtons[i]:getContentSize().width/2, 
+                    baseLayer:getLeftHeight() + CFuncHelper:getTopBarH()- (i-1)*collectButtons[i]:getContentSize().height - collectButtons[i]:getContentSize().height/2)
         
         collectButtons[i]:registerScriptTapHandler(function()
             if(self.itemType ~= i) then
+
                 print("item:" .. self.itemType .. "," .. i)
                 self:removeChildByTag(100,false)
-                local rect = CCRect(display.left+100, display.bottom + 30, display.width - 180 , display.height - 130)
+                local rect = CCRect(display.left+baseLayer:getLeftWidth(), display.bottom +CFuncHelper:getTopBarH(), display.width - baseLayer:getLeftWidth() - CFuncHelper:getRightBarW() , baseLayer:getLeftHeight())
                 local arrayname = {}
                 if(i == CollectionType.HERO) then
                     arrayname = BaseData_heros
@@ -100,9 +111,14 @@ function CGameCollectionScene:ctor()
                 self.schedulerNextScene = self.scheduler.scheduleGlobal( LoadUpdate, 0.5, false)
 
                 for i=1,3 do
-                    collectButtons[i]:setPosition(display.width - collectButtons[i]:getContentSize().width/2, display.height-offY- (i-1)*offSize)
+                    collectButtons[i]:unselected()
+                    collectButtons[i]:setPosition(display.width -  collectButtons[i]:getContentSize().width/2,
+                     baseLayer:getLeftHeight() + CFuncHelper:getTopBarH()- (i-1)*collectButtons[i]:getContentSize().height - collectButtons[i]:getContentSize().height/2)
                 end
-                collectButtons[i]:setPosition(display.width - collectButtons[i]:getContentSize().width/2-5, display.height-offY- (i-1)*offSize)
+
+                collectButtons[i]:setPosition(display.width -  collectButtons[i]:getContentSize().width/2-1,
+                    baseLayer:getLeftHeight() + CFuncHelper:getTopBarH()- (i-1)*collectButtons[i]:getContentSize().height - collectButtons[i]:getContentSize().height/2)
+                collectButtons[i]:selected()
 
                 self.levelsList:addEventListener("onTapLevelIcon", function(event)
                 return self:onTapLevelIcon(event)
@@ -114,7 +130,16 @@ function CGameCollectionScene:ctor()
         text:setPosition(collectButtons[i]:getContentSize().width/2, collectButtons[i]:getContentSize().height/2)
         collectButtons[i]:addChild(text)
 
+        local maodingSprite = ResourceMgr:getUISprite("maoding")
+        maodingSprite:setPosition(0, 
+            collectButtons[i]:getContentSize().height/2)
+        collectButtons[i]:addChild(maodingSprite)
+
+        -- set bg position
+        self.bg:setPreferredSize(CCSizeMake(display.width - baseLayer:getLeftWidth() - collectButtons[1]:getContentSize().width, baseLayer:getLeftHeight()))
+        self.bg:setPosition(baseLayer:getLeftWidth() + self.bg:getContentSize().width/2, baseLayer:getLeftHeight()/2 + CFuncHelper:getTopBarH())
     end
+    collectButtons[1]:selected()
 
     local ctrMenu = ui.newMenu(collectButtons)
     self:addChild(ctrMenu)

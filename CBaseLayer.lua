@@ -26,7 +26,7 @@ function CBaseLayer:init(bIsHomePage)
             buttonType = NormalButton.TYPE_DARKER,
 
             listener = function()
-                display.replaceScene(require("CGameMenuScene").new())
+                display.replaceScene(require("CGameMenuScene").new(),"fade", 0.6, display.COLOR_WHITE)
             end,
         })
 

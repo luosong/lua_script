@@ -10,14 +10,25 @@ local CBorderLayer = class("CBorderLayer", function()
     return display.newNode()
 end)
 
+
+function CBorderLayer:getLeftWidth( ... )
+    return self.leftWidth
+end
+
+function CBorderLayer:getLeftHeight( ... )
+    return self.leftHeight
+end
+
 function CBorderLayer:init(bShowTopBorder, title)
     local leftBorder = require("CLeftBorder").new()
     leftBorder:setPosition(0, 0)
+    self.leftWidth = leftBorder:getLeftWidth()
+    self.leftHeight = leftBorder:getLeftHeight()
     self:addChild(leftBorder)
 
     local headerSprite = ResourceMgr:getUISprite("board01")
     headerSprite:setAnchorPoint(CCPointMake(0, 0.5))
-    headerSprite:setPosition(leftBorder:getWidth(), display.height - headerSprite:getContentSize().height / 2)
+    headerSprite:setPosition(leftBorder:getWidth(), display.height - headerSprite:getContentSize().height / 2-CFuncHelper:getTopBarH())
     self:addChild(headerSprite)
 
     local headerLabel = ui.newTTFLabel({
@@ -31,13 +42,13 @@ function CBorderLayer:init(bShowTopBorder, title)
 
     local broadcastSprite = CCScale9Sprite:createWithSpriteFrame(ResourceMgr:getUISpriteFrame("board02"))
     broadcastSprite:setPreferredSize(CCSizeMake(CFuncHelper:getRelativeX(17), CFuncHelper:getRelativeY(3)))
-    broadcastSprite:setPosition(CFuncHelper:getRelativeX(22.5), CFuncHelper:getRelativeY(38))
+    broadcastSprite:setPosition(CFuncHelper:getRelativeX(22.5), CFuncHelper:getRelativeY(38)-CFuncHelper:getTopBarH())
     broadcastSprite:setAnchorPoint(CCPointMake(0, 0.5))
     self:addChild(broadcastSprite)
 
     local  scrollLabel = require("ui_common.CScrollLabel").new({
         x = display.width - broadcastSprite:getContentSize().width,
-        y =  display.height - broadcastSprite:getContentSize().height,
+        y =  display.height - broadcastSprite:getContentSize().height-CFuncHelper:getTopBarH(),
         width = broadcastSprite:getContentSize().width * (18.6 / 20),
         height = display.height * (2.3 / 40)
     })

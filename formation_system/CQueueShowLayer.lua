@@ -21,7 +21,7 @@ function CQueueShowLayer:init()
         local cellsPos = cellLayerSize:getCellsPos()
         for i = 1, 9 do
             self.cellSprites[i] = require("formation_system.CGridCellNode").new()
-            self.cellSprites[i]:setPosition(cellsPos[i].x , cellsPos[i].y)
+            self.cellSprites[i]:setPosition(cellsPos[i].x , cellsPos[i].y + CFuncHelper:getTopBarH())
             self:addChild(self.cellSprites[i]:getLayer())
         end
     end
@@ -36,8 +36,6 @@ function CQueueShowLayer:init()
         iconSprites[touchSprite:getTag()]:setColor(ccc3(255, 255, 255))
         touchSprite:removeFromParentAndCleanup(true)
     end
-
-
 
 	--触摸消息处理
 	local function onTouch(eventType, x, y)
@@ -118,7 +116,7 @@ function CQueueShowLayer:init()
 	    local bottomCellWidth = bottomIconArea.width / 5
 		local bottomCellHeight = bottomIconArea.height
 		local bottomBaseX = (display.width - bottomIconArea.width) / 2
-		local bottomBaseY = bottomCellHeight / 10
+		local bottomBaseY = bottomCellHeight / 10 + CFuncHelper:getTopBarH()
 
 	    function initIcon()
 			local heros = game.Player:getMajorHeros()

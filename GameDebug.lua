@@ -4,9 +4,13 @@
 ]]
 require ("framework/shared/debug")
 
-GameDebug = {}
+local GameDebug = class("GameDebug")
 local GAME_DEBUG = true
 
+
+function GameDebug:ctor( ... )
+	io.open("log.txt", "a+")
+end
 
 function GameDebug:logToConsole( ... )
 	-- body
@@ -16,7 +20,7 @@ function GameDebug:logToConsole( ... )
 
 end
 
-function logToFile( ... )
+function GameDebug:WriteLog( ... )
 	-- body
 	if(GAME_DEBUG) then
 		printf(...)

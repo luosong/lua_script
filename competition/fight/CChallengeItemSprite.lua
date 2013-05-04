@@ -15,7 +15,7 @@ end)
 function CChallengeItemSprite:ctor(data)
     local nameLabel = ui.newTTFLabel({
         text = data:getName(),
-        x = -self:getContentSize().width * (1.2 / 3),
+        x = -self:getContentSize().width * (1.4 / 3),
         y = 0,
         size = 32
     })
@@ -27,7 +27,6 @@ function CChallengeItemSprite:ctor(data)
         y = - self:getContentSize().height * (1 / 3),
         size = 22
     })
-
     self:addChild(rankingLabel)
 
     local majorHeros = data:getMajorHeros()
@@ -41,7 +40,9 @@ function CChallengeItemSprite:ctor(data)
     end
 
     local function onChallenge(memData)
-         printf("----------- " .. memData:getName())
+
+        local form = memData:getCurrentFormation():getHeros()
+        display.replaceScene(require("battle_system.CBattleScene").new(form, BattleType.Other_player))
     end
 
     local function c_func(f, ...)

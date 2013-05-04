@@ -34,8 +34,8 @@ function AnimAction:onHitHarmAction(pos)
 	end
 
 	local array = CCArray:create()
-	array:addObject(CCMoveTo:create(2, CCPointMake(pos.x, pos.y + 120)))
-	array:addObject(CCFadeOut:create(2))
+	array:addObject(CCMoveTo:create(1, CCPointMake(pos.x, pos.y + 160)))
+	array:addObject(CCFadeOut:create(1))
 
 	local seqArray = CCArray:create()
 	seqArray:addObject(CCSpawn:create(array))

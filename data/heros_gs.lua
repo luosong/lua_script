@@ -15,7 +15,7 @@ BaseData_heros = {
   str_growType = "D",
   str_growType2 = "E",
   efficiency = 609.375,
-  str_des = "人物描述人物描述人物描述人物描述人物描述人物描述人物描述人物描述"
+  str_des = "西域人士，"
  },
  [2] = {
   id = 2,
@@ -38,7 +38,7 @@ BaseData_heros = {
  [3] = {
   id = 3,
   str_name = "扫地僧",
-  property = 6,
+  property = 5,
   str_icon = "icon_saodiseng",
   fragment = 5,
   skill = 1,

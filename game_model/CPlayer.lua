@@ -58,6 +58,14 @@ function CPlayer:addUnLockLevel(level, subLevel)
 end
 
 
+-- 从服务器赋值
+function CPlayer:setUnloadLevel( levels )
+    if levels then
+        for i,v in ipairs(levels) do
+            self.m_unlock_levels[i] = v
+        end
+    end
+end
 
 function CPlayer:getStarsById(level, subLevel)
     if self.m_unlock_levels[level] then
@@ -77,6 +85,10 @@ end
 function CPlayer:setCurrentLevel(level, subLevel)
     self.m_currentLevel.level    = level
     self.m_unlock_levels[level][subLevel] = subLevel
+end
+
+function CPlayer:getUnlockLevels( ... )
+    return self.m_unlock_levels
 end
 
 function CPlayer:ctor()
@@ -144,7 +156,7 @@ function CPlayer:getFriends()
 end
 
 function CPlayer:addFriend(friend)
-    self.m_friends = self.m_friends[#self.m_friends]
+    self.m_friends[#self.m_friends + 1] = friend
 end
 
 function CPlayer:getPackage()
@@ -302,6 +314,12 @@ function CPlayer:setSilver(money)
     self.m_silver = require("FuncHelper"):encryptNum(money)
 end
 
+function CPlayer:addSilver(silver)
+    printf("增加银子 ........... " .. silver)
+    self.m_silver = CFuncHelper:addForChaosNum(self.m_silver, silver)
+
+end
+
 function CPlayer:getSilver()
     return require("FuncHelper"):decryptNum(self.m_silver)
 end
@@ -373,6 +391,10 @@ end
 
 function CPlayer:setExp(exp)
     self.m_exp = require("FuncHelper"):encryptNum(exp)
+end
+
+function CPlayer:addExp(exp)
+    self.m_exp = CFuncHelper:addForChaosNum(self.m_exp, exp)
 end
 
 function CPlayer:getExp()

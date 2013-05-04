@@ -5,6 +5,8 @@ GAME_DEBUG = {
 	DEBUG_RANDNAME = true
 }
 
+
+
 if device.platform == "android" then
     FONT_SIZE = {
         GameMenuSceneFont = {
@@ -70,6 +72,19 @@ SettingType = {
     HELP  = 4
 }
 
+BattleType = {
+    Adventure_map = 1,
+    Other_player  = 2
+}
+
+ItemType = {}
+
+ItemType.EQUIPMENT = 1
+ItemType.SKILL = 2
+ItemType.HERO = 3
+ItemType.Other = 4
+
+
 --[[ =================================]]
 ItemShowType = {}
 ItemShowType.MEMBER_HEROS_INFO = 1  --成员信息
@@ -96,17 +111,19 @@ EquipmentEffectType.HP_PER     = 5
 EquipmentEffectType.MAGIC      = 6     --内力
 EquipmentEffectType.MAGIC_PER  = 7
 
---0：单体
---1：单行
---2：单列
---3：十字
---4：全体
+--1：单体
+--2：单行
+--3：单列
+--4：十字
+--5：回字
+--6:全体
 SkillAtkType = {}
-SkillAtkType.SINGLE_PERSON = 0
-SkillAtkType.SINGLE_ROW    = 1
-SkillAtkType.SINGLE_COL    = 2
-SkillAtkType.CROSS         = 3
-SkillAtkType.All           = 4
+SkillAtkType.SINGLE_PERSON = 1
+SkillAtkType.SINGLE_ROW    = 2
+SkillAtkType.SINGLE_COL    = 3
+SkillAtkType.CROSS         = 4
+SkillAtkType.CIRCLE        = 5
+SkillAtkType.ALL           = 6
 
 
 --[[ Collection type 图鉴]]
@@ -143,6 +160,12 @@ GAME_FONT = {
 	font_maobi = "fonts/font_names_maobi.fnt",
 	font_zhaoxian = "fonts/font_zhaoxian.fnt",
     font_vip = "fonts/font_vip.fnt",
+
+    font_blood = "fonts/font_blood.fnt",
+
+    font_ttf_mini = "fonts/minijty.ttf",
+    font_ttf_ygy = "fonts/ygyxsziti2.0.ttf",
+    font_ttf_mf = "fonts/Marker Felt.ttf",
 }
 
 GAME_SFX = {
@@ -150,12 +173,26 @@ GAME_SFX = {
     backButton = "music/sfx/BackButtonSound.mp3",
 }
 
+GAME_MUSIC = {
+    LOGO = "music/zitaoyunxiaxiandaowei.mp3", -- "music/logo.wav",--
+    MM = "music/sound_mm.wav",
+    MM_OTHER = "music/sound_other.wav",
+}
+
 
 GAME_SETTING = {
+    HAS_SAVE = "saved",
 	ENABLE_MUSIC = "enable_music",
 	ENABLE_SFX = "enable_sfx",
 }
 
+
+GAME_BLACKSMITH_COST = {
+    LEVEL_1 = 500,
+    LEVEL_2 = 1000,
+    LEVEL_3 = 1500,
+    LEVEL_4 = 2000
+}
 
 --[[
 	操作类型: 
@@ -171,4 +208,34 @@ OPTIONS_TYPE = {
 
 GAME_RES = {
     HUAWEN_BG = "board29",
+}
+
+-- 碎片，一个单独的物品，可以转化为多少个碎片
+GAME_FRAGMENT_HERO = {
+    STAR_5 = 40,
+    STAR_4 = 30,
+    STAR_3 = 20,
+    STAR_2 = 10
+}
+
+GAME_FRAGMENT_EQUIP = {
+    STAR_5 = 40,
+    STAR_4 = 30,
+    STAR_3 = 20,
+    STAR_2 = 10,
+    STAR_1 = 5,
+}
+
+GAME_FRAGMENT_SKILL = {
+    STAR_5 = 40,
+    STAR_4 = 30,
+    STAR_3 = 20,
+    STAR_2 = 10,
+    STAR_1 = 5,
+}
+
+
+-- 游戏教学，
+GAME_TUTORIAL = {
+    PICKUP_HEROS = {43, 57, 92}, -- 可以挑选的3个heroid
 }

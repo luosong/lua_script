@@ -47,8 +47,6 @@ function CMajorHerosScene:init()
             initEquipmentIcon()
 
         end
-
-
         ------------显示大图的icon
         local function showBigIcon()
             itemSprite = require("possessions.CDetailItemSprite").new(false, heros[1], ItemShowType.MEMBER_HEROS_INFO)
@@ -145,7 +143,7 @@ function CMajorHerosScene:init()
                 nameLabel:setColor(ccc3(0, 0, 255))
                 button:addChild(nameLabel)
             else
-                button = CSingleImageMenuItem:create(display.newSprite("frame_bg.png"))
+                button = CSingleImageMenuItem:create(ResourceMgr:getUISprite("icon_bg_white"))
                 local label = ui.newTTFLabel({
                     text = "武功" .. i,
                     color = ccc3(0, 0, 0),
@@ -168,18 +166,30 @@ function CMajorHerosScene:init()
             rowSize = 2
         })
         kungFuNodeLayout:setPosition(CFuncHelper:getRelativeX(4), CFuncHelper:getRelativeY(10))
-        self.node:addChild(kungFuNodeLayout)
+        self.node:addChild(kungFuNodeLayout, 0)
 
     end
     -----------------------------------装备---------------------------------------
 
-    local function onEquipmentButton(data, bIsEquip)
+    local function onEquipmentButton(data, bIsEquip, posIndex)
+
+        local function onChangeEquip()
+            local equipLayer = require("possessions.CChooseLayer").new(currentHero, posIndex, ItemType_Equip)
+            equipLayer:setPosition(0, 0)
+            self.node:addChild(equipLayer,3)
+            registerNotification(equipLayer)
+        end
 
         if (currentHero == nil) then
             return
         end
+
         if (bIsEquip) then
-            printf("--------------------------------------------------" .. data:getName())
+            local itemInfo = require("possessions.CItemInfoLayer").new(data)
+            require("framework.client.api.EventProtocol").extend(itemInfo)
+            itemInfo:addEventListener(GlobalVariable["NotificationTag"].EQUIPMENT_DETAIL_LAYER, onChangeEquip)
+            itemInfo:setPosition(0, 0)
+            self.node:addChild(itemInfo, 2)
         else
             local equipLayer = require("possessions.CChooseLayer").new(currentHero, data, ItemType_Equip)
             equipLayer:setPosition(0, 0)
@@ -213,7 +223,7 @@ function CMajorHerosScene:init()
             local button = nil
             if (currentHeroEqupments and currentHeroEqupments[v] ~= nil) then
                 button = CSingleImageMenuItem:create(require("ui_object.CEquipIconSprite").new(currentHeroEqupments[v]))
-                button:registerScriptTapHandler(c_func(onEquipmentButton, currentHeroEqupments[v], true))
+                button:registerScriptTapHandler(c_func(onEquipmentButton, currentHeroEqupments[v], true, v))
                 local nameLabel = ui.newBMFontLabel({
                     text = currentHeroEqupments[v]:getName(),
                     font = GAME_FONT.font_youyuan,
@@ -225,7 +235,7 @@ function CMajorHerosScene:init()
                 button:addChild(nameLabel)
 
             else
-                button = CSingleImageMenuItem:create(display.newSprite("frame_bg.png"))
+                button = CSingleImageMenuItem:create(ResourceMgr:getUISprite("icon_bg_white"))
                 button:registerScriptTapHandler(c_func(onEquipmentButton, v, false))
                 local label = ui.newTTFLabel({
                     text = equipMapping[v],
@@ -248,7 +258,7 @@ function CMajorHerosScene:init()
         })
 
         equipNodeLayout:setPosition(CFuncHelper:getRelativeX(27), CFuncHelper:getRelativeY(10))
-        self.node:addChild(equipNodeLayout)
+        self.node:addChild(equipNodeLayout, 0)
     end
 
     initKungIcon()

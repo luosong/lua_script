@@ -9,6 +9,19 @@ function CFuncHelper:ccSub(pos1, pos2)
 	return CCPointMake(x, y)
 end
 
+
+function CFuncHelper:getRandomResults(r)
+    local ret = false
+    local num = math.random(1, 10000)
+    printf("num  -----> " .. num)
+    if num <= r * 100 then
+        ret = true
+    end
+    return ret
+end
+
+
+
 --[[]
 --给数字加密(只支持数字类型)
 param:  num为普通数字
@@ -46,6 +59,19 @@ end
 
 function CFuncHelper:getRelativeY(x)
     return display.height * (x / 40)
+end
+
+function CFuncHelper:getTopBarH( )
+	if(display.height == 640) then
+		return 0
+	else
+		return (display.height-640)/2
+	end
+
+end
+
+function CFuncHelper:getRightBarW( ... )
+	return  80
 end
 
 function CFuncHelper:secondToDate( second )

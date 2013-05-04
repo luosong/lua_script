@@ -5,7 +5,7 @@
 require ("GameConst")
 require ("MsgConst")
 
-local debug = require ("GameDebug")
+
 
 local CGameNetWork = class("CGameNetWork")
 local outStringData = nil
@@ -70,15 +70,15 @@ function CGameNetWork:Request()
 
 		local j = require "framework/shared/json/simplejson"
 		local zipRes = request:getResponseDataLua()
-		GameDebug:logToConsole("zip:" ..zipRes)
+		game.Debuger:logToConsole("zip:" ..zipRes)
 
 		-- uncompress data
 		local res,eof,bin,bout = zlib.inflate()(zipRes)
 
 		if(eof) then
-			GameDebug:logToConsole("unzip:" .. res)
+			game.Debuger:logToConsole("unzip:" .. res)
 		else
-			GameDebug:logToConsole("=|eof is false|=" .. bin .. "," .. bout)	
+			game.Debuger:logToConsole("=|eof is false|=" .. bin .. "," .. bout)	
 		end
 		-- json decode
 		if(res ~= "") then

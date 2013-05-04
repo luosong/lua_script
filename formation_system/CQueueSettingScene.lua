@@ -45,15 +45,15 @@ function CQueueSettingScene:init()
 
     confirmButton:setPosition(display.width - confirmButton:getContentSize().width, 50)
 
-    local concelButton = ui.newTTFLabelMenuItem({
+    local cancleButton = ui.newTTFLabelMenuItem({
         text = require("data.GameText").getText("concel"),
         color = ccc3(0, 0, 0),
         listener = function()
             display.replaceScene(require("CGameMenuScene").new())
         end
     })
-    concelButton:setPosition(confirmButton:getContentSize().width, 50)
-	local menu = ui.newMenu({confirmButton, concelButton})
+    cancleButton:setPosition(confirmButton:getContentSize().width, 50)
+	local menu = ui.newMenu({confirmButton, cancleButton})
 	self.node:addChild(menu)
 
 	--注册改变阵法事件
@@ -74,11 +74,15 @@ function CQueueSettingScene:init()
 end
 
 function CQueueSettingScene:ctor(mainMapId, subMapId)
-
+    if(display.height > CONFIG_SCREEN_HEIGHT ) then
+        local pad = require("CLayerIpad").new()
+        self:addChild(pad)
+    end
 	self.map = {mainMapId, subMapId }
 	self.node = display.newNode()
     self.node:setPosition(0, 0)
     self:addChild(self.node)
+
 
 	self:init()
 end

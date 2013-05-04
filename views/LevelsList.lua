@@ -6,12 +6,12 @@ local LevelsList = class("LevelsList", PageControl)
 
 LevelsList.INDICATOR_MARGIN = 46
 
-function LevelsList:ctor(rect,inData, visiableArray, itemType)
+function LevelsList:ctor(rect,inData, visiableArray, itemType ,startY)
     self.super.ctor(self, rect, PageControl.DIRECTION_HORIZONTAL)
 
     -- add cells
     local rows, cols = 3, 5
-    if display.width > 1000 then cols = cols + 1 end
+    if display.width > 1024 then cols = cols + 1 end
 
     local Levels = inData --require("data.Levels")
     local numPages = math.ceil(Levels.ArrayCount() / (rows * cols))
@@ -22,8 +22,8 @@ function LevelsList:ctor(rect,inData, visiableArray, itemType)
         if endLevelIndex > Levels.ArrayCount() then
             endLevelIndex = Levels.ArrayCount()
         end
-        local cell = LevelsListCell.new(CCSize(rect.size.width, rect.size.height-30), levelIndex, 
-            endLevelIndex, rows, cols, inData, rect, visiableArray, itemType)
+        local cell = LevelsListCell.new(CCSize(rect.size.width, rect.size.height-60), levelIndex, 
+            endLevelIndex, rows, cols, inData, rect, visiableArray, itemType, startY)
         cell:addEventListener("onTapLevelIcon", function(event) return self:onTapLevelIcon(event) end)
         self:addCell(cell)
         levelIndex = endLevelIndex + 1
@@ -31,7 +31,7 @@ function LevelsList:ctor(rect,inData, visiableArray, itemType)
 
     -- add indicators
     local x = (self:getClippingRect().size.width - LevelsList.INDICATOR_MARGIN * (numPages - 1)) / 2 + 50
-    local y = self:getClippingRect().origin.y + 20
+    local y = self:getClippingRect().origin.y + 10
 
     self.indicator_ = display.newSprite("#LevelListsCellSelected.png")
     self.indicator_:setPosition(x, y)

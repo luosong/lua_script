@@ -62,8 +62,8 @@ function CChooseLayer:init(data, index, itemType)
             local i = 1
             for k, v in ipairs(items) do
 
-                if itemType == ItemType_KungFu or
-                        ((itemType == ItemType_Equip) and (index == v:getType())) then
+                if (itemType == ItemType_KungFu and data:haveKungFu(v:getId()) == false) or
+                        ((data:haveEquipment(v:getId()) == false) and (itemType == ItemType_Equip) and (index == v:getType())) then
                     nodes[i] = require("possessions.CChooseItemSprite").new(v, itemType)
                     nodes[i]:setTouchListener(c_func(onTouchItem, v))
 

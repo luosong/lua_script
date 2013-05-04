@@ -14,19 +14,19 @@ end)
 function CQueueSelectedLayer:init()
 
     local bgPosX = display.width * (1/ 4)
-    local bgPosY = display.height * (18 / 40)
+    local bgPosY = display.height * (18 / 40) + CFuncHelper:getTopBarH()
     local bg = ResourceMgr:getUISprite("board15")
     bg:setPosition(bgPosX, bgPosY)
     self:addChild(bg)
 
     local discBg = ResourceMgr:getUISprite("board14")
-    discBg:setPosition(display.width * (1/ 4), display.height * (34 / 40))
+    discBg:setPosition(display.width * (1/ 4), display.height * (34 / 40) )
     self:addChild(discBg)
 
     local discLabel = ui.newTTFLabel({
         text = BaseData_formations[game.Player:getQueueType()]["str_des"],
         x    = discBg:getContentSize().width * (2 / 18),
-        y    = discBg:getContentSize().height / 2,
+        y    = discBg:getContentSize().height / 2 ,
         color = ccc3(0, 0, 0),
         dimensions = CCSizeMake(discBg:getContentSize().width * (14 / 18), discBg:getContentSize().height * (6 / 8))
     })

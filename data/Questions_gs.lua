@@ -255,7 +255,7 @@ BaseData_Questions = {
   str_A = "飞天猩猩",
   str_B = "飞天蝙蝠",
   str_C = "飞天燕子",
-  str_D = "飞天神龙",
+  str_D = "飞天哼哼",
   str_result = "B",
   reward = 10
  },

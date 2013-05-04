@@ -103,7 +103,9 @@ function NormalButton.new(params)
 
         -- =================================================
 
-        button:getParent():setEnabled(false)
+        if not tolua.isnull(button:getParent() ) then
+            button:getParent():setEnabled(false)
+        end
 
         if(params.buttonType == NormalButton.TYPE_NORMAL) then
             normal1(20, 0.11, function()

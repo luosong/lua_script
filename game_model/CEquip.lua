@@ -14,6 +14,15 @@ function CEquip:getId()
     return self.m_id
 end
 
+function CEquip:getLevel( ... )
+    return self.m_level
+end
+
+function CEquip:upgrade(value)
+    self.m_level = self.m_level + 1
+    self.m_value = self.m_value + value
+end
+
 function CEquip:getDesc()
     return self.m_des
 end
@@ -49,7 +58,6 @@ function CEquip:getEffectType()
 end
 
 function CEquip:getEffect()
-
     local name = ""
     if EquipmentEffectType.ATTACK == self.m_effect_type then
         name = "攻 " .. tostring(self.m_value)
@@ -68,6 +76,7 @@ function CEquip:getEffect()
     elseif  EquipmentEffectType.MAGIC_PER == self.m_effect_type then
         name = "内 %" .. tostring(self.m_value)
     end
+
     return name
 end
 
@@ -90,14 +99,23 @@ function CEquip:getStatus()
     return status, bIsEquip
 end
 
+function CEquip:getAnimId()
+    return self.m_anim_id
+end
+
 function CEquip:ctor(data)
     self.m_id           = data.id
+    self.m_value        = data.value
+    self.m_level        = 1
+
+
     self.m_icon         = data.str_icon
+    self.m_anim_id      = data.str_anim_id
 	self.m_name         = data.str_name
     self.m_des          = data.str_des
 	self.m_equip_type   = data.equip_type
     self.m_effect_type  = data.effect_type
-	self.m_value        = data.value
+
 	self.m_matchid      = data.matchid
     self.m_property     = data.property
 
@@ -105,5 +123,18 @@ function CEquip:ctor(data)
 
 end
 
+
+--[[
+    生成可以上传的数据类型，根据opt类型
+]]
+function CEquip:genUploadEquip( opt )
+    local equip = {}
+    equip.opt = opt
+    equip.id = self:getId()    
+    equip.ev = self:getEffect()
+    equip.lv = self:getLevel()
+
+    return equip
+end
 
 return CEquip

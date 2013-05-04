@@ -10,20 +10,46 @@ local COtherPlayer = class("COtherPlayer")
 
 
 function COtherPlayer:ctor(data)
-    local _name       = data.name or ""   --名字
-    local _majorHeros = data.majorHeros --主力成员
-    local _level      = data.level or 1 -- 等级
-    local _equipments = data.equipments  --装备
-    local _skills     = data.skills  --技能
-    local _formation  = data.formation      --阵法
+    local _name       = data.name or ""     --名字
+    local _majorHeros = data.majorHeros      --主力成员
+    local _level      = data.level or 1      -- 等级
+    local _equipments = data.equipments      --装备
+    local _skills     = data.skills          --技能
+
     local _ranking    = data.ranking or 1
+    local _currentFormId    = data.currentFormId
+    local _formations = data.formations
 
     local _serverID = 1
     local _thirdID  = ""
     local _uid      = ""
     local _playerID = ""
+    ------------------------------------------------------
+    local function getHeroById(id)
+        for k, v in ipairs(_majorHeros) do
+            if v:getId() == id then
+                return v
+            end
+        end
+        return nil
+    end
+
+    for k, v in ipairs(_formations) do
+        local herosId = v:getHerosId()
+        for i = 1, 9 do
+            local hero = getHeroById(herosId[i])
+            if hero then
+                v:setHero(i, hero)
+            end
+        end
+    end
 
     --------------------存取方法-------------------------
+
+    self.getCurrentFormation = function(self)
+        return _formations[_currentFormId]
+    end
+
     self.getName = function(self)
        return _name
     end

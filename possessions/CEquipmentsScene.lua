@@ -17,9 +17,9 @@ function CEquipmentsScene:init()
     self.node:addChild(baseLayer)
 
     self.bg = CCScale9Sprite:createWithSpriteFrameName("board29.png")
-    self.bg:setPreferredSize(CCSizeMake(display.width * (33.2 / 40), display.height * (36 / 40)))
+    -- self.bg:setPreferredSize(CCSizeMake(display.width * (33.2 / 40), display.height * (36 / 40)))
+    -- self.bg:setPosition(display.width * (20.4 / 40), display.height * (18 / 40))
 
-    self.bg:setPosition(display.width * (20.4 / 40), display.height * (18 / 40))
     self.node:addChild(self.bg)
 
     local allButton = nil
@@ -115,7 +115,7 @@ function CEquipmentsScene:init()
             end
 
             local function onTouchItem(itemData)
-                dlgNode.detailLayer = require("possessions.CItemInfoLayer").new(itemData)
+                dlgNode.detailLayer = require("possessions.CItemInfoLayer").new(itemData, 1)
                 dlgNode:addChild(dlgNode.detailLayer)
 
                 dlgNode.detailEvent = require("framework.client.api.EventProtocol").extend(dlgNode.detailLayer)
@@ -149,8 +149,8 @@ function CEquipmentsScene:init()
                         image = "#button12.png",
                         imageSelected = "#button13.png",
                         listener = c_func(onEnhanceButton, v),
-                        x =  nodes[i]:getContentSize().width * (10 / 32),
-                        y = 0
+                        x =  nodes[i]:getContentSize().width * (12 / 32),
+                        y = -nodes[i]:getContentSize().height * (1 / 6)
                     })
 
                     local label = ResourceMgr:getUISprite("font_dz")
@@ -167,9 +167,9 @@ function CEquipmentsScene:init()
 
             local scrollLayer = require("ui_common.CScrollLayer").new({
                 x = display.width * (5 / 40),
-                y = display.height * (2 / 40),
+                y = CFuncHelper:getTopBarH() + 20,
                 width = display.width * (30.8 / 40),
-                height = display.height * (32 / 40),
+                height = self.bg:getContentSize().height-40,
                 pageSize = 4,
                 rowSize = 1,
                 nodes = nodes,
@@ -210,8 +210,8 @@ function CEquipmentsScene:init()
             imageSelected = "#board30.png",
             listener = c_func(onButton),
         })
-        allButton:setPosition(self.bg:getContentSize().width + allButton:getContentSize().width / 2,
-            self.bg:getContentSize().height - allButton:getContentSize().height * 0.5)
+        allButton:setPosition(display.width - allButton:getContentSize().width / 2,
+            baseLayer:getLeftHeight() + CFuncHelper:getTopBarH() - allButton:getContentSize().height/2)
         local allLabel = ui.newTTFLabel({
             text = "所\n有",
             size = 28,
@@ -221,9 +221,8 @@ function CEquipmentsScene:init()
         })
         allButton:addChild(allLabel)
         local maodingSprite = ResourceMgr:getUISprite("maoding")
-        maodingSprite:setPosition(self.bg:getContentSize().width,
-            self.bg:getContentSize().height - allButton:getContentSize().height * 0.5)
-        self.bg:addChild(maodingSprite, 2)
+        maodingSprite:setPosition(0, allButton:getContentSize().height/2)
+        allButton:addChild(maodingSprite, 2)
 
 
         weaponButton = ui.newImageMenuItem({
@@ -231,15 +230,14 @@ function CEquipmentsScene:init()
             imageSelected = "#board30.png",
             listener = c_func(onButton, EquipmentType.WEAPON),
         })
-        weaponButton:setPosition(self.bg:getContentSize().width + weaponButton:getContentSize().width / 2,
-            self.bg:getContentSize().height - weaponButton:getContentSize().height * 1.5)
+        weaponButton:setPosition(display.width - weaponButton:getContentSize().width / 2,
+            baseLayer:getLeftHeight() + CFuncHelper:getTopBarH() - weaponButton:getContentSize().height * 1.5)
         local weaponLabel = ResourceMgr:getUISprite("font_bq")
         weaponLabel:setPosition(weaponButton:getContentSize().width / 2, weaponButton:getContentSize().height / 2)
         weaponButton:addChild(weaponLabel)
         maodingSprite = ResourceMgr:getUISprite("maoding")
-        maodingSprite:setPosition(self.bg:getContentSize().width,
-            self.bg:getContentSize().height - weaponButton:getContentSize().height * 1.5)
-        self.bg:addChild(maodingSprite, 2)
+        maodingSprite:setPosition(0, weaponButton:getContentSize().height/2)
+        weaponButton:addChild(maodingSprite, 2)
 
 
         dressButton = ui.newImageMenuItem({
@@ -247,15 +245,14 @@ function CEquipmentsScene:init()
             imageSelected = "#board30.png",
             listener = c_func(onButton, EquipmentType.DRESS),
         })
-        dressButton:setPosition(self.bg:getContentSize().width + dressButton:getContentSize().width / 2,
-            self.bg:getContentSize().height - dressButton:getContentSize().height * 2.5)
+        dressButton:setPosition(display.width - dressButton:getContentSize().width / 2,
+            baseLayer:getLeftHeight() + CFuncHelper:getTopBarH() - dressButton:getContentSize().height * 2.5)
         local dressLabel = ResourceMgr:getUISprite("font_fz")
         dressLabel:setPosition(dressButton:getContentSize().width / 2, dressButton:getContentSize().height / 2)
         dressButton:addChild(dressLabel)
         maodingSprite = ResourceMgr:getUISprite("maoding")
-        maodingSprite:setPosition(self.bg:getContentSize().width,
-            self.bg:getContentSize().height - weaponButton:getContentSize().height * 2.5)
-        self.bg:addChild(maodingSprite, 2)
+        maodingSprite:setPosition(0, dressButton:getContentSize().height/2)
+        dressButton:addChild(maodingSprite, 2)
 
 
         otherButton = ui.newImageMenuItem({
@@ -263,22 +260,27 @@ function CEquipmentsScene:init()
             imageSelected = "#board30.png",
             listener = c_func(onButton, EquipmentType.OTHER),
         })
-        otherButton:setPosition(self.bg:getContentSize().width + otherButton:getContentSize().width / 2,
-            self.bg:getContentSize().height - otherButton:getContentSize().height * 3.5)
+        otherButton:setPosition(display.width - otherButton:getContentSize().width / 2,
+            baseLayer:getLeftHeight() + CFuncHelper:getTopBarH() - otherButton:getContentSize().height * 3.5)
         local otherLabel = ResourceMgr:getUISprite("font_sp")
         otherLabel:setPosition(otherButton:getContentSize().width / 2, otherButton:getContentSize().height / 2)
         otherButton:addChild(otherLabel)
         maodingSprite = ResourceMgr:getUISprite("maoding")
-        maodingSprite:setPosition(self.bg:getContentSize().width,
-            self.bg:getContentSize().height - weaponButton:getContentSize().height * 3.5)
-        self.bg:addChild(maodingSprite, 2)
+        maodingSprite:setPosition(0, otherLabel:getContentSize().height/2)
+        otherLabel:addChild(maodingSprite, 2)
 
         local menu = ui.newMenu({allButton, weaponButton, dressButton, otherButton})
-        self.bg:addChild(menu)
+        self:addChild(menu)
     end
 
+
     initButton()
+
+    self.bg:setPreferredSize(CCSizeMake(display.width - baseLayer:getLeftWidth() - weaponButton:getContentSize().width, baseLayer:getLeftHeight()))
+    self.bg:setPosition(baseLayer:getLeftWidth() + self.bg:getContentSize().width/2, baseLayer:getLeftHeight()/2 + CFuncHelper:getTopBarH())
+
     initItem()
+
 
 
 

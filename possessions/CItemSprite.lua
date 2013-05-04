@@ -13,12 +13,13 @@ local ItemType_Equip  = 3
 local CItemSprite = class("CItemSprite", function(data, itemType)
     local sprite = CCScale9Sprite:create("bartile.png")
 
+    local spriteH = sprite:getContentSize().height
     if ItemType_Bag == itemType then
-        sprite:setPreferredSize(CCSizeMake(display.width * (33 / 40), display.height * (9.5 / 40)))
+        sprite:setPreferredSize(CCSizeMake(display.width * (33 / 40), spriteH))
     elseif ItemType_Equip == itemType then
-        sprite:setPreferredSize(CCSizeMake(display.width * (30 / 40), display.height * (8 / 40)))
+        sprite:setPreferredSize(CCSizeMake(display.width * (30 / 40), spriteH))
     elseif ItemType_KungFu == itemType then
-        sprite:setPreferredSize(CCSizeMake(display.width * (32.5 / 40), display.height * (8 / 40)))
+        sprite:setPreferredSize(CCSizeMake(display.width * (32.5 / 40), spriteH))
     end
 
     return require("ui_common.CScrollCell").new(sprite)
@@ -43,29 +44,29 @@ function CItemSprite:init(data, itemType)
         local effectValue = ui.newTTFLabel({
             text = data:getEffect(),
             x = -self:getContentSize().width * (8 / 32),
-            y = 0,
+            y = -self:getContentSize().height * (1 / 3.5),
             color = ccc3(0, 0, 255),
             size = FONT_SIZE.ItemSpriteFont.EFFECT_VALUE_LABEL_SIZE
         })
         self:addChild(effectValue)
 
-        local property = ui.newTTFLabel({
-            text = "星级:" .. tostring(data:getProperty()),
-            x = self:getContentSize().width * (1 / 32),
-            y = self:getContentSize().height * (1 / 4.5),
-            color = ccc3(0, 0, 255),
-            size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
-        })
-        self:addChild(property)
+        for i = 1, data:getProperty() do
+            local starSprite =  ResourceMgr:getUISprite("icon_star")
+            starSprite:setPosition(0 + starSprite:getContentSize().width + (i - 1) * starSprite:getContentSize().width,
+                self:getContentSize().height * (1 / 3.5))
+            self:addChild(starSprite)
+        end
 
         local levelLabel = ui.newTTFLabel({
-            text = "级别:  " .. tostring(11),
+            text = "级别:  " .. tostring(data:getLevel()),
             x = self:getContentSize().width * (1 / 32),
             y = 0,
             color = ccc3(0, 0, 255),
             size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
         })
         self:addChild(levelLabel)
+
+
 
         local statusLabel = ui.newTTFLabel({
             text = data:getStatus(),
@@ -97,7 +98,8 @@ function CItemSprite:init(data, itemType)
             [SkillAtkType.SINGLE_ROW]    = "单行攻击",
             [SkillAtkType.SINGLE_COL]    = "单列攻击",
             [SkillAtkType.CROSS]         = "十字攻击",
-            [SkillAtkType.All]           = "全体攻击"
+            [SkillAtkType.ALL]           = "全体攻击",
+            [SkillAtkType.CIRCLE]        = "回字攻击"
         }
 
         local effectValue = ui.newTTFLabel({
@@ -109,17 +111,15 @@ function CItemSprite:init(data, itemType)
         })
         self:addChild(effectValue)
 
-        local property = ui.newTTFLabel({
-            text = "星级:  " .. tostring(data:getProperty()),
-            x = self:getContentSize().width * (1 / 32),
-            y = self:getContentSize().height * (1 / 4.5),
-            color = ccc3(0, 0, 255),
-            size = FONT_SIZE.ItemSpriteFont.PROPERTY_LABEL_SIZE
-        })
-        self:addChild(property)
+        for i = 1, data:getProperty() do
+            local starSprite =  ResourceMgr:getUISprite("icon_star")
+            starSprite:setPosition(0 + starSprite:getContentSize().width + (i - 1) * starSprite:getContentSize().width,
+                self:getContentSize().height * (1 / 3.5))
+            self:addChild(starSprite)
+        end
 
         local levelLabel = ui.newTTFLabel({
-            text = "级别:  " .. tostring(11),
+            text = "级别:  " .. tostring(data:getLevel()),
             x = self:getContentSize().width * (1 / 32),
             y = 0,
             color = ccc3(0, 0, 255),

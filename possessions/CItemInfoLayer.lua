@@ -19,7 +19,7 @@ local CItemInfoLayer = class("CItemInfoLayer", function()
     --return CCLayerColor:create(ccc4(100, 100, 100, 155), display.width, display.height)
 end)
 
-function CItemInfoLayer:init(itemData)
+function CItemInfoLayer:init(itemData, displayType)
 
     self:setTouchEnabled(true)
     self:registerScriptTouchHandler(function(eventType, x, y)
@@ -50,17 +50,33 @@ function CItemInfoLayer:init(itemData)
     sprite:addChild(icon)
 
     local function initButton()
-        local okButton = CSingleImageMenuItem:create("button.png")
-        okButton:setPosition(bg:getContentSize().width * (1 / 4), bg:getContentSize().height * (1 / 10))
-        okButton:registerScriptTapHandler(function()
+
+        local function onDoubleDetail()
             self:dispatchEvent({
                 name = GlobalVariable["NotificationTag"]["EQUIPMENT_DOUBLE_DETAIL"],
                 info = "Hello"
             })
+        end
 
-        end)
+        local function onExchangeEquip()
+            self:dispatchEvent({
+                name = GlobalVariable["NotificationTag"]["EQUIPMENT_DETAIL_LAYER"],
+                info = "Hello"
+            })
+        end
+
+        local okButton = CSingleImageMenuItem:create("button.png")
+        okButton:setPosition(bg:getContentSize().width * (1 / 4), bg:getContentSize().height * (1 / 10))
+        local okText = "强化"
+        if (displayType == 1) then
+            okButton:registerScriptTapHandler(onDoubleDetail)
+        else
+            okText = "更换装备"
+            okButton:registerScriptTapHandler(onExchangeEquip)
+        end
+
         local okLabel = ui.newTTFLabel({
-            text = "强化",
+            text = okText,
             x    = okButton:getContentSize().width / 2,
             y    = okButton:getContentSize().height / 2,
             align = ui.TEXT_ALIGN_CENTER
@@ -70,13 +86,17 @@ function CItemInfoLayer:init(itemData)
         local cancelButton = CSingleImageMenuItem:create("button.png")
         cancelButton:setPosition(bg:getContentSize().width * (3 / 4), bg:getContentSize().height * (1 / 10))
         cancelButton:registerScriptTapHandler(function()
+
+            self:removeAllEventListenersForEvent(GlobalVariable["NotificationTag"]["EQUIPMENT_DETAIL_LAYER"])
+            self:removeAllEventListenersForEvent(GlobalVariable["NotificationTag"]["EQUIPMENT_DOUBLE_DETAIL"])
+
             self:removeAllChildrenWithCleanup(true)
             self:removeFromParentAndCleanup(true)
-
-            self:dispatchEvent({
-                name = GlobalVariable["NotificationTag"]["EQUIPMENT_DETAIL_LAYER"],
-                info = "Hello"
-            })
+--
+--            self:dispatchEvent({
+--                name = GlobalVariable["NotificationTag"]["EQUIPMENT_DETAIL_LAYER"],
+--                info = "Hello"
+--            })
         end)
         local cancelLabel = ui.newTTFLabel({
             text = "返回",
@@ -94,16 +114,17 @@ function CItemInfoLayer:init(itemData)
 
 end
 
+
 function CItemInfoLayer:getData()
      return self.itemData
 end
 
-function CItemInfoLayer:ctor(itemData)
+function CItemInfoLayer:ctor(itemData, displayType)
     self.itemData = itemData
     self.node = display.newNode()
     self.node:setPosition(0, 0)
     self:addChild(self.node)
-    self:init(itemData)
+    self:init(itemData, displayType)
 end
 
 return CItemInfoLayer

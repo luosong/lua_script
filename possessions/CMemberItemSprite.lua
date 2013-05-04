@@ -72,7 +72,6 @@ function CMemberItemSprite:ctor(heroData, itemType, index)
         })
         trainButton:addChild(trainButtonLabel)
 
-
         local function onExchange()
             printf("传功")
         end

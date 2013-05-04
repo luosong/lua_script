@@ -54,6 +54,55 @@ function CMapInfoLayer:init()
         align = ui.TEXT_ALIGN_CENTER
     })
     self.bg:addChild(descLabel)
+
+    if self.dropItem1[1] > 0 then
+        local icon = nil
+        local data = nil
+        if self.dropItem1[1] == ItemType.EQUIPMENT then
+            data = require("game_model.CEquip").new(BaseData_equipments[self.dropItem1[2]])
+            icon = require("ui_object.CEquipIconSprite").new(data)
+        elseif self.dropItem1[1] == ItemType.SKILL then
+            data = require("game_model.CSkill").new(BaseData_skills[self.dropItem1[2]])
+            icon = require("ui_object.CSkillIconSprite").new(data)
+        end
+        icon:setPosition(self.bg:getContentSize().width / 4, self.bg:getContentSize().height / 6)
+        icon:setScale(0.8)
+        self.bg:addChild(icon)
+
+        local nameLabel = ui.newBMFontLabel({
+            text = data:getName(),
+            font = GAME_FONT.font_youyuan,
+            x = icon:getContentSize().width / 2,
+            y = -icon:getContentSize().height * (1 / 8)
+
+        })
+        nameLabel:setColor(ccc3(0, 0, 255))
+        icon:addChild(nameLabel)
+    end
+
+    if self.dropItem2[1] > 0 then
+        local icon = nil
+        local data = nil
+        if self.dropItem2[1] == ItemType.EQUIPMENT then
+            data = require("game_model.CEquip").new(BaseData_equipments[self.dropItem2[2]])
+            icon = require("ui_object.CEquipIconSprite").new(data)
+        elseif self.dropItem2[1] == ItemType.SKILL then
+            data = require("game_model.CSkill").new(BaseData_skills[self.dropItem2[2]])
+            icon = require("ui_object.CSkillIconSprite").new(data)
+        end
+        icon:setPosition(self.bg:getContentSize().width * (2.5 / 4), self.bg:getContentSize().height / 6)
+        icon:setScale(0.8)
+        self.bg:addChild(icon)
+        local nameLabel = ui.newBMFontLabel({
+            text = data:getName(),
+            font = GAME_FONT.font_youyuan,
+            x = icon:getContentSize().width / 2,
+            y = -icon:getContentSize().height * (1 / 8)
+
+        })
+        nameLabel:setColor(ccc3(0, 0, 255))
+        icon:addChild(nameLabel)
+    end
 end
 
 function CMapInfoLayer:getContentSize()
@@ -65,6 +114,9 @@ function CMapInfoLayer:ctor(data)
     self.exp  = data.exp or 0
     self.gold = data.gold or 0
     self.desc = data.desc or ""
+
+    self.dropItem1 = data.drop_item1
+    self.dropItem2 = data.drop_item2
 
     self:init()
 end

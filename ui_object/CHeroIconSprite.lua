@@ -33,7 +33,6 @@ function CHeroIconSprite:ctor(heroData)
         local herosIcon = ResourceMgr:getIconSprite(heroData:getIconID())
         self:addChild(herosIcon)
         herosIcon:setPosition(self:getContentSize().width / 2, self:getContentSize().height / 2)
-
         self.getData = function()
             return heroData
         end

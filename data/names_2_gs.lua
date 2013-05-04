@@ -77,147 +77,147 @@ BaseData_names_2 = {
  },
  [20] = {
   id = 1,
-  str_name = "白马"
+  str_name = "白鹤"
  },
  [21] = {
   id = 1,
-  str_name = "冷月水"
+  str_name = "白马"
  },
  [22] = {
   id = 1,
-  str_name = "桃花"
+  str_name = "冷月水"
  },
  [23] = {
   id = 1,
-  str_name = "奈何"
+  str_name = "桃花"
  },
  [24] = {
   id = 1,
-  str_name = "天风"
+  str_name = "奈何"
  },
  [25] = {
   id = 1,
-  str_name = "天雷"
+  str_name = "天风"
  },
  [26] = {
   id = 1,
-  str_name = "天宇"
+  str_name = "天雷"
  },
  [27] = {
   id = 1,
-  str_name = "天羽"
+  str_name = "天宇"
  },
  [28] = {
   id = 1,
-  str_name = "天狼"
+  str_name = "天羽"
  },
  [29] = {
   id = 1,
-  str_name = "天禧"
+  str_name = "天狼"
  },
  [30] = {
   id = 1,
-  str_name = "天机"
+  str_name = "天禧"
  },
  [31] = {
   id = 1,
-  str_name = "天鹰"
+  str_name = "天机"
  },
  [32] = {
   id = 1,
-  str_name = "天罡"
+  str_name = "天鹰"
  },
  [33] = {
   id = 1,
-  str_name = "天音"
+  str_name = "天罡"
  },
  [34] = {
   id = 1,
-  str_name = "映月"
+  str_name = "天音"
  },
  [35] = {
   id = 1,
-  str_name = "冷月水"
+  str_name = "映月"
  },
  [36] = {
   id = 1,
-  str_name = "摩天"
+  str_name = "冷月水"
  },
  [37] = {
   id = 1,
-  str_name = "伏牛"
+  str_name = "摩天"
  },
  [38] = {
   id = 1,
-  str_name = "鹰爪雁行"
+  str_name = "伏牛"
  },
  [39] = {
   id = 1,
-  str_name = "金乌"
+  str_name = "鹰爪雁行"
  },
  [40] = {
   id = 1,
-  str_name = "天涯"
+  str_name = "金乌"
  },
  [41] = {
   id = 1,
-  str_name = "水月"
+  str_name = "天涯"
  },
  [42] = {
   id = 1,
-  str_name = "飞天"
+  str_name = "水月"
  },
  [43] = {
   id = 1,
-  str_name = "九龙"
+  str_name = "飞天"
  },
  [44] = {
   id = 1,
-  str_name = "护龙"
+  str_name = "九龙"
  },
  [45] = {
   id = 1,
-  str_name = "护鹰"
+  str_name = "护龙"
  },
  [46] = {
   id = 1,
-  str_name = "碧血"
+  str_name = "护鹰"
  },
  [47] = {
   id = 1,
-  str_name = "落英剑"
+  str_name = "碧血"
  },
  [48] = {
   id = 1,
-  str_name = "铁血"
+  str_name = "落英剑"
  },
  [49] = {
   id = 1,
-  str_name = "如意"
+  str_name = "铁血"
  },
  [50] = {
   id = 1,
-  str_name = "莲花"
+  str_name = "如意"
  },
  [51] = {
   id = 1,
-  str_name = "顺天"
+  str_name = "莲花"
  },
  [52] = {
   id = 1,
-  str_name = "海角鹰"
+  str_name = "顺天"
  },
  [53] = {
   id = 1,
-  str_name = "落花"
+  str_name = "海角鹰"
  },
  [54] = {
   id = 1,
-  str_name = "百合"
+  str_name = "落花"
  },
  [55] = {
   id = 1,
-  str_name = "白鹤"
+  str_name = "百合"
  },
  [56] = {
   id = 1,
@@ -330,6 +330,10 @@ BaseData_names_2 = {
  [83] = {
   id = 1,
   str_name = "铁血大旗"
+ },
+ [84] = {
+  id = 1,
+  str_name = "百里通"
  }
 }
 

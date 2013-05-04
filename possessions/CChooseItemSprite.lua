@@ -99,7 +99,7 @@ function CChooseItemSprite:init(data, itemType)
             [SkillAtkType.SINGLE_ROW]    = "单行攻击",
             [SkillAtkType.SINGLE_COL]    = "单列攻击",
             [SkillAtkType.CROSS]         = "十字攻击",
-            [SkillAtkType.All]           = "全体攻击"
+            [SkillAtkType.ALL]           = "全体攻击"
         }
 
         local effectValue = ui.newTTFLabel({

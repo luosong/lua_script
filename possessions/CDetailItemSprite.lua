@@ -259,7 +259,7 @@ function CDetailItemSprite:init()
             -- color = ccc3(0, 255, 0),
             -- dimensions = CCSizeMake(CFuncHelper:getRelativeX(1.5), CFuncHelper:getRelativeX(6))
         })
-
+        self.nameLabel:setColor(ccc3(0,0,0))
         self.nameLabel:setLineBreakWithoutSpace(true);
         self.bg:addChild(self.nameLabel)
 
@@ -321,6 +321,7 @@ function CDetailItemSprite:init()
             color = ccc3(0, 255, 0),
             dimensions = CCSizeMake(CFuncHelper:getRelativeX(1.5), CFuncHelper:getRelativeX(6))
         })
+        self.nameLabel:setColor(ccc3(0,0,0))
         self.bg:addChild(self.nameLabel)
     end
 

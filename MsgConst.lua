@@ -35,6 +35,9 @@ MSG_HEAD = {
 ]]
 
 REQUEST_ID = {
+		-- admin
+		ADMIN_GEN_NPC = 'admin_gennpc';
+
         -- Login 
 		LOGIN_GET_SERVER_LIST_DATA = 'serverList';     --get server json data
 		LOGIN_GET_PLAYER_INFO = 'gpinfo';     --get player datas when choose server
@@ -65,6 +68,12 @@ REQUEST_ID = {
 	    --levels
     	LEVEL_UPLOAD = 'lvupload';
     	LEVEL_DOWNLOAD = 'lvdownload';
+
+    	--战斗结果
+    	BATTLE_RESULT = 'batresult';
+
+    	-- 武斗榜
+    	ARENA_LIST = 'arenalist';
 }
 
 
@@ -101,8 +110,14 @@ KEY_CONST = {
 	    --formation
 	    FORMATIONS = 'form';
 	    FORM_USING_ID = 'id';
+      	FORM_LV = 'lv';
 
+    	--levels 游戏关卡
+    	LEVEL_INFO = 'lvInfo';
+    	LEVEL_UNLOCK_LV = 'unlv';
 
+    	-- arena score
+    	ARENA_SCORE = 'score';
 
 	    -- recruit
 	    RECRUIT_INFO_KEY = 'recruit';

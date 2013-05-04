@@ -7,7 +7,7 @@
 --
 
 local CHaMaGong = class("CHaMaGong", function()
-    return display.newNode()
+    return CCLayerColor:create(ccc4(0, 0, 0, 255), display.width, display.height)
 end)
 
 

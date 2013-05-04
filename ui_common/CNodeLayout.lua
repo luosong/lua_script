@@ -36,7 +36,7 @@ function CNodeLayout:ctor(params)
         for k, v in ipairs(nodes) do
             tmpX = cellCX + cellWidth * math.floor((k - 1) % rowSize)
             tmpY = cellCY - cellHeight * math.floor((k - 1) / rowSize)
-            v:setAnchorPoint(CCPointMake(0, 0))
+            --v:setAnchorPoint(CCPointMake(0, 0))
             v:setPosition(tmpX, tmpY)
             self:addChild(v);
         end

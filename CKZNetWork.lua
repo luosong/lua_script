@@ -10,6 +10,7 @@
 
 local CKZNetWork = class("CKZNetWork")
 
+local gnwInstance = require ("GameNetWork")
 
 
 --[[ 上传heros,这些hero的处理方式一致（add，update，delete），适合处理多选
@@ -30,7 +31,7 @@ function CKZNetWork:UploadHero( heros , opt)
 
 		end 
 
-	    gnw = require ("GameNetWork").new()
+	    gnw = gnwInstance.new()
         gnw:SendData( game.Player:getPlayerID(), game.Player:getServerID(), REQUEST_ID["HERO_UPLOAD"],msg, uploadheroCB)
 
 end
@@ -61,7 +62,7 @@ function CKZNetWork:UploadSouls( souls, opt )
 
 		end 
 
-	    gnw = require ("GameNetWork").new()
+	    gnw = gnwInstance.new()
         gnw:SendData( game.Player:getPlayerID(), game.Player:getServerID(), REQUEST_ID["HERO_SOUL_UPLOAD"],msg, uploadsoulCB)
 
 end
@@ -71,7 +72,7 @@ end
 ]]
 function CKZNetWork:UploadMajorHeros( ... )
 	
-	local gameNetWork = require("GameNetWork").new()
+	local gameNetWork = gnwInstance.new()
 
 	local function uploadCB( ... )
 		
@@ -87,7 +88,7 @@ end
 ]]
 function CKZNetWork:UploadFormation( ... )
 
-	local gameNetWork = require("GameNetWork").new()
+	local gameNetWork = gnwInstance.new()
 
 	local function uploadCB( ... )
 		-- body
@@ -97,6 +98,45 @@ function CKZNetWork:UploadFormation( ... )
 
 end
 
+
+function CKZNetWork:UploadBattleResult( ptr, func )
+	local gameNetWork = gnwInstance.new()
+
+	local function uploadCB( ... )
+		func(ptr)
+	end
+	gameNetWork:SendData( game.Player:getPlayerID(),game.Player:getServerID(), 
+		REQUEST_ID["BATTLE_RESULT"],game.PlayerNetWork:UploadBattleResultData(), uploadCB)
+end
+
+
+
+-- 武斗榜
+function CKZNetWork:DownloadArenaList( ... )
+	local gameNetWork = gnwInstance.new()
+
+		local function uploadCB( ... )
+		-- body
+	end
+	gameNetWork:SendData( game.Player:getPlayerID(),game.Player:getServerID(), 
+		REQUEST_ID.ARENA_LIST,{}, uploadCB)
+end
+
+
+
+-- admin
+function CKZNetWork:AdminGenNPC( ... )
+	local gameNetWork = gnwInstance.new()
+	local msg = {}
+	local ss =  require("AdminMgr").new()
+  	msg = ss:genAllNPC()
+	local function uploadCB( ... )
+		-- body
+	end
+	dump(msg)
+	gameNetWork:SendData( game.Player:getPlayerID(),game.Player:getServerID(), 
+		REQUEST_ID.ADMIN_GEN_NPC,msg, uploadCB)
+end
 
 
 function CKZNetWork:ctor( ... )

@@ -13,6 +13,12 @@ local CGameLoginScene = class("CGameLoginScene", function()
     return display.newScene("CGameLoginScene")
 end)
 
+for i = 1, 100 do
+    if (i % 2) == 0 and (i % 3) == 0 then
+        printf("----------------  " .. i)
+    end
+end
+
 
 function CGameLoginScene:ctor()
 	-- local colorbg = CCLayerColor:create(ccc4(255, 255, 255, 100), display.width, display.height)
@@ -21,7 +27,7 @@ function CGameLoginScene:ctor()
 
 --    local skill = require("skills_system.CXiXingDaFa").new()
 --    self:addChild(skill)
-
+	game.GameAudio:playMusic(GAME_MUSIC.LOGO)
     local skill2 = require("skills_system.CHaMaGong").new()
     self:addChild(skill2)
     
@@ -44,7 +50,7 @@ function CGameLoginScene:ctor()
 					if(string.len(playerInfo[KEY_CONST["NICKNAME"]]) > 0 and string.byte(playerInfo[KEY_CONST["BASE_INFO_LEVEL"]]) > 1) then 
 						game.PlayerNetWork:SetDownloadData(playerInfo)
 
-						display.replaceScene(require("CGameMenuScene").new())
+						display.replaceScene(require("CGameMenuScene").new(), "fade", 0.6, display.COLOR_BLACK)
 					else
 						if(GAME_DEBUG.DEBUG_RANDNAME == false) then
 							game.Player:setName("playerName")
@@ -52,9 +58,9 @@ function CGameLoginScene:ctor()
 						print("===========name:"..game.Player:getName())
 						if(game.Player:getName() == "") then
 							-- self:addChild(require("business_system.CRandNameScene").new(),10)
-							display.replaceScene(require("tutorial_system.CTutorialScene").new())
+							display.replaceScene(require("tutorial_system.CTutorialScene").new(), "fade", 0.6, display.COLOR_WHITE)
 						else
-							display.replaceScene(require("CGameMenuScene").new())
+							display.replaceScene(require("CGameMenuScene").new(), "fade", 0.6, display.COLOR_WHITE)
 						end
 					end
 				end
@@ -78,6 +84,7 @@ function CGameLoginScene:ctor()
 			server_name = codeJson["Body"].sList[i].name
 			server_url = codeJson["Body"].sList[i].url
 			listButton[i] = ui.newTTFLabelMenuItem({ text = server_name,
+													font = GAME_FONT.font_ttf_mini,
 													size = 48,
 													color = ccc3(100, 100, 255),
 													tag = 1,
@@ -94,7 +101,7 @@ function CGameLoginScene:ctor()
 														color = ccc3(200,200,200),
 														tag = 1,
 														listener = function ( ... )
-														display.replaceScene(require("CGameMenuScene").new())
+														display.replaceScene(require("CGameMenuScene").new() "fade", 0.6, display.COLOR_WHITE)
 															
 														end})
 		end
@@ -109,7 +116,7 @@ function CGameLoginScene:ctor()
 		if(len > 0) then
 			for k,v in pairs(codeJson["Body"].sList) do
 				if(type(v) == "table") then
-					GameDebug:logToConsole(" = serverList:" .. v.sid .. v.name .. v.url)
+					game.Debuger:logToConsole(" = serverList:" .. v.sid .. v.name .. v.url)
 				end
 			end
 			server_id = codeJson["Body"].sList[1].sid
@@ -147,7 +154,7 @@ function CGameLoginScene:ctor()
 	        end,
 	        listener = function()
 	            -- game.enterChooseLevelScene()
-	            display.replaceScene(require ("tutorial_system.CTutorialScene").new())
+	            display.replaceScene(require ("tutorial_system.CTutorialScene").new(), "fade", 0.6, display.COLOR_WHITE)
 	        end,
 	    })
 
@@ -156,12 +163,12 @@ function CGameLoginScene:ctor()
 	end -- end function ReqServerListCB
 
 
-	local smallSun1 = CCParticleSystemQuad:create("particle/SmallSun.plist")
-	smallSun1:setPosition(display.width/3,display.height/4)
+	local smallSun1 = CCParticleSystemQuad:create("particle/flowerParticle.plist")
+	smallSun1:setPosition(display.width/3,display.height)
 	self:addChild(smallSun1)
 
-	local smallSun2 = CCParticleSystemQuad:create("particle/SmallSun.plist")
-	smallSun2:setPosition(display.width*2/3,display.height/4)
+	local smallSun2 = CCParticleSystemQuad:create("particle/leavesParticle.plist")
+	smallSun2:setPosition(display.width*2/3,display.height)
 	self:addChild(smallSun2,1)
 
 	-- local plistName = "particle/snow.plist"--"particle/SpinningPeas.plist"
@@ -184,14 +191,40 @@ function CGameLoginScene:ctor()
 													color = ccc3(200,200,200),
 													tag = 1,
 													listener = function()
-                                                        display.replaceScene(require("CGameMenuScene").new())
+                                                        display.replaceScene(require("CGameMenuScene").new(), "fade", 0.6, display.COLOR_WHITE)
                                                     end})
 		local menu = ui.newMenu({serverButton})
 
 		menu:setPosition(display.width / 2, display.height / 4)
 		menu:alignItemsVertically()
 		self:addChild(menu)
-	end
+    end
+
+    local testButton = ui.newTTFLabelMenuItem({
+        text = "攻击类型",
+        size = 48,
+        color = ccc3(222, 222, 200),
+        listener = function()
+            local ss =  require("battle_system.TestAttackType").new()
+            self:addChild(ss)
+        end
+    })
+
+    local npcButton = ui.newTTFLabelMenuItem({
+        text = "npc",
+        size = 48,
+        color = ccc3(222, 222, 200),
+        listener = function()
+            -- local ss =  require("AdminMgr").new()
+            -- ss:genAllNPC()
+            game.KZNetWork:AdminGenNPC()
+        end
+    })
+
+    local menu = ui.newMenu({testButton, npcButton})
+    menu:setPosition(display.width / 2, display.height / 2)
+    menu:alignItemsVertically()
+    self:addChild(menu)
 
 	
 end

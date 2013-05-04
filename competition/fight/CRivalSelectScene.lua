@@ -41,7 +41,6 @@ function CRivalSelectScene:init()
 
     self:registerScriptHandler(function(action)
         if action == "exit" then
-            printf("-------------CRivalSelectScene on Exit---------------")
             bg:removeAllChildrenWithCleanup(true)
             self:removeAllChildrenWithCleanup(true)
         end

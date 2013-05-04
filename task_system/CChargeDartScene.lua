@@ -16,6 +16,7 @@ function CChargeDartScene:init()
     baseLayer:setPosition(0, 0)
     self.node:addChild(baseLayer)
 
+
     local taskDescBg = display.newSprite("task_desc.png")
     taskDescBg:setPosition(display.width * (10 / 40), game.cy)
     self.node:addChild(taskDescBg)

@@ -240,6 +240,7 @@ function CAdventureScene:initUI()
     self.layer:addChild(headerBg)
 
     self:initLevelsButton(headerBg, headerSprite)
+
 end
 
 function CAdventureScene:ctor(mapId)

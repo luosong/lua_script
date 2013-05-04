@@ -1,5 +1,3 @@
-
-
 require "GlobalVariable"
 require "GameConst"
 
